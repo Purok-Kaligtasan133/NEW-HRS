@@ -1,0 +1,545 @@
+/* PAGE-SPECIFIC PHONE STYLES (shared header/nav/title rules live in header-styles.css + uniform-styles.css) */
+@media (max-width: 768px) {
+    
+    /* Auto-refresh indicator */
+    
+.auto-refresh {
+        padding: 3px 8px !important;
+        font-size: 0.55rem !important;
+        gap: 4px !important;
+        background: rgba(15, 122, 74, 0.1) !important;
+        border-radius: 20px !important;
+    }
+    
+    .auto-refresh .indicator {
+        width: 6px !important;
+        height: 6px !important;
+    }
+    
+    /* Global Stats Summary */
+    
+.global-stats-summary.visible {
+        flex-direction: row !important;
+        gap: 6px !important;
+        padding: 6px 8px !important;
+        margin-bottom: 12px !important;
+    }
+    
+    .global-stat {
+        min-width: 50px !important;
+        padding: 4px 6px !important;
+    }
+    
+    .global-stat-value {
+        font-size: 0.85rem !important;
+    }
+    
+    .global-stat-label {
+        font-size: 0.55rem !important;
+    }
+    
+    /* Stats View Toggle */
+    
+.stats-view-toggle.visible {
+        flex-direction: row !important;
+        padding: 4px !important;
+        margin-bottom: 12px !important;
+        gap: 4px !important;
+    }
+    
+    .stats-toggle-btn {
+        font-size: 0.6rem !important;
+        padding: 4px 6px !important;
+        max-width: 85px !important;
+        gap: 4px !important;
+    }
+    
+    .stats-toggle-btn i {
+        font-size: 0.55rem !important;
+    }
+    
+    /* Hide compact view button on mobile */
+    
+.stats-toggle-btn:last-child {
+        display: none !important;
+    }
+    
+    /* Toolbar - Buttons centered */
+    
+.toolbar-right {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        gap: 6px !important;
+        width: 100% !important;
+        margin-bottom: 12px !important;
+    }
+    
+    .toolbar-right .btn {
+        flex: 1 !important;
+        min-width: 70px !important;
+        max-width: 85px !important;
+        justify-content: center !important;
+        padding: 4px 8px !important;
+        font-size: 0.65rem !important;
+        height: 28px !important;
+        border-radius: 16px !important;
+    }
+    
+    .toolbar-right .btn i {
+        font-size: 0.6rem !important;
+    }
+    
+    /* Export Dropdown */
+    
+.export-wrapper {
+        min-width: 70px !important;
+        max-width: 85px !important;
+    }
+    
+    .export-dropdown {
+        width: 120px !important;
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
+    }
+    
+    .export-dropdown div {
+        padding: 6px 10px !important;
+        font-size: 0.6rem !important;
+    }
+    
+    /* ============================================
+       HORIZONTAL SCROLL - NATURAL CARD SIZES
+       No fixed width, cards size naturally
+       ============================================ */
+    
+.charts-grid {
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        gap: 12px !important;
+        scroll-snap-type: x mandatory !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding-bottom: 8px !important;
+        margin-bottom: 0 !important;
+        width: 100% !important;
+    }
+    
+    .charts-grid::-webkit-scrollbar {
+        height: 4px !important;
+    }
+    
+    .charts-grid::-webkit-scrollbar-track {
+        background: var(--border, #e1e8e5) !important;
+        border-radius: 4px !important;
+    }
+    
+    .charts-grid::-webkit-scrollbar-thumb {
+        background: var(--accent2, #34b78f) !important;
+        border-radius: 4px !important;
+    }
+    
+    /* Cards size naturally - no fixed width */
+    
+.chart-card {
+        flex-shrink: 0 !important;
+        scroll-snap-align: start !important;
+        padding: 12px !important;
+        width: auto !important;
+        min-width: 280px !important;
+        max-width: 90vw !important;
+    }
+    
+    .chart-card.full-size {
+        grid-column: auto !important;
+        width: auto !important;
+        min-width: 280px !important;
+        max-width: 90vw !important;
+    }
+    
+    .comparison-chart {
+        width: auto !important;
+        min-width: 280px !important;
+        max-width: 90vw !important;
+    }
+    
+    .chart-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 6px !important;
+        margin-bottom: 8px !important;
+        padding-bottom: 6px !important;
+    }
+    
+    .chart-title {
+        font-size: 0.7rem !important;
+        gap: 5px !important;
+    }
+    
+    .chart-title i {
+        font-size: 0.7rem !important;
+    }
+    
+    /* Chart Stats Badges */
+    
+.chart-stats {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 3px !important;
+        width: 100% !important;
+    }
+    
+    .stat-badge {
+        font-size: 0.55rem !important;
+        padding: 2px 5px !important;
+        gap: 3px !important;
+        border-radius: 10px !important;
+    }
+    
+    .stat-badge .percentage {
+        font-size: 0.5rem !important;
+    }
+    
+    /* Natural chart heights - proportional to content */
+    
+.chart-container {
+        height: auto !important;
+        min-height: 200px !important;
+        margin: 6px 0 !important;
+        width: 100% !important;
+    }
+    
+    canvas {
+        width: 100% !important;
+        height: auto !important;
+        max-height: 250px !important;
+    }
+    
+    /* PWD Gauge Container */
+    
+.pwd-gauge-container {
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+    
+    .pwd-canvas-wrapper {
+        height: auto !important;
+        min-height: 150px !important;
+    }
+    
+    .pwd-stats {
+        flex-direction: row !important;
+        justify-content: space-around !important;
+        width: 100% !important;
+    }
+    
+    .pwd-stat-item {
+        padding: 5px !important;
+    }
+    
+    .pwd-stat-value {
+        font-size: 0.9rem !important;
+    }
+    
+    .pwd-stat-label {
+        font-size: 0.55rem !important;
+    }
+}
+@media (max-width: 480px) {
+    
+    .auto-refresh {
+        font-size: 0.5rem !important;
+        padding: 2px 6px !important;
+    }
+    
+    .global-stat {
+        min-width: 45px !important;
+        padding: 3px 4px !important;
+    }
+    
+    .global-stat-value {
+        font-size: 0.75rem !important;
+    }
+    
+    .global-stat-label {
+        font-size: 0.5rem !important;
+    }
+    
+    .stats-toggle-btn {
+        font-size: 0.55rem !important;
+        padding: 3px 4px !important;
+        max-width: 75px !important;
+    }
+    
+    .toolbar-right .btn {
+        min-width: 60px !important;
+        font-size: 0.6rem !important;
+        padding: 4px 6px !important;
+        height: 26px !important;
+    }
+    
+    .chart-card {
+        min-width: 260px !important;
+        max-width: 85vw !important;
+        padding: 10px !important;
+    }
+    
+    .chart-title {
+        font-size: 0.65rem !important;
+    }
+    
+    .stat-badge {
+        font-size: 0.5rem !important;
+        padding: 2px 4px !important;
+    }
+    
+    .chart-container {
+        min-height: 170px !important;
+    }
+    
+    canvas {
+        max-height: 200px !important;
+    }
+}
+@media (max-width: 768px) {
+    .chart-card:active {
+        transform: scale(0.99) !important;
+        transition: transform 0.1s ease !important;
+    }
+    
+    .btn:active,
+.stats-toggle-btn:active {
+        transform: scale(0.97) !important;
+    }
+    
+    .chart-card,
+.stats-toggle-btn {
+        cursor: pointer !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+}
+@media (max-width: 768px) {
+    
+    /* Show mobile logout button in sidebar when sidebar is forced to show */
+    
+.mobile-logout-container {
+        display: none !important; /* REMOVED: Hide logout in sidebar */
+    }
+    
+    /* Global Stats on mobile */
+    
+.global-stats-summary.visible {
+        flex-direction: row;
+        gap: 8px;
+        padding: 6px 8px;
+    }
+    
+    .global-stat {
+        width: auto;
+        flex-direction: column;
+        justify-content: center;
+        min-width: 60px;
+        padding: 5px 8px;
+    }
+    
+    .global-stat-value {
+        font-size: 1rem;
+    }
+    
+    .global-stat-label {
+        font-size: 0.65rem;
+    }
+    
+    .global-stats-timestamp {
+        display: none !important; /* Always hide timestamp on mobile */
+    }
+    
+    /* Stats View Toggle on mobile */
+    
+.stats-view-toggle.visible {
+        flex-direction: row;
+        padding: 4px;
+    }
+    
+    .stats-toggle-btn {
+        font-size: 0.7rem;
+        padding: 4px 6px;
+        max-width: 100px;
+    }
+    
+    /* Enhanced chart stats on mobile */
+    
+.chart-stats {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 3px;
+    }
+    
+    .stat-badge {
+        font-size: 0.65rem;
+        padding: 2px 4px;
+        width: max-content;
+    }
+    
+    .stat-badge .percentage {
+        font-size: 0.6rem;
+    }
+@media (max-width: 480px) {
+        .chart-stats.hide-on-mobile {
+            display: none !important;
+        }
+        
+        .chart-title.compact::after {
+            content: " (" attr(data-total) ")";
+            font-size: 0.75em;
+            opacity: 0.8;
+            margin-left: 4px;
+        }
+        
+        .global-stat {
+            min-width: 50px;
+            padding: 4px 6px;
+        }
+        
+        .global-stat-value {
+            font-size: 0.9rem;
+        }
+        
+        .global-stat-label {
+            font-size: 0.6rem;
+        }
+        
+        .stats-toggle-btn {
+            font-size: 0.65rem;
+            padding: 3px 5px;
+            max-width: 90px;
+        }
+}
+    
+    /* UPDATED: Toolbar for mobile - linear and centered */
+    
+.toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px;
+        gap: 15px;
+        justify-content: center; /* Center on mobile */
+    }
+    
+    /* UPDATED: Right-aligned buttons become linear and centered on mobile */
+    
+.toolbar-right {
+        display: flex !important;
+        flex-direction: row;
+        width: 100%;
+        justify-content: center; /* Center the buttons on mobile */
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    /* UPDATED: Ensure buttons are properly sized on mobile */
+    
+.toolbar-right .btn {
+        flex: 1; /* Make buttons take equal space */
+        min-width: 100px; /* Minimum width */
+        max-width: 120px; /* Maximum width */
+        justify-content: center;
+        text-align: center;
+    }
+    
+    .charts-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .chart-card {
+        padding: 15px;
+    }
+    
+    .chart-container {
+        height: 220px;
+    }
+    
+    .full-size .chart-container {
+        height: 280px;
+    }
+    
+    .comparison-chart .chart-container {
+        height: 280px;
+    }
+    
+    .pwd-gauge-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .pwd-stats {
+        flex-direction: row;
+        justify-content: space-around;
+        width: 100%;
+    }
+    
+    #userName {
+        font-size: 0.9rem;
+        padding: 6px 12px;
+    }
+    
+    #logoutBtn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+    
+    /* Optimize charts for mobile */
+    
+.chart-card canvas {
+        max-height: 200px;
+    }
+    
+    /* Export dropdown positioning for mobile */
+    
+.export-wrapper {
+        width: auto;
+        flex: 1;
+        min-width: 100px;
+        max-width: 120px;
+    }
+    
+    .export-dropdown {
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        width: 140px;
+    }
+}
+@media (max-width: 768px) {
+    .global-stat {
+        padding: 4px 10px;
+    }
+    
+    .global-stat-value {
+        font-size: 0.9rem;
+    }
+    
+    .global-stat-label {
+        font-size: 0.6rem;
+    }
+    
+    .stat-badge {
+        font-size: 0.6rem;
+        padding: 2px 6px;
+    }
+    
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .chart-stats {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}

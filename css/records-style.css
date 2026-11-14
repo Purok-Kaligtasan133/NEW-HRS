@@ -1,0 +1,2787 @@
+/* PAGE-SPECIFIC PHONE STYLES (shared header/nav/title rules live in header-styles.css + uniform-styles.css) */
+@media (max-width: 768px) {
+    
+    /* ========================================
+       STATS CONTAINER - Match dataForm cards
+    ======================================== */
+    
+.stats-container {
+        display: flex !important;
+        justify-content: space-between !important;
+        gap: 8px !important;
+        margin-bottom: 12px !important;
+    }
+    
+    .stat-item {
+        flex: 1 !important;
+        text-align: center !important;
+        padding: 6px 8px !important;
+        background: var(--card-bg, #fff) !important;
+        border-radius: 8px !important;
+        border: 1px solid var(--border, #e1e8e5) !important;
+        box-shadow: var(--shadow, 0 6px 18px rgba(6,30,20,0.06)) !important;
+    }
+    
+    .stat-item span {
+        font-size: 0.6rem !important;
+        color: var(--muted, #6b6f6b) !important;
+        display: block !important;
+        margin-bottom: 2px !important;
+    }
+    
+    .stat-item .value {
+        font-size: 0.9rem !important;
+        font-weight: 700 !important;
+        color: var(--accent1, #0f7a4a) !important;
+        display: block !important;
+    }
+    
+    /* ========================================
+       TOOLBAR - Match dataForm
+    ======================================== */
+    
+.toolbar {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        margin-bottom: 12px !important;
+    }
+    
+    .toolbar-row-1 {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        width: 100% !important;
+    }
+    
+    .search-container {
+        width: 100% !important;
+        position: relative !important;
+    }
+    
+    .search-container i {
+        position: absolute !important;
+        left: 10px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        color: var(--muted, #6b6f6b) !important;
+        font-size: 0.7rem !important;
+        z-index: 1 !important;
+    }
+    
+    .search-box {
+        width: 100% !important;
+        padding: 8px 10px 8px 32px !important;
+        border: 2px solid var(--border, #e1e8e5) !important;
+        border-radius: 8px !important;
+        font-size: 0.75rem !important;
+        background: #fff !important;
+        box-sizing: border-box !important;
+        height: 36px !important;
+    }
+    
+    .search-box:focus {
+        outline: none !important;
+        border-color: var(--accent1, #0f7a4a) !important;
+        box-shadow: 0 0 0 3px rgba(15, 122, 74, 0.1) !important;
+    }
+    
+    .toolbar-row-2 {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        gap: 8px !important;
+    }
+    
+    .brgy-dropdown {
+        flex: 1 !important;
+        padding: 6px 10px !important;
+        border: 2px solid var(--border, #e1e8e5) !important;
+        border-radius: 8px !important;
+        font-size: 0.7rem !important;
+        background: #fff !important;
+        height: 36px !important;
+        cursor: pointer !important;
+    }
+    
+    .brgy-dropdown:focus {
+        outline: none !important;
+        border-color: var(--accent1, #0f7a4a) !important;
+    }
+    
+    .btn-export {
+        background: linear-gradient(90deg, var(--accent3, #ff7a00), var(--accent4, #ffa500)) !important;
+    }
+    
+    /* Export Dropdown */
+    
+.export-dropdown {
+        width: 130px !important;
+        font-size: 0.7rem !important;
+    }
+    
+    .export-dropdown div {
+        padding: 6px 10px !important;
+        font-size: 0.7rem !important;
+    }
+    
+    /* ========================================
+       LEGEND CONTAINER - Match dataForm
+    ======================================== */
+    
+.legend-container {
+        padding: 8px 12px !important;
+        margin-top: 10px !important;
+        background: #fff !important;
+        border: 1px solid var(--border, #e1e8e5) !important;
+        border-radius: 8px !important;
+    }
+    
+    .legend-box h4 {
+        font-size: 0.7rem !important;
+        margin: 0 0 6px 0 !important;
+        color: var(--muted, #6b6f6b) !important;
+    }
+    
+    .legend-items {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+    }
+    
+    .legend-item {
+        display: flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+        font-size: 0.6rem !important;
+    }
+    
+    .legend-swatch {
+        width: 12px !important;
+        height: 12px !important;
+        border-radius: 3px !important;
+    }
+    
+    /* ========================================
+       VIRTUAL TABLE - Match dataForm tables
+    ======================================== */
+    
+.records-wrapper {
+        border-radius: 8px !important;
+        margin-bottom: 12px !important;
+        overflow-x: auto !important;
+    }
+    
+    #virtualHeader .header-cell {
+        font-size: 0.6rem !important;
+        padding: 8px 4px !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        color: #334155 !important;
+    }
+    
+    .virtual-row .virtual-cell {
+        font-size: 0.6rem !important;
+        padding: 6px 3px !important;
+        color: #2d3748 !important;
+    }
+    
+    .virtual-row.member-row .virtual-cell {
+        font-size: 0.55rem !important;
+        padding: 5px 3px !important;
+        color: #4a5568 !important;
+    }
+    
+    .virtual-row:hover {
+        background-color: rgba(15, 122, 74, 0.08) !important;
+    }
+    
+    /* Action buttons in table */
+    
+.virtual-cell-actions button {
+        padding: 3px 5px !important;
+        font-size: 0.6rem !important;
+    }
+    
+    .virtual-cell-actions button i {
+        font-size: 0.6rem !important;
+    }
+    
+    /* ========================================
+       EDIT PANEL - Match dataForm member panel
+    ======================================== */
+    
+.member-panel {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 16px !important;
+        left: 0 !important;
+        right: 0 !important;
+        background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.7)) !important;
+        border-radius: 12px !important;
+        overflow-x: hidden !important;
+    }
+    
+    .member-panel .panel-header {
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        margin-bottom: 16px !important;
+        padding-bottom: 12px !important;
+        border-bottom: 2px solid rgba(15, 122, 74, 0.15) !important;
+    }
+    
+    .member-panel .panel-header h3 {
+        font-size: 1rem !important;
+        font-weight: 700 !important;
+        color: var(--accent1, #0f7a4a) !important;
+        margin: 0 !important;
+    }
+    
+    .member-panel .edit-card {
+        background: var(--card-bg, #fff) !important;
+        border-radius: 12px !important;
+        padding: 16px !important;
+        margin-bottom: 16px !important;
+        box-shadow: var(--shadow, 0 6px 18px rgba(6,30,20,0.06)) !important;
+        border: 1px solid var(--border, #e1e8e5) !important;
+    }
+    
+    .member-panel .form-section {
+        background: var(--light-green, #e9f7f2) !important;
+        padding: 10px 14px !important;
+        border-radius: 8px !important;
+        margin: 0 0 16px 0 !important;
+        border-left: 4px solid var(--accent1, #0f7a4a) !important;
+    }
+    
+    .member-panel .form-section h5 {
+        margin: 0 !important;
+        color: var(--accent1, #0f7a4a) !important;
+        font-size: 0.85rem !important;
+        font-weight: 700 !important;
+    }
+    
+    .member-panel .form-grid {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+    }
+    
+    .member-panel label {
+        display: block !important;
+        font-weight: 700 !important;
+        margin-bottom: 6px !important;
+        color: var(--accent1, #0f7a4a) !important;
+        font-size: 0.75rem !important;
+    }
+    
+    .member-panel input,
+.member-panel select,
+.member-panel textarea {
+        width: 100% !important;
+        padding: 8px 10px !important;
+        border-radius: 8px !important;
+        border: 2px solid var(--border, #e1e8e5) !important;
+        font-size: 0.75rem !important;
+        background: #fff !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Radio buttons in edit panel */
+    
+.member-panel .radio-line {
+        display: flex !important;
+        gap: 16px !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
+        padding: 8px 0 !important;
+    }
+    
+    .member-panel .radio-item {
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        font-weight: 600 !important;
+        color: var(--accent1, #0f7a4a) !important;
+        font-size: 0.7rem !important;
+    }
+    
+    .member-panel .radio-item input[type="radio"] {
+        width: 16px !important;
+        height: 16px !important;
+        accent-color: var(--accent1, #0f7a4a) !important;
+        margin: 0 !important;
+    }
+    
+    /* Checkbox items */
+    
+.member-panel .checkbox-item1 {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        margin: 6px 0 !important;
+    }
+    
+    .member-panel .checkbox-item1 input[type="checkbox"] {
+        width: 16px !important;
+        height: 16px !important;
+        accent-color: var(--accent1, #0f7a4a) !important;
+    }
+    
+    /* Government Assistance in Edit Panel */
+    
+.member-panel .gov-support-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+    
+    .member-panel .gov-checkbox-with-date {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 8px !important;
+        flex-wrap: wrap !important;
+        padding: 6px 0 !important;
+    }
+    
+    .member-panel .gov-checkbox-with-date > label {
+        flex: 0 0 120px !important;
+        font-size: 0.7rem !important;
+        font-weight: 600 !important;
+        white-space: nowrap !important;
+    }
+    
+    .member-panel .gov-date-field {
+        display: none !important;
+        align-items: center !important;
+        gap: 6px !important;
+    }
+    
+    .member-panel .gov-date-field.show {
+        display: flex !important;
+    }
+    
+    .member-panel .gov-date-field label {
+        font-size: 0.6rem !important;
+    }
+    
+    .member-panel .gov-date-field input[type="date"] {
+        width: 110px !important;
+        padding: 5px 6px !important;
+        font-size: 0.6rem !important;
+        border-radius: 6px !important;
+    }
+    
+    /* Domestic Livestock in Edit Panel */
+    
+.member-panel .domestic-grid {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+    }
+    
+    .member-panel .animal-card {
+        padding: 10px !important;
+    }
+    
+    .member-panel .animal-header label {
+        font-size: 0.7rem !important;
+    }
+    
+    .member-panel .qty {
+        width: 60px !important;
+        padding: 5px !important;
+        font-size: 0.7rem !important;
+    }
+    
+    /* Calamity Section in Edit Panel */
+    
+.member-panel .calamity-grid {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+    
+    .member-panel .calamity-item {
+        padding: 10px !important;
+    }
+    
+    .member-panel .calamity-question {
+        font-size: 0.7rem !important;
+        margin-bottom: 8px !important;
+    }
+    
+    .member-panel .radio-group-inline {
+        display: flex !important;
+        gap: 15px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    /* File Upload in Edit Panel */
+    
+.member-panel .file-wrapper {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+    }
+    
+    .member-panel .choose-file-btn {
+        width: 100% !important;
+        justify-content: center !important;
+        padding: 5px 10px !important;
+        font-size: 0.65rem !important;
+        height: 32px !important;
+        background: white !important;
+        color: var(--accent1, #0f7a4a) !important;
+        border: 1.5px solid var(--accent1, #0f7a4a) !important;
+        border-radius: 6px !important;
+    }
+    
+    .member-panel .filename-display {
+        width: 100% !important;
+        text-align: center !important;
+        font-size: 0.6rem !important;
+    }
+    
+    /* File preview */
+    
+.member-panel .file-preview-item {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    
+    .member-panel .file-thumbnail {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    
+    .member-panel .file-thumbnail i {
+        font-size: 22px !important;
+    }
+    
+    .member-panel .choose-file-btn-small {
+        padding: 3px 6px !important;
+        font-size: 0.6rem !important;
+    }
+    
+    /* Member Preview List */
+    
+#edit_membersPreview {
+        max-height: 120px !important;
+        overflow-y: auto !important;
+    }
+    
+    #edit_membersPreview li {
+        font-size: 0.65rem !important;
+        padding: 8px 10px !important;
+        border-bottom: 1px solid rgba(15, 122, 74, 0.08) !important;
+    }
+    
+    .member-actions button {
+        padding: 3px 5px !important;
+        font-size: 0.6rem !important;
+    }
+    
+    /* Panel Actions */
+    
+.member-panel .panel-actions {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 10px !important;
+        margin-top: 20px !important;
+        padding-top: 16px !important;
+        border-top: 1px solid var(--border, #e1e8e5) !important;
+    }
+    
+    .member-panel .panel-actions .btn {
+        flex: 1 !important;
+        justify-content: center !important;
+        padding: 6px 12px !important;
+        font-size: 0.7rem !important;
+        height: 34px !important;
+    }
+    
+    /* ========================================
+       MODALS - Match dataForm
+    ======================================== */
+    
+.modal-overlay {
+        padding: 8px !important;
+    }
+    
+    .modal-content {
+        max-width: 95% !important;
+        width: 95% !important;
+        padding: 14px !important;
+        margin: 8px !important;
+        border-radius: 12px !important;
+    }
+    
+    .modal-header h3 {
+        font-size: 0.9rem !important;
+    }
+    
+    .modal-icon {
+        font-size: 1.8rem !important;
+    }
+    
+    .modal-body p {
+        font-size: 0.75rem !important;
+        line-height: 1.4 !important;
+    }
+    
+    .modal-actions {
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+    
+    .modal-actions .btn {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+    
+    /* Remove Member Modal */
+    
+#removeMemberModal .modal-content {
+        max-width: 95% !important;
+    }
+    
+    #memberToRemove {
+        font-size: 0.8rem !important;
+        padding: 8px !important;
+        border: 2px solid var(--border, #e1e8e5) !important;
+        border-radius: 8px !important;
+    }
+    
+    #currentMembersList {
+        max-height: 100px !important;
+        font-size: 0.7rem !important;
+        background: var(--light-green, #e9f7f2) !important;
+        border-radius: 8px !important;
+        padding: 8px !important;
+    }
+    
+    /* ========================================
+       COORDINATE MODAL
+    ======================================== */
+    
+.coordinate-modal-content {
+        max-width: 95% !important;
+        padding: 16px !important;
+        border-radius: 12px !important;
+    }
+    
+    .coordinate-modal-content h4 {
+        font-size: 0.9rem !important;
+        color: var(--accent1, #0f7a4a) !important;
+    }
+    
+    .modal-coordinate-input {
+        padding: 8px !important;
+        font-size: 0.8rem !important;
+        border: 2px solid var(--border, #e1e8e5) !important;
+        border-radius: 8px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    .modal-coordinate-actions {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        margin-top: 16px !important;
+    }
+    
+    .modal-coordinate-actions .btn {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+    
+    /* ========================================
+       VALIDATION SUMMARY
+    ======================================== */
+    
+.validation-summary {
+        padding: 10px !important;
+        margin-bottom: 12px !important;
+        border-radius: 8px !important;
+    }
+    
+    .validation-summary h4 {
+        font-size: 0.7rem !important;
+    }
+    
+    .validation-summary li {
+        font-size: 0.65rem !important;
+    }
+}
+@media (max-width: 480px) {
+    
+    .stat-item span {
+        font-size: 0.55rem !important;
+    }
+    
+    .stat-item .value {
+        font-size: 0.8rem !important;
+    }
+    
+    .toolbar-row-2 .btn {
+        padding: 4px 6px !important;
+        font-size: 0.65rem !important;
+        height: 30px !important;
+    }
+    
+    .brgy-dropdown {
+        font-size: 0.65rem !important;
+        padding: 5px 6px !important;
+        height: 30px !important;
+    }
+    
+    .search-box {
+        padding: 6px 8px 6px 28px !important;
+        font-size: 0.65rem !important;
+        height: 32px !important;
+    }
+    
+    .member-panel .panel-actions {
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+    
+    .member-panel .panel-actions .btn {
+        width: 100% !important;
+    }
+    
+    .member-panel .gov-checkbox-with-date > label {
+        flex: 1 !important;
+        white-space: normal !important;
+    }
+    
+    .member-panel .gov-date-field {
+        width: 100% !important;
+        padding-left: 20px !important;
+    }
+    
+    .member-panel .gov-date-field input[type="date"] {
+        width: 100% !important;
+    }
+}
+@media (min-width: 769px) and (max-width: 1024px) {
+    
+    .member-panel {
+        width: 500px !important;
+    }
+}
+@media (max-width: 768px) {
+    .btn:active,
+.icon-btn:active,
+.toggle-btn:active {
+        transform: scale(0.97) !important;
+        transition: transform 0.1s ease !important;
+    }
+    
+    .btn:hover,
+.icon-btn:hover {
+        transform: none !important;
+    }
+    
+    /* Prevent zoom on iOS for inputs */
+    
+input,
+select,
+textarea {
+        font-size: 16px !important;
+    }
+}
+@media (max-width: 768px) {
+    .loading-content {
+        padding: 12px 16px !important;
+        font-size: 0.7rem !important;
+        border-radius: 10px !important;
+    }
+    
+    .loading-spinner {
+        width: 24px !important;
+        height: 24px !important;
+        border-width: 2px !important;
+    }
+}
+@supports (padding: max(0px)) {
+@media (max-width: 768px) {
+        
+        .member-panel {
+            padding-left: max(12px, env(safe-area-inset-left)) !important;
+            padding-right: max(12px, env(safe-area-inset-right)) !important;
+        }
+}
+}
+@media (prefers-reduced-motion: reduce) {
+    .icon-btn,
+.member-panel {
+        transition: none !important;
+    }
+    
+    .btn:active,
+.icon-btn:active {
+        transform: none !important;
+    }
+}
+@media (max-width: 768px) {
+    /* ========================================
+       FIX 1: Government Assistance - Date inline with checkbox
+    ======================================== */
+    
+.member-panel .gov-checkbox-with-date {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 10px !important;
+        flex-wrap: wrap !important;
+        padding: 8px 0 !important;
+        width: 100% !important;
+        border-bottom: 1px solid var(--border, #e1e8e5) !important;
+    }
+    
+    .member-panel .gov-checkbox-with-date input[type="checkbox"] {
+        width: 18px !important;
+        height: 18px !important;
+        margin: 0 !important;
+        flex-shrink: 0 !important;
+        accent-color: var(--accent1, #0f7a4a) !important;
+    }
+    
+    .member-panel .gov-checkbox-with-date label {
+        display: inline-block !important;
+        margin: 0 !important;
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
+        color: var(--accent1, #0f7a4a) !important;
+        min-width: 100px !important;
+    }
+    
+    .member-panel .gov-date-field {
+        display: none !important;
+        align-items: center !important;
+        gap: 6px !important;
+        margin-left: 28px !important;
+    }
+    
+    .member-panel .gov-date-field.show {
+        display: flex !important;
+    }
+    
+    .member-panel .gov-date-field label {
+        font-size: 0.65rem !important;
+        color: var(--accent1, #0f7a4a) !important;
+        margin: 0 !important;
+    }
+    
+    .member-panel .gov-date-field input[type="date"] {
+        width: 110px !important;
+        padding: 5px 8px !important;
+        font-size: 0.65rem !important;
+        border-radius: 6px !important;
+        border: 2px solid var(--border, #e1e8e5) !important;
+        background: #fff !important;
+    }
+    
+    /* ========================================
+       FIX 2: Transportation & Evacuation - Proper checkbox alignment
+    ======================================== */
+    
+.member-panel .displacement-checkbox-container,
+.member-panel .member-displacement-checkbox-container {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px 12px !important;
+        margin: 8px 0 0 0 !important;
+    }
+    
+    .member-panel .displacement-checkbox-item,
+.member-panel .member-displacement-checkbox-item {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        padding: 6px 0 !important;
+    }
+    
+    .member-panel .displacement-checkbox-item input[type="checkbox"],
+.member-panel .member-displacement-checkbox-item input[type="checkbox"] {
+        width: 16px !important;
+        height: 16px !important;
+        margin: 0 !important;
+        flex-shrink: 0 !important;
+        accent-color: var(--accent1, #0f7a4a) !important;
+    }
+    
+    .member-panel .displacement-checkbox-item label,
+.member-panel .member-displacement-checkbox-item label {
+        font-size: 0.7rem !important;
+        font-weight: 600 !important;
+        color: var(--accent1, #0f7a4a) !important;
+        margin: 0 !important;
+        cursor: pointer !important;
+    }
+    
+    /* Other Reason field */
+    
+.member-panel #edit_displacementOtherField,
+.member-panel #memberDisplacementOtherField {
+        margin-top: 8px !important;
+        margin-bottom: 8px !important;
+        padding-left: 24px !important;
+    }
+    
+    .member-panel #edit_displacement_other,
+.member-panel #member_displacement_other {
+        width: 100% !important;
+        padding: 8px 10px !important;
+        border: 2px solid var(--border, #e1e8e5) !important;
+        border-radius: 8px !important;
+        font-size: 0.7rem !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Assembly Area Options */
+    
+.member-panel #edit_assemblyAreaOptions,
+.member-panel #memberAssemblyAreaOptions {
+        margin-top: 12px !important;
+        padding: 8px 0 !important;
+    }
+    
+    .member-panel #edit_assemblyAreaOptions label,
+.member-panel #memberAssemblyAreaOptions label {
+        font-size: 0.7rem !important;
+        font-weight: 600 !important;
+        display: block !important;
+        margin-bottom: 8px !important;
+    }
+    
+    .member-panel #edit_assemblyAreaOptions div,
+.member-panel #memberAssemblyAreaOptions div {
+        display: flex !important;
+        gap: 20px !important;
+        flex-wrap: wrap !important;
+    }
+    
+    /* Inside/Outside Assembly Fields */
+    
+.member-panel #edit_insideAssemblyFields,
+.member-panel #edit_outsideAssemblyFields,
+.member-panel #memberInsideAssemblyFields,
+.member-panel #memberOutsideAssemblyFields {
+        margin-top: 12px !important;
+        padding: 8px 0 !important;
+    }
+    
+    .member-panel #edit_insideAssemblyFields .form-grid,
+.member-panel #edit_outsideAssemblyFields .form-grid,
+.member-panel #memberInsideAssemblyFields .form-grid,
+.member-panel #memberOutsideAssemblyFields .form-grid {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+    
+    .member-panel #edit_insideAssemblyFields input,
+.member-panel #edit_outsideAssemblyFields input,
+.member-panel #memberInsideAssemblyFields input,
+.member-panel #memberOutsideAssemblyFields input,
+.member-panel #edit_insideAssemblyFields select,
+.member-panel #edit_outsideAssemblyFields select,
+.member-panel #memberInsideAssemblyFields select,
+.member-panel #memberOutsideAssemblyFields select {
+        width: 100% !important;
+        padding: 7px 8px !important;
+        font-size: 0.7rem !important;
+        border: 2px solid var(--border, #e1e8e5) !important;
+        border-radius: 8px !important;
+    }
+    
+    /* ========================================
+       FIX 3: Additional Information & PWD Section
+    ======================================== */
+    
+.member-panel .additional-info-checkbox-container,
+.member-panel .member-additional-info-checkbox-container {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px 12px !important;
+        margin-top: 8px !important;
+    }
+    
+    .member-panel .additional-info-checkbox-item,
+.member-panel .member-additional-info-checkbox-item {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        padding: 4px 0 !important;
+    }
+    
+    .member-panel .additional-info-checkbox-item input[type="checkbox"],
+.member-panel .member-additional-info-checkbox-item input[type="checkbox"] {
+        width: 16px !important;
+        height: 16px !important;
+        margin: 0 !important;
+        flex-shrink: 0 !important;
+        accent-color: var(--accent1, #0f7a4a) !important;
+    }
+    
+    .member-panel .additional-info-checkbox-item label,
+.member-panel .member-additional-info-checkbox-item label {
+        font-size: 0.7rem !important;
+        font-weight: 600 !important;
+        color: var(--accent1, #0f7a4a) !important;
+        margin: 0 !important;
+    }
+    
+    /* PWD Radio Section */
+    
+.member-panel .radio-line {
+        display: flex !important;
+        gap: 16px !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
+        padding: 8px 0 !important;
+    }
+    
+    .member-panel .radio-item {
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        font-size: 0.7rem !important;
+        font-weight: 600 !important;
+        color: var(--accent1, #0f7a4a) !important;
+    }
+    
+    .member-panel .radio-item input[type="radio"] {
+        width: 16px !important;
+        height: 16px !important;
+        accent-color: var(--accent1, #0f7a4a) !important;
+        margin: 0 !important;
+    }
+    
+    /* Disability Type Dropdown */
+    
+.member-panel #edit_disabilityTypeField,
+.member-panel #memberDisabilityTypeField {
+        margin-top: 8px !important;
+    }
+    
+    .member-panel #edit_disabilityType,
+.member-panel #memberDisabilityType {
+        width: 100% !important;
+        padding: 8px 10px !important;
+        font-size: 0.7rem !important;
+        border: 2px solid var(--border, #e1e8e5) !important;
+        border-radius: 8px !important;
+        background: #fff !important;
+    }
+}
+@media (max-width: 480px) {
+    .member-panel .displacement-checkbox-container,
+.member-panel .member-displacement-checkbox-container {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .member-panel .additional-info-checkbox-container,
+.member-panel .member-additional-info-checkbox-container {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .member-panel .gov-checkbox-with-date {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 6px !important;
+    }
+    
+    .member-panel .gov-checkbox-with-date label {
+        min-width: auto !important;
+    }
+    
+    .member-panel .gov-date-field {
+        margin-left: 20px !important;
+    }
+    
+    .member-panel .gov-date-field input[type="date"] {
+        width: 100% !important;
+    }
+}
+@media (max-width: 768px) {
+    /* ========================================
+       FORCE REMOVE ALL BORDERS FROM GOVERNMENT ASSISTANCE
+    ======================================== */
+    
+.member-panel .gov-checkbox-with-date,
+.member-panel .gov-support-grid .gov-checkbox-with-date,
+#memberPanel .gov-checkbox-with-date,
+#editPanel .gov-checkbox-with-date {
+        border-bottom: none !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* ========================================
+       FIX 1: Government Assistance - Date inline, smaller
+    ======================================== */
+    
+.member-panel .gov-support-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
+        width: 100% !important;
+    }
+    
+    .member-panel .gov-checkbox-with-date {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 8px !important;
+        flex-wrap: wrap !important;
+        padding: 6px 0 !important;
+        width: 100% !important;
+        border-bottom: none !important;
+        border: none !important;
+    }
+    
+    /* Checkbox */
+    
+.member-panel .gov-checkbox-with-date input[type="checkbox"] {
+        width: 16px !important;
+        height: 16px !important;
+        margin: 0 !important;
+        flex-shrink: 0 !important;
+        accent-color: var(--accent1, #0f7a4a) !important;
+    }
+    
+    /* Program label */
+    
+.member-panel .gov-checkbox-with-date > label {
+        display: inline-block !important;
+        margin: 0 !important;
+        font-size: 0.7rem !important;
+        font-weight: 600 !important;
+        color: var(--accent1, #0f7a4a) !important;
+        min-width: 90px !important;
+    }
+    
+    /* Date field - SMALLER */
+    
+.member-panel .gov-date-field {
+        display: none !important;
+        align-items: center !important;
+        gap: 3px !important;
+        margin-left: 4px !important;
+    }
+    
+    .member-panel .gov-date-field.show {
+        display: flex !important;
+    }
+    
+    .member-panel .gov-date-field label {
+        font-size: 0.55rem !important;
+        color: var(--accent1, #0f7a4a) !important;
+        margin: 0 !important;
+        display: none !important;
+    }
+    
+    .member-panel .gov-date-field input[type="date"] {
+        width: 85px !important;
+        padding: 3px 5px !important;
+        font-size: 0.55rem !important;
+        border-radius: 4px !important;
+        border: 1px solid var(--border, #e1e8e5) !important;
+        background: #fff !important;
+        min-height: 26px !important;
+    }
+    
+    /* ========================================
+       FIX 2: Transportation - "Other Reason" checkbox alignment
+    ======================================== */
+    
+.member-panel .displacement-checkbox-container,
+.member-panel .member-displacement-checkbox-container {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 6px 12px !important;
+        margin: 8px 0 0 0 !important;
+    }
+    
+    .member-panel .displacement-checkbox-item,
+.member-panel .member-displacement-checkbox-item {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        padding: 4px 0 !important;
+    }
+    
+    .member-panel .displacement-checkbox-item input[type="checkbox"],
+.member-panel .member-displacement-checkbox-item input[type="checkbox"] {
+        width: 16px !important;
+        height: 16px !important;
+        margin: 0 !important;
+        flex-shrink: 0 !important;
+        accent-color: var(--accent1, #0f7a4a) !important;
+    }
+    
+    .member-panel .displacement-checkbox-item label,
+.member-panel .member-displacement-checkbox-item label {
+        font-size: 0.7rem !important;
+        font-weight: 500 !important;
+        color: var(--accent1, #0f7a4a) !important;
+        margin: 0 !important;
+        line-height: 1.3 !important;
+    }
+    
+    /* "Other Reason" checkbox */
+    
+.member-panel .displacement-checkbox-item:has(#edit_displacement_other_check),
+.member-panel .member-displacement-checkbox-item:has(#member_displacement_other_check) {
+        grid-column: 1 / -1 !important;
+        margin-top: 4px !important;
+    }
+    
+    #edit_displacement_other_check,
+#member_displacement_other_check {
+        width: 16px !important;
+        height: 16px !important;
+        margin: 0 !important;
+    }
+    
+    .member-panel #edit_displacementOtherField,
+.member-panel #memberDisplacementOtherField {
+        margin-top: 4px !important;
+        margin-bottom: 8px !important;
+        padding-left: 24px !important;
+        width: 100% !important;
+    }
+    
+    .member-panel #edit_displacement_other,
+.member-panel #member_displacement_other {
+        width: 100% !important;
+        padding: 6px 8px !important;
+        font-size: 0.7rem !important;
+        border: 2px solid var(--border, #e1e8e5) !important;
+        border-radius: 6px !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* ========================================
+       FIX 3: Assembly Area section
+    ======================================== */
+    
+.member-panel #edit_assemblyAreaOptions,
+.member-panel #memberAssemblyAreaOptions {
+        margin-top: 12px !important;
+        padding: 4px 0 !important;
+    }
+    
+    .member-panel #edit_assemblyAreaOptions > label,
+.member-panel #memberAssemblyAreaOptions > label {
+        font-size: 0.7rem !important;
+        font-weight: 600 !important;
+        display: block !important;
+        margin-bottom: 6px !important;
+        color: var(--accent1, #0f7a4a) !important;
+    }
+    
+    .member-panel #edit_assemblyAreaOptions > div,
+.member-panel #memberAssemblyAreaOptions > div {
+        display: flex !important;
+        gap: 20px !important;
+        flex-wrap: wrap !important;
+    }
+    
+    .member-panel #edit_insideAssemblyFields,
+.member-panel #edit_outsideAssemblyFields,
+.member-panel #memberInsideAssemblyFields,
+.member-panel #memberOutsideAssemblyFields {
+        margin-top: 12px !important;
+        padding: 8px 0 !important;
+    }
+    
+    .member-panel #edit_insideAssemblyFields .form-grid,
+.member-panel #edit_outsideAssemblyFields .form-grid,
+.member-panel #memberInsideAssemblyFields .form-grid,
+.member-panel #memberOutsideAssemblyFields .form-grid {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+    
+    .member-panel #edit_insideAssemblyFields input,
+.member-panel #edit_outsideAssemblyFields input,
+.member-panel #memberInsideAssemblyFields input,
+.member-panel #memberOutsideAssemblyFields input,
+.member-panel #edit_insideAssemblyFields select,
+.member-panel #edit_outsideAssemblyFields select,
+.member-panel #memberInsideAssemblyFields select,
+.member-panel #memberOutsideAssemblyFields select {
+        width: 100% !important;
+        padding: 6px 8px !important;
+        font-size: 0.7rem !important;
+        border: 2px solid var(--border, #e1e8e5) !important;
+        border-radius: 6px !important;
+    }
+    
+    /* ========================================
+       FIX 4: Actions Column Title - Dark grey
+    ======================================== */
+    
+#virtualHeader .header-cell:last-child {
+        color: #334155 !important;
+    }
+}
+@media (max-width: 480px) {
+    .member-panel .displacement-checkbox-container,
+.member-panel .member-displacement-checkbox-container {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .member-panel .gov-checkbox-with-date {
+        flex-wrap: wrap !important;
+    }
+    
+    .member-panel .gov-date-field {
+        margin-left: 24px !important;
+        width: 100% !important;
+    }
+    
+    .member-panel .gov-date-field input[type="date"] {
+        width: 100% !important;
+    }
+}
+@media (max-width: 768px) {
+    /* Displacement grid - 2 columns */
+    
+.member-panel .displacement-checkbox-container,
+.member-panel .member-displacement-checkbox-container {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px 16px !important;
+        margin: 8px 0 0 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* All checkbox items */
+    
+.member-panel .displacement-checkbox-item,
+.member-panel .member-displacement-checkbox-item {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        padding: 6px 0 !important;
+        margin: 0 !important;
+    }
+    
+    /* All checkboxes */
+    
+.member-panel .displacement-checkbox-item input[type="checkbox"],
+.member-panel .member-displacement-checkbox-item input[type="checkbox"] {
+        width: 16px !important;
+        height: 16px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        flex-shrink: 0 !important;
+        accent-color: var(--accent1, #0f7a4a) !important;
+    }
+    
+    /* All labels */
+    
+.member-panel .displacement-checkbox-item label,
+.member-panel .member-displacement-checkbox-item label {
+        font-size: 0.7rem !important;
+        font-weight: 500 !important;
+        color: var(--accent1, #0f7a4a) !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        cursor: pointer !important;
+    }
+    
+    /* ========================================
+       FORCE FIX: Other Reason Container
+    ======================================== */
+    /* Target the parent container of Other Reason */
+    
+.member-panel .displacement-checkbox-item:has(#edit_displacement_other_check),
+.member-panel .member-displacement-checkbox-item:has(#member_displacement_other_check),
+.member-panel .displacement-checkbox-item:has(input[id$="displacement_other_check"]),
+.member-panel .member-displacement-checkbox-item:has(input[id$="displacement_other_check"]) {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        grid-column: 1 / -1 !important;
+        width: 100% !important;
+        margin: 8px 0 0 0 !important;
+        padding: 6px 0 !important;
+    }
+    
+    /* Force Other Reason checkbox to stay inline with label */
+    
+#edit_displacement_other_check,
+#member_displacement_other_check {
+        width: 16px !important;
+        height: 16px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        flex-shrink: 0 !important;
+        display: inline-flex !important;
+        position: relative !important;
+    }
+    
+    /* Other Reason label */
+    
+label[for="edit_displacement_other_check"],
+label[for="member_displacement_other_check"] {
+        display: inline !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 0.7rem !important;
+        font-weight: 500 !important;
+        color: var(--accent1, #0f7a4a) !important;
+        white-space: nowrap !important;
+    }
+    
+    /* Other Reason text field container */
+    
+.member-panel #edit_displacementOtherField,
+.member-panel #memberDisplacementOtherField {
+        display: block !important;
+        width: 100% !important;
+        margin-top: 4px !important;
+        margin-bottom: 12px !important;
+        padding-left: 26px !important;
+    }
+    
+    /* Other Reason text input */
+    
+.member-panel #edit_displacement_other,
+.member-panel #member_displacement_other {
+        width: 100% !important;
+        padding: 8px 10px !important;
+        font-size: 0.7rem !important;
+        border: 2px solid var(--border, #e1e8e5) !important;
+        border-radius: 6px !important;
+        box-sizing: border-box !important;
+        margin-top: 0 !important;
+    }
+}
+/* ============================================
+   DESKTOP/ALL SCREENS - Force inline for Other Reason
+   ============================================ */
+/* Make sure Other Reason checkbox and label are on same line on all devices */
+#edit_displacement_other_check,
+#member_displacement_other_check {
+    display: inline-block !important;
+    vertical-align: middle !important;
+}
+label[for="edit_displacement_other_check"],
+label[for="member_displacement_other_check"] {
+    display: inline-block !important;
+    vertical-align: middle !important;
+    margin-left: 5px !important;
+}
+@media (max-width: 480px) {
+    .member-panel .displacement-checkbox-container,
+.member-panel .member-displacement-checkbox-container {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .member-panel #edit_displacementOtherField,
+.member-panel #memberDisplacementOtherField {
+        padding-left: 20px !important;
+    }
+}
+@media (max-width: 768px) {
+    /* ========================================
+       FIX 1: Other Reason - Align textbox with Pickup Location
+    ======================================== */
+    
+    /* Other Reason text field container */
+    
+.member-panel #edit_displacementOtherField,
+.member-panel #memberDisplacementOtherField {
+        display: block !important;
+        width: 100% !important;
+        margin-top: 4px !important;
+        margin-bottom: 12px !important;
+        padding-left: 0 !important; /* Remove left padding to align with other fields */
+    }
+    
+    /* Other Reason text input - same as Pickup Location */
+    
+.member-panel #edit_displacement_other,
+.member-panel #member_displacement_other {
+        width: 100% !important;
+        padding: 8px 10px !important;
+        font-size: 0.75rem !important;
+        border: 2px solid var(--border, #e1e8e5) !important;
+        border-radius: 8px !important;
+        box-sizing: border-box !important;
+        background: #fff !important;
+        margin-top: 4px !important;
+    }
+    
+    .member-panel #edit_displacement_other:focus,
+.member-panel #member_displacement_other:focus {
+        outline: none !important;
+        border-color: var(--accent1, #0f7a4a) !important;
+        box-shadow: 0 0 0 3px rgba(15, 122, 74, 0.1) !important;
+    }
+    
+    /* ========================================
+       FIX 2: Assembly Area - Reduce spacing
+    ======================================== */
+    
+    /* Assembly Area Options container */
+    
+.member-panel #edit_assemblyAreaOptions,
+.member-panel #memberAssemblyAreaOptions {
+        margin-top: 8px !important;
+        margin-bottom: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Assembly Area label */
+    
+.member-panel #edit_assemblyAreaOptions > label,
+.member-panel #memberAssemblyAreaOptions > label {
+        font-size: 0.7rem !important;
+        font-weight: 600 !important;
+        display: block !important;
+        margin-bottom: 6px !important;
+        color: var(--accent1, #0f7a4a) !important;
+    }
+    
+    /* Assembly Area radio/checkbox container */
+    
+.member-panel #edit_assemblyAreaOptions > div,
+.member-panel #memberAssemblyAreaOptions > div {
+        display: flex !important;
+        gap: 20px !important;
+        flex-wrap: wrap !important;
+        margin-bottom: 8px !important;
+    }
+    
+    /* Inside/Outside Assembly checkboxes */
+    
+.member-panel #edit_assemblyAreaOptions .displacement-checkbox-item,
+.member-panel #memberAssemblyAreaOptions .member-displacement-checkbox-item {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    /* ========================================
+       FIX 3: Inside/Outside Assembly Fields - Reduce spacing
+    ======================================== */
+    
+    /* Inside Assembly Fields container */
+    
+.member-panel #edit_insideAssemblyFields,
+.member-panel #memberInsideAssemblyFields,
+.member-panel #edit_outsideAssemblyFields,
+.member-panel #memberOutsideAssemblyFields {
+        margin-top: 8px !important;
+        margin-bottom: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Form grid inside assembly fields */
+    
+.member-panel #edit_insideAssemblyFields .form-grid,
+.member-panel #memberInsideAssemblyFields .form-grid,
+.member-panel #edit_outsideAssemblyFields .form-grid,
+.member-panel #memberOutsideAssemblyFields .form-grid {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+        margin-top: 0 !important;
+    }
+    
+    /* Labels inside assembly fields */
+    
+.member-panel #edit_insideAssemblyFields label,
+.member-panel #memberInsideAssemblyFields label,
+.member-panel #edit_outsideAssemblyFields label,
+.member-panel #memberOutsideAssemblyFields label {
+        font-size: 0.65rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 4px !important;
+        color: var(--accent1, #0f7a4a) !important;
+        display: block !important;
+    }
+    
+    /* Inputs inside assembly fields - same as Other Reason */
+    
+.member-panel #edit_insideAssemblyFields input,
+.member-panel #memberInsideAssemblyFields input,
+.member-panel #edit_outsideAssemblyFields input,
+.member-panel #memberOutsideAssemblyFields input,
+.member-panel #edit_insideAssemblyFields select,
+.member-panel #memberInsideAssemblyFields select,
+.member-panel #edit_outsideAssemblyFields select,
+.member-panel #memberOutsideAssemblyFields select {
+        width: 100% !important;
+        padding: 8px 10px !important;
+        font-size: 0.75rem !important;
+        border: 2px solid var(--border, #e1e8e5) !important;
+        border-radius: 8px !important;
+        background: #fff !important;
+        margin-bottom: 4px !important;
+    }
+    
+    /* ========================================
+       FIX 4: Remove extra spacing from displacement grid
+    ======================================== */
+    
+.member-panel .displacement-checkbox-container,
+.member-panel .member-displacement-checkbox-container {
+        margin-bottom: 4px !important;
+    }
+}
+@media (max-width: 480px) {
+    .member-panel .displacement-checkbox-container,
+.member-panel .member-displacement-checkbox-container {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .member-panel #edit_assemblyAreaOptions > div,
+.member-panel #memberAssemblyAreaOptions > div {
+        gap: 15px !important;
+    }
+}
+@media (max-width: 768px) {
+    /* ========================================
+       FIX 1: Reduce space after Other Reason textbox
+    ======================================== */
+    
+.member-panel #edit_displacementOtherField,
+.member-panel #memberDisplacementOtherField {
+        margin-bottom: 4px !important; /* Reduced from 12px to 4px */
+        padding-left: 0 !important;
+    }
+    
+    .member-panel #edit_displacement_other,
+.member-panel #member_displacement_other {
+        margin-bottom: 0 !important;
+    }
+    
+    /* ========================================
+       FIX 2: Reduce space before Assembly Area
+    ======================================== */
+    
+.member-panel #edit_assemblyAreaOptions,
+.member-panel #memberAssemblyAreaOptions {
+        margin-top: 4px !important; /* Reduced from 8px to 4px */
+        margin-bottom: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* ========================================
+       FIX 3: Reduce space after Assembly Area checkboxes
+    ======================================== */
+    
+.member-panel #edit_assemblyAreaOptions > div,
+.member-panel #memberAssemblyAreaOptions > div {
+        margin-bottom: 4px !important; /* Reduced from 8px to 4px */
+        gap: 16px !important;
+    }
+    
+    /* ========================================
+       FIX 4: Reduce space before Inside/Outside Assembly Fields
+    ======================================== */
+    
+.member-panel #edit_insideAssemblyFields,
+.member-panel #memberInsideAssemblyFields,
+.member-panel #edit_outsideAssemblyFields,
+.member-panel #memberOutsideAssemblyFields {
+        margin-top: 4px !important; /* Reduced from 8px to 4px */
+        padding: 0 !important;
+    }
+    
+    /* ========================================
+       FIX 5: Reduce gap inside form-grid
+    ======================================== */
+    
+.member-panel #edit_insideAssemblyFields .form-grid,
+.member-panel #memberInsideAssemblyFields .form-grid,
+.member-panel #edit_outsideAssemblyFields .form-grid,
+.member-panel #memberOutsideAssemblyFields .form-grid {
+        gap: 6px !important; /* Reduced from 10px to 6px */
+        margin-top: 0 !important;
+    }
+    
+    /* ========================================
+       FIX 6: Reduce label bottom margin
+    ======================================== */
+    
+.member-panel #edit_insideAssemblyFields label,
+.member-panel #memberInsideAssemblyFields label,
+.member-panel #edit_outsideAssemblyFields label,
+.member-panel #memberOutsideAssemblyFields label {
+        margin-bottom: 2px !important; /* Reduced from 4px to 2px */
+    }
+    
+    /* ========================================
+       FIX 7: Reduce input margin bottom
+    ======================================== */
+    
+.member-panel #edit_insideAssemblyFields input,
+.member-panel #memberInsideAssemblyFields input,
+.member-panel #edit_outsideAssemblyFields input,
+.member-panel #memberOutsideAssemblyFields input,
+.member-panel #edit_insideAssemblyFields select,
+.member-panel #memberInsideAssemblyFields select,
+.member-panel #edit_outsideAssemblyFields select,
+.member-panel #memberOutsideAssemblyFields select {
+        margin-bottom: 2px !important; /* Reduced from 4px to 2px */
+        padding: 6px 8px !important;
+    }
+    
+    /* ========================================
+       FIX 8: Reduce small muted text margin
+    ======================================== */
+    
+.member-panel .small-muted {
+        margin-top: 2px !important;
+        margin-bottom: 2px !important;
+        font-size: 0.6rem !important;
+    }
+}
+@media (max-width: 480px) {
+    .member-panel #edit_assemblyAreaOptions > div,
+.member-panel #memberAssemblyAreaOptions > div {
+        gap: 12px !important;
+    }
+}
+@media (max-width: 768px) {
+    /* Column Filter Container - Match brgy-dropdown height */
+    
+.filter-column-container {
+        flex: 1 !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+        background: white !important;
+        border: 2px solid var(--border, #e1e8e5) !important;
+        border-radius: 8px !important;
+        padding: 0 6px !important;
+        height: 36px !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+    
+    .filter-column-container:focus-within {
+        border-color: var(--accent1, #0f7a4a) !important;
+        box-shadow: 0 0 0 3px rgba(15, 122, 74, 0.1) !important;
+    }
+    
+    /* Field Select - Smaller font, auto width */
+    
+.filter-column-container select#columnFilterField {
+        border: none !important;
+        background: transparent !important;
+        font-size: 0.65rem !important;
+        font-weight: 500 !important;
+        color: var(--muted, #6b6f6b) !important;
+        padding: 4px 16px 4px 4px !important;
+        min-width: 55px !important;
+        max-width: 90px !important;
+        height: 30px !important;
+        cursor: pointer !important;
+        outline: none !important;
+        appearance: none !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%236b6f6b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: right center !important;
+        background-size: 8px !important;
+        flex-shrink: 1 !important;
+        text-overflow: ellipsis !important;
+    }
+    
+    /* Separator - Hide or keep small */
+    
+.filter-column-container .filter-separator {
+        color: var(--border, #e1e8e5) !important;
+        font-size: 0.6rem !important;
+        margin: 0 2px !important;
+        flex-shrink: 0 !important;
+    }
+    
+    /* Value Select - Takes remaining space */
+    
+.filter-column-container .filter-value-select {
+        flex: 1 !important;
+        min-width: 55px !important;
+        max-width: 110px !important;
+        border: none !important;
+        background: transparent !important;
+        font-size: 0.65rem !important;
+        font-weight: 500 !important;
+        color: var(--accent1, #0f7a4a) !important;
+        padding: 4px 16px 4px 4px !important;
+        height: 30px !important;
+        cursor: pointer !important;
+        outline: none !important;
+        appearance: none !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%230f7a4a' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: right center !important;
+        background-size: 8px !important;
+        text-overflow: ellipsis !important;
+    }
+    
+    .filter-column-container .filter-value-select:disabled {
+        opacity: 0.5 !important;
+        cursor: not-allowed !important;
+        color: var(--muted, #6b6f6b) !important;
+    }
+    
+    /* Clear button - Smaller */
+    
+.filter-column-container .filter-clear-btn {
+        background: none !important;
+        border: none !important;
+        color: var(--muted, #6b6f6b) !important;
+        cursor: pointer !important;
+        padding: 2px 4px !important;
+        font-size: 0.6rem !important;
+        border-radius: 4px !important;
+        flex-shrink: 0 !important;
+        margin-left: 2px !important;
+    }
+    
+    .filter-column-container .filter-clear-btn:hover {
+        background: #fee2e2 !important;
+        color: #dc2626 !important;
+    }
+    
+    .filter-column-container .filter-clear-btn.hidden {
+        display: none !important;
+    }
+    
+    /* ========================================
+       TOOLBAR ROW 2 - Align items
+    ======================================== */
+    
+.toolbar-row-2 {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        justify-content: space-between !important;
+        gap: 6px !important;
+        align-items: center !important;
+        width: 100% !important;
+    }
+    
+    /* Barangay dropdown - Same height as filter */
+    
+.brgy-dropdown {
+        flex: 1 !important;
+        min-width: 70px !important;
+        max-width: 120px !important;
+        padding: 6px 8px !important;
+        border: 2px solid var(--border, #e1e8e5) !important;
+        border-radius: 8px !important;
+        font-size: 0.65rem !important;
+        background: #fff !important;
+        height: 36px !important;
+        cursor: pointer !important;
+        box-sizing: border-box !important;
+        appearance: none !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%236b6f6b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 8px center !important;
+        background-size: 8px !important;
+        padding-right: 24px !important;
+    }
+    
+    .brgy-dropdown:focus {
+        outline: none !important;
+        border-color: var(--accent1, #0f7a4a) !important;
+    }
+    
+    /* Buttons - Smaller, match height */
+    
+.toolbar-row-2 .btn {
+        padding: 4px 8px !important;
+        font-size: 0.65rem !important;
+        height: 36px !important;
+        gap: 4px !important;
+        border-radius: 6px !important;
+        flex-shrink: 0 !important;
+        white-space: nowrap !important;
+    }
+    
+    .toolbar-row-2 .btn i {
+        font-size: 0.6rem !important;
+    }
+    
+    /* Export wrapper */
+    
+.toolbar-row-2 .export-wrapper {
+        flex-shrink: 0 !important;
+    }
+    
+    .toolbar-row-2 .export-wrapper .btn {
+        padding: 4px 8px !important;
+        font-size: 0.65rem !important;
+        height: 36px !important;
+    }
+}
+@media (max-width: 480px) {
+    .filter-column-container {
+        height: 32px !important;
+        padding: 0 4px !important;
+        gap: 2px !important;
+    }
+    
+    .filter-column-container select#columnFilterField {
+        font-size: 0.55rem !important;
+        min-width: 40px !important;
+        max-width: 65px !important;
+        padding: 2px 12px 2px 2px !important;
+        height: 26px !important;
+        background-size: 6px !important;
+    }
+    
+    .filter-column-container .filter-value-select {
+        font-size: 0.55rem !important;
+        min-width: 40px !important;
+        max-width: 75px !important;
+        padding: 2px 12px 2px 2px !important;
+        height: 26px !important;
+        background-size: 6px !important;
+    }
+    
+    .filter-column-container .filter-separator {
+        font-size: 0.5rem !important;
+        margin: 0 1px !important;
+    }
+    
+    .filter-column-container .filter-clear-btn {
+        font-size: 0.5rem !important;
+        padding: 1px 3px !important;
+    }
+    
+    .brgy-dropdown {
+        font-size: 0.55rem !important;
+        min-width: 55px !important;
+        max-width: 90px !important;
+        height: 32px !important;
+        padding: 4px 6px !important;
+        padding-right: 20px !important;
+        background-size: 6px !important;
+        background-position: right 6px center !important;
+    }
+    
+    .toolbar-row-2 .btn {
+        font-size: 0.55rem !important;
+        height: 32px !important;
+        padding: 3px 5px !important;
+    }
+    
+    .toolbar-row-2 .btn i {
+        font-size: 0.5rem !important;
+    }
+    
+    .toolbar-row-2 {
+        gap: 4px !important;
+    }
+}
+@media (max-width: 768px) {
+    .filter-active-indicator {
+        font-size: 0.55rem !important;
+        padding: 2px 8px !important;
+        border-radius: 10px !important;
+        flex-wrap: wrap !important;
+        margin-top: 6px !important;
+        gap: 4px !important;
+    }
+    
+    .filter-active-indicator .filter-clear-all {
+        width: 14px !important;
+        height: 14px !important;
+        font-size: 0.5rem !important;
+    }
+}
+@media (max-width: 768px) {
+    .additional-info-checkbox-container,
+.member-additional-info-checkbox-container,
+.displacement-checkbox-container,
+.member-displacement-checkbox-container,
+#edit_displacementOtherField,
+#memberDisplacementOtherField,
+#edit_assemblyAreaOptions,
+#memberAssemblyAreaOptions,
+#edit_insideAssemblyFields,
+#edit_outsideAssemblyFields,
+#memberInsideAssemblyFields,
+#memberOutsideAssemblyFields {
+        padding: 8px;
+    }
+    .additional-info-checkbox-item,
+.member-additional-info-checkbox-item,
+.displacement-checkbox-item,
+.member-displacement-checkbox-item {
+        padding: 3px 0;
+    }
+    .radio-line {
+        gap: 12px;
+    }
+}
+@media (max-width: 768px) {
+    .modal {
+        padding: 8px;
+    }
+    .modal-content {
+        max-width: 92%;
+        padding: 12px;
+        margin: 8px;
+    }
+    .modal-header {
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+    }
+    .modal-header h3 {
+        font-size: 1rem;
+    }
+    .modal-success .modal-header,
+.modal-warning .modal-header,
+.modal-error .modal-header,
+.modal-info .modal-header {
+        margin: -12px -12px 12px -12px;
+        padding: 10px 12px;
+    }
+    .modal-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .modal-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+@media (max-width: 480px) {
+    .modal-content {
+        max-width: 98%;
+        width: 98%;
+        padding: 14px;
+        margin: 8px;
+    }
+}
+@media (max-width:700px) {
+  #editPanel .displacement-checkbox-container,
+#editPanel .gov-support-grid,
+.calamity-grid-2 { grid-template-columns:1fr; }
+}
+@media (max-width:700px) {
+ #editPanel .status-check-group .status-check-grid,
+.status-check-group .status-check-grid { grid-template-columns:1fr; }
+}
+@media(max-width:900px) {
+     .form-grid {
+       grid-template-columns: 1fr;
+     }
+     .member-panel {
+       width: 100%;
+     }
+     .domestic-grid {
+       grid-template-columns: 1fr;
+     }
+     .gov-support-grid {
+       grid-template-columns: repeat(2, 1fr);
+     }
+     .radio-group {
+       gap: 16px;
+       flex-wrap: wrap;
+     }
+}
+@media (max-width: 1024px) {
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .toolbar-row-2 {
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+    .search-box {
+        max-width: 100%;
+    }
+    .brgy-dropdown {
+        width: 100%;
+        min-width: auto;
+    }
+    .stats-container {
+        justify-content: space-between;
+        gap: 8px;
+    }
+    .stat-item {
+        flex: 1;
+        min-width: auto;
+        padding: 5px 6px;
+    }
+    .stat-item span {
+        font-size: 0.7rem;
+    }
+    .stat-item .value {
+        font-size: 0.9rem;
+    }
+    #userName {
+        font-size: 0.9rem;
+        padding: 6px 12px;
+    }
+    #logoutBtn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+    .legend-items {
+        flex-direction: column;
+        gap: 6px;
+        align-items: flex-start;
+    }
+    .records-table th,
+.records-table td {
+        font-size: 12px;
+        padding: 2px 4px !important;
+    }
+    .records-table th {
+        height: 28px !important;
+    }
+}
+@media (max-width: 1024px) {
+    .mobile-pagination {
+        display: flex !important;
+    }
+}
+@media (max-width: 480px) {
+    .mobile-pagination {
+        padding: 6px 10px;
+        gap: 6px;
+    }
+    .pagination-btn-compact {
+        width: 24px;
+        height: 24px;
+        font-size: 0.65rem;
+    }
+    .page-number-compact {
+        padding: 2px 6px;
+        font-size: 0.7rem;
+    }
+    #mobilePageInput {
+        width: 35px;
+        padding: 2px 3px;
+        font-size: 0.7rem;
+    }
+    .pagination-stats-compact {
+        font-size: 0.65rem;
+    }
+}
+@media (max-width: 1024px) {
+    /* Hide virtual scroller on mobile/tablet */
+    
+.virtual-scroll-container {
+        display: none !important;
+    }
+    
+    /* Show paginated table with desktop styling */
+    
+.mobile-table-container {
+        display: block !important;
+        overflow-x: auto !important;
+        overflow-y: visible !important;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 16px;
+        background: white;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        position: relative;
+    }
+    
+    .mobile-records-table {
+        min-width: max-content !important;
+        width: 100%;
+        border-collapse: collapse !important;
+        font-size: 0.75rem;
+        background: white;
+    }
+    
+    /* FORCE REMOVE ALL BORDERS - HIGHEST PRIORITY */
+    
+.mobile-records-table,
+.mobile-records-table tbody,
+.mobile-records-table tr,
+.mobile-records-table td {
+        border: none !important;
+        border-style: none !important;
+        border-width: 0 !important;
+        outline: none !important;
+    }
+    
+    /* Only header has bottom border */
+    
+.mobile-records-table th {
+        background: #e9f7f2 !important;
+        font-weight: 600 !important;
+        font-size: 0.7rem !important;
+        text-transform: uppercase !important;
+        color: #334155 !important;
+        padding: 12px 6px !important;
+        border-bottom: 2px solid #d1d5db !important;
+        border-top: none !important;
+        border-left: none !important;
+        border-right: none !important;
+        white-space: nowrap !important;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 10 !important;
+    }
+    
+    /* Cells - NO BORDERS */
+    
+.mobile-records-table td {
+        padding: 8px 6px !important;
+        border: none !important;
+        border-style: none !important;
+        border-width: 0 !important;
+        white-space: nowrap !important;
+        vertical-align: top !important;
+    }
+    
+    /* Override any border from parent tables */
+    
+.mobile-records-table tr td {
+        border: none !important;
+    }
+    
+    /* First header cell (checkbox) - sticky left */
+    
+.mobile-records-table th:first-child {
+        position: sticky !important;
+        left: 0 !important;
+        background: #e9f7f2 !important;
+        z-index: 20 !important;
+        text-align: center !important;
+        width: 30px !important;
+    }
+    
+    /* First data cell (checkbox) - sticky left */
+    
+.mobile-records-table td:first-child {
+        position: sticky !important;
+        left: 0 !important;
+        background: inherit;
+        z-index: 10 !important;
+        text-align: center !important;
+        width: 30px !important;
+    }
+    
+    /* Fix hover for checkbox cell */
+    
+.mobile-records-table tr:hover td:first-child {
+        background-color: rgba(15, 122, 74, 0.08) !important;
+    }
+    
+    /* Actions header cell - sticky right - DARK BACKGROUND */
+    
+.mobile-records-table th:last-child {
+        position: sticky !important;
+        right: 0 !important;
+        background: #2c3e50 !important;
+        color: white !important;
+        z-index: 20 !important;
+        text-align: center !important;
+        width: 80px !important;
+    }
+    
+    /* Actions data cell for HOUSEHOLD rows - DARK BACKGROUND */
+    
+.mobile-records-table tr.household-row td:last-child {
+        position: sticky !important;
+        right: 0 !important;
+        background: #2c3e50 !important;
+        z-index: 15 !important;
+        text-align: center !important;
+        width: 80px !important;
+    }
+    
+    /* Actions data cell for MEMBER rows - LIGHT BACKGROUND */
+    
+.mobile-records-table tr.member-row td:last-child {
+        position: sticky !important;
+        right: 0 !important;
+        background: #fafafa !important;
+        z-index: 15 !important;
+        text-align: center !important;
+        width: 80px !important;
+    }
+    
+    /* Fix hover for household action cell */
+    
+.mobile-records-table tr.household-row:hover td:last-child {
+        background: #2c3e50 !important;
+    }
+    
+    /* Fix hover for member action cell */
+    
+.mobile-records-table tr.member-row:hover td:last-child {
+        background: #fafafa !important;
+    }
+    
+    /* Row hover effect */
+    
+.mobile-records-table tr:hover {
+        background-color: rgba(15, 122, 74, 0.08) !important;
+    }
+    
+    /* Household row colors based on member count */
+    
+.mobile-records-table tr[data-member-count="0"] { background: #ffffff !important; }
+    .mobile-records-table tr[data-member-count="1"] { background: #d4f6ff !important; }
+    .mobile-records-table tr[data-member-count="2-4"] { background: #d9ffd9 !important; }
+    .mobile-records-table tr[data-member-count="5-7"] { background: #fff7c2 !important; }
+    .mobile-records-table tr[data-member-count="8+"] { background: #ffd6d6 !important; }
+    
+    /* Member row styling */
+    
+.mobile-records-table tr.member-row {
+        background-color: #fafafa !important;
+    }
+    
+    /* Member row first cell indentation */
+    
+.mobile-records-table tr.member-row td:first-child {
+        padding-left: 24px !important;
+        background: #fafafa !important;
+    }
+    
+    /* Member rows hover */
+    
+.mobile-records-table tr.member-row:hover {
+        background-color: rgba(15, 122, 74, 0.05) !important;
+    }
+    
+    /* Checkbox styling */
+    
+.row-select-mobile {
+        width: 16px !important;
+        height: 16px !important;
+        cursor: pointer !important;
+        accent-color: #0f7a4a !important;
+    }
+    
+    /* Select all checkbox in header */
+    
+#mobileSelectAll {
+        width: 16px !important;
+        height: 16px !important;
+        cursor: pointer !important;
+        accent-color: #0f7a4a !important;
+    }
+    
+    /* Action buttons container */
+    
+.action-btns {
+        display: flex !important;
+        gap: 8px !important;
+        align-items: center !important;
+        justify-content: center !important;
+        white-space: nowrap !important;
+    }
+    
+    /* Action buttons - white icons */
+    
+.action-btns button {
+        background: none !important;
+        border: none !important;
+        cursor: pointer !important;
+        padding: 4px 6px !important;
+        border-radius: 3px !important;
+        font-size: 0.7rem !important;
+        transition: all 0.2s ease !important;
+        color: white !important;
+    }
+    
+    .action-btns .edit-btn {
+        color: white !important;
+    }
+    
+    .action-btns .edit-btn:hover {
+        background: rgba(255, 255, 255, 0.2) !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    .action-btns .delete-btn {
+        color: white !important;
+    }
+    
+    .action-btns .delete-btn:hover {
+        background: rgba(220, 38, 38, 0.3) !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    /* Member rows - hide action buttons */
+    
+.member-row .action-btns {
+        visibility: hidden !important;
+    }
+    
+    /* Loading state - WHITE BACKGROUND */
+    
+.mobile-loading,
+.virtual-loading-row,
+#loadingMoreRow,
+#noMoreRecordsRow {
+        text-align: center !important;
+        padding: 12px 16px !important;
+        background: #ffffff !important;
+        color: #0f7a4a !important;
+        font-size: 0.8rem !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* No more records message specific */
+    
+#noMoreRecordsRow,
+#loadingMoreRow {
+        color: #6c757d !important;
+    }
+    
+    /* Highlight matches */
+    
+.highlight-match {
+        background-color: #fffe8a !important;
+        padding: 1px 2px !important;
+        border-radius: 3px !important;
+        font-weight: bold !important;
+    }
+}
+@media (max-width: 1024px) {
+    /* No records message */
+    
+.mobile-no-records,
+#mobileNoRecordsMessage {
+        text-align: center !important;
+        padding: 40px 20px !important;
+        background: #fff8e1 !important;
+        color: #ff7a00 !important;
+        font-size: 0.85rem !important;
+        border-radius: 8px !important;
+        margin: 20px 0 !important;
+    }
+    
+    .mobile-no-records i,
+#mobileNoRecordsMessage i {
+        margin-right: 8px !important;
+        font-size: 1rem !important;
+    }
+    
+    /* Loading more indicator */
+    
+.mobile-loading-more {
+        text-align: center !important;
+        padding: 12px 16px !important;
+        background: #ffffff !important;
+        color: #0f7a4a !important;
+        font-size: 0.75rem !important;
+    }
+    
+    .mobile-loading-more i {
+        margin-right: 6px !important;
+    }
+    
+    /* No more records message */
+    
+.mobile-no-more {
+        text-align: center !important;
+        padding: 12px 16px !important;
+        background: #f9f9f9 !important;
+        color: #6c757d !important;
+        font-size: 0.75rem !important;
+        font-style: italic !important;
+    }
+    
+    .mobile-no-more i {
+        margin-right: 6px !important;
+        color: #0f7a4a !important;
+    }
+}
+@media (max-width: 1024px) {
+    .mobile-records-table {
+        table-layout: auto !important;
+    }
+    
+    .mobile-records-table th:first-child,
+.mobile-records-table td:first-child {
+        width: 40px !important;
+        min-width: 40px !important;
+        padding: 12px 0 !important;
+    }
+    
+    .mobile-records-table th:last-child,
+.mobile-records-table td:last-child {
+        width: 85px !important;
+        min-width: 85px !important;
+    }
+    
+    .mobile-records-table th:nth-child(2),
+.mobile-records-table td:nth-child(2) {
+        min-width: 100px !important;
+    }
+    
+    .mobile-records-table th:nth-child(4),
+.mobile-records-table td:nth-child(4) {
+        min-width: 180px !important;
+    }
+}
+@media (max-width: 1024px) {
+    /* Hide virtual scroller on mobile/tablet */
+    
+.virtual-scroll-container {
+        display: none !important;
+    }
+    
+    /* Show paginated table with desktop styling */
+    
+.mobile-table-container {
+        display: block !important;
+        overflow-x: auto !important;
+        overflow-y: visible !important;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 16px;
+        background: white;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        position: relative;
+    }
+    
+    /* CRITICAL: Table layout without fixed width to prevent gaps */
+    
+.mobile-records-table {
+        min-width: max-content !important;
+        width: 100%;
+        border-collapse: collapse !important;
+        border-spacing: 0 !important;
+        table-layout: auto !important;  /* KEY: auto instead of fixed */
+        font-size: 0.75rem;
+        background: white;
+    }
+    
+    /* Remove ALL borders and spacing */
+    
+.mobile-records-table,
+.mobile-records-table tbody,
+.mobile-records-table thead,
+.mobile-records-table tr,
+.mobile-records-table td,
+.mobile-records-table th {
+        border: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Header styling */
+    
+.mobile-records-table th {
+        background: #e9f7f2 !important;
+        font-weight: 600 !important;
+        font-size: 0.7rem !important;
+        text-transform: uppercase !important;
+        color: #334155 !important;
+        padding: 12px 8px !important;
+        border-bottom: 2px solid #d1d5db !important;
+        white-space: nowrap !important;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 10 !important;
+    }
+    
+    /* Data cells */
+    
+.mobile-records-table td {
+        padding: 8px 8px !important;
+        border: none !important;
+        white-space: nowrap !important;
+        vertical-align: middle !important;
+    }
+    
+    /* ===== STICKY COLUMNS - KEEP FIRST AND LAST ONLY ===== */
+    
+    /* First header cell (checkbox) - sticky left */
+    
+.mobile-records-table th:first-child {
+        position: sticky !important;
+        left: 0 !important;
+        background: #e9f7f2 !important;
+        z-index: 25 !important;
+        text-align: center !important;
+        width: 40px !important;
+        min-width: 40px !important;
+        padding: 12px 0 !important;
+    }
+    
+    /* First data cell (checkbox) - sticky left */
+    
+.mobile-records-table td:first-child {
+        position: sticky !important;
+        left: 0 !important;
+        background: inherit;
+        z-index: 20 !important;
+        text-align: center !important;
+        width: 40px !important;
+        min-width: 40px !important;
+        padding: 8px 0 !important;
+    }
+    
+    /* Last header cell (actions) - sticky right */
+    
+.mobile-records-table th:last-child {
+        position: sticky !important;
+        right: 0 !important;
+        background: #2c3e50 !important;
+        color: white !important;
+        z-index: 25 !important;
+        text-align: center !important;
+        width: 85px !important;
+        min-width: 85px !important;
+        padding: 12px 0 !important;
+    }
+    
+    /* Last data cell (actions) - sticky right */
+    
+.mobile-records-table td:last-child {
+        position: sticky !important;
+        right: 0 !important;
+        z-index: 20 !important;
+        text-align: center !important;
+        width: 85px !important;
+        min-width: 85px !important;
+        padding: 8px 0 !important;
+    }
+    
+    /* NON-sticky columns - let them size naturally */
+    
+.mobile-records-table th:not(:first-child):not(:last-child),
+.mobile-records-table td:not(:first-child):not(:last-child) {
+        position: static !important;
+        width: auto !important;
+    }
+    
+    /* Minimum widths for important columns to prevent squishing */
+    
+.mobile-records-table th:nth-child(2),
+.mobile-records-table td:nth-child(2) {
+        min-width: 100px !important;
+    }
+    
+    .mobile-records-table th:nth-child(3),
+.mobile-records-table td:nth-child(3) {
+        min-width: 90px !important;
+    }
+    
+    .mobile-records-table th:nth-child(4),
+.mobile-records-table td:nth-child(4) {
+        min-width: 180px !important;
+    }
+    
+    .mobile-records-table th:nth-child(5),
+.mobile-records-table td:nth-child(5) {
+        min-width: 110px !important;
+    }
+    
+    /* Background colors for sticky cells */
+    
+.mobile-records-table tr.household-row td:first-child {
+        background-color: inherit !important;
+    }
+    
+    .mobile-records-table tr.member-row td:first-child {
+        background-color: #fafafa !important;
+    }
+    
+    .mobile-records-table tr.household-row td:last-child {
+        background-color: #2c3e50 !important;
+    }
+    
+    .mobile-records-table tr.member-row td:last-child {
+        background-color: #fafafa !important;
+    }
+    
+    /* Row hover effect */
+    
+.mobile-records-table tr:hover {
+        background-color: rgba(15, 122, 74, 0.08) !important;
+    }
+    
+    /* Household row colors */
+    
+.mobile-records-table tr[data-member-count="0"] { background: #ffffff !important; }
+    .mobile-records-table tr[data-member-count="1"] { background: #d4f6ff !important; }
+    .mobile-records-table tr[data-member-count="2-4"] { background: #d9ffd9 !important; }
+    .mobile-records-table tr[data-member-count="5-7"] { background: #fff7c2 !important; }
+    .mobile-records-table tr[data-member-count="8+"] { background: #ffd6d6 !important; }
+    
+    /* Member row styling */
+    
+.mobile-records-table tr.member-row {
+        background-color: #fafafa !important;
+    }
+    
+    .mobile-records-table tr.member-row td:first-child {
+        padding-left: 24px !important;
+    }
+    
+    /* Checkbox styling */
+    
+.row-select-mobile {
+        width: 16px !important;
+        height: 16px !important;
+        cursor: pointer !important;
+        accent-color: #0f7a4a !important;
+        margin: 0 !important;
+    }
+    
+    #mobileSelectAll {
+        width: 16px !important;
+        height: 16px !important;
+        cursor: pointer !important;
+        accent-color: #0f7a4a !important;
+        margin: 0 !important;
+    }
+    
+    /* Action buttons */
+    
+.action-btns {
+        display: flex !important;
+        gap: 8px !important;
+        align-items: center !important;
+        justify-content: center !important;
+        white-space: nowrap !important;
+    }
+    
+    .action-btns button {
+        background: none !important;
+        border: none !important;
+        cursor: pointer !important;
+        padding: 4px 6px !important;
+        border-radius: 3px !important;
+        font-size: 0.7rem !important;
+        color: white !important;
+    }
+    
+    .member-row .action-btns {
+        visibility: hidden !important;
+    }
+}
+@media (max-width: 1024px) {
+    /* Mobile loading toast */
+    
+.mobile-loading-toast {
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #0f7a4a;
+        color: white;
+        padding: 10px 16px;
+        border-radius: 30px;
+        font-size: 0.75rem;
+        z-index: 10001;
+        display: none;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        pointer-events: none;
+        font-weight: 500;
+    }
+    
+    .mobile-loading-toast.show {
+        display: flex;
+    }
+    
+    /* Better touch targets for mobile */
+    
+.virtual-row,
+.edit-btn,
+.delete-btn,
+.row-select,
+.row-select-mobile {
+        touch-action: manipulation;
+    }
+@media (max-width: 768px) {
+        input,
+select,
+textarea {
+            font-size: 16px !important;
+        }
+}
+}
+@media (max-width: 768px) {
+    .filter-column-container {
+        height: 32px;
+        padding: 2px 4px;
+        flex-wrap: wrap;
+        min-width: 100%;
+    }
+    
+    .filter-column-container select {
+        font-size: 0.65rem;
+        padding: 2px 16px 2px 4px;
+        min-width: 60px;
+        max-width: 100px;
+    }
+    
+    .filter-column-container .filter-value-select {
+        font-size: 0.65rem;
+        min-width: 80px;
+        max-width: 130px;
+        padding: 2px 16px 2px 4px;
+    }
+}
+@media (max-width: 480px) {
+    .filter-column-container {
+        gap: 4px;
+        padding: 2px 4px;
+    }
+    
+    .filter-column-container select {
+        font-size: 0.6rem;
+        min-width: 50px;
+        max-width: 80px;
+    }
+    
+    .filter-column-container .filter-value-select {
+        font-size: 0.6rem;
+        min-width: 60px;
+        max-width: 100px;
+    }
+    
+    .filter-column-container .filter-separator {
+        font-size: 0.6rem;
+    }
+}
+@media (max-width: 768px) {
+    .stat-item.match-stat {
+        min-width: 60px;
+        padding: 4px 6px;
+    }
+    .stat-item.match-stat .value {
+        font-size: 1rem;
+    }
+    .stat-item.match-stat span {
+        font-size: 0.65rem;
+    }
+}

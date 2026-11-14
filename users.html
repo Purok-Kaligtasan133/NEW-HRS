@@ -1,0 +1,3932 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <!-- PREVENT CACHING -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+<title>User Management — Purok Kaligtasan</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="js/force-logout.js"></script>
+<script src="js/session-check.js"></script>
+<script src="js/security.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+   :root{
+    --bg:#f6f8f7;
+    --card-bg:#fff;
+    --muted:#6b6f6b;
+    --accent1:#0f7a4a;
+    --accent2:#34b78f;
+    --accent3: #ff7a00;
+    --accent4: #ffa500;
+    --light-green: #e9f7f2;
+    --border: #e1e8e5;
+    --shadow: 0 6px 18px rgba(6,30,20,0.06);
+    --shadow-dark: 0 6px 20px rgba(5,40,25,0.12);
+    --radius:12px;
+    --radius-sm:8px;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+   }
+   /* Modal Animation */
+   @keyframes modalSlideUp {
+     from { 
+         opacity: 0;
+         transform: translateY(8px);
+     }
+     to { 
+         opacity: 1;
+         transform: translateY(0);
+     }
+   }
+   
+   /* Password strength indicator */
+   .password-strength {
+     margin-top: 5px;
+     font-size: 0.7rem;
+   }
+   .strength-weak { color: #dc2626; }
+   .strength-medium { color: #ff9800; }
+   .strength-strong { color: #0f7a4a; }
+   .strength-very-strong { color: #0f7a4a; font-weight: bold; }
+   
+   /* Enhanced tooltips for protected admin buttons */
+   .actions-cell button[disabled] {
+     position: relative;
+   }
+
+   .actions-cell button[disabled]:hover::after {
+     content: attr(title);
+     position: absolute;
+     bottom: 100%;
+     left: 50%;
+     transform: translateX(-50%);
+     background: #333;
+     color: white;
+     padding: 4px 8px;
+     border-radius: 4px;
+     font-size: 0.7rem;
+     white-space: nowrap;
+     z-index: 1000;
+     margin-bottom: 5px;
+   }
+
+   .actions-cell button[disabled]:hover::before {
+     content: "";
+     position: absolute;
+     bottom: 100%;
+     left: 50%;
+     transform: translateX(-50%);
+     border: 5px solid transparent;
+     border-top-color: #333;
+     z-index: 1000;
+     margin-bottom: -5px;
+   }
+
+   /* Protected admin row styling */
+   .users-table tbody tr:hover {
+     background: rgba(52,183,143,0.05);
+   }
+
+   /* Special styling for protected admin row */
+   .users-table tbody tr:has(.actions-cell button[disabled]) {
+     background: rgba(255, 245, 204, 0.1);
+   }
+
+   .users-table tbody tr:has(.actions-cell button[disabled]):hover {
+     background: rgba(255, 245, 204, 0.2);
+   }
+   
+   /* Background decorative elements */
+   .bg-pattern {
+     position: absolute;
+     width: 100%;
+     height: 100%;
+     overflow: hidden;
+     z-index: -1;
+   }
+   
+   .bg-circle {
+     position: absolute;
+     border-radius: 50%;
+     background: rgba(15, 122, 74, 0.05);
+   }
+   
+   .circle-1 {
+     width: 300px;
+     height: 300px;
+     top: -150px;
+     right: -150px;
+   }
+   
+   .circle-2 {
+     width: 200px;
+     height: 200px;
+     bottom: -100px;
+     left: -100px;
+     background: rgba(255, 122, 0, 0.05);
+   }
+   
+   .circle-3 {
+     width: 150px;
+     height: 150px;
+     top: 50%;
+     left: 10%;
+     background: rgba(52, 183, 143, 0.05);
+   }
+   .admin-only {
+    display: none !important;
+}
+
+/* Class to show admin elements - applied by JavaScript */
+.admin-only.admin-visible {
+    display: block !important;
+}
+
+/* For list items */
+li.admin-only {
+    display: none !important;
+}
+
+li.admin-only.admin-visible {
+    display: list-item !important;
+}
+   /* Description Styling */
+   #disc {
+    margin-bottom: 10px;
+    background: var(--light-green);
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--accent1);
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+   }
+   
+   body {
+    background-color: var(--bg);
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    padding-bottom: 70px;
+   }
+
+   .page-container{
+    max-width:1200px;
+    margin: auto;
+    padding:12px;
+    display:grid;
+    grid-template-columns:260px 1fr;
+    gap:18px;
+    align-items:start;
+    transition: grid-template-columns 0.3s ease;
+   }
+
+   .page-container.collapsed {
+    grid-template-columns: 60px 1fr;
+   }
+
+   /* Topbar - Enhanced */
+   .topbar{
+    grid-column:1/-1;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px 14px;
+    border-radius:var(--radius);
+    background:linear-gradient(90deg, var(--accent1), var(--accent2));
+    color:#fff;
+    box-shadow:var(--shadow-dark);
+   }
+
+   .brand{
+    display:flex;
+    gap:12px;
+    align-items:center;
+   }
+
+   .brand .logo{
+    width:60px;
+    height:60px;
+    border-radius:var(--radius-sm);
+    object-fit:contain;
+   }
+
+   .brand-text h1 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0;
+   }
+
+   .brand-text p {
+    font-size:12px;
+    opacity:0.95;
+    margin: 4px 0 0 0;
+   }
+
+   .user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+   }
+
+   #userName {
+    font-weight: 600;
+    border-radius: 20px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+   }
+
+   #logoutBtn {
+    background: rgba(255,255,255,0.25);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+   }
+
+   #logoutBtn:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-1px);
+   }
+
+   /* Sidebar - Collapsible */
+   .sidebar{
+    background:linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0.20));
+    border-radius:var(--radius);
+    padding:12px;
+    height:calc(100vh - 120px);
+    position:sticky;
+    top:72px;
+    overflow:auto;
+    transition: width 0.3s ease;
+    z-index: 100;
+   }
+
+   .sidebar-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+   }
+
+   .sidebar-toggle {
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+   }
+
+   .sidebar-toggle:hover {
+    transform: scale(1.1);
+   }
+
+   .sidebar ul{
+    list-style:none;
+    padding:0;
+    margin:0;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    flex: 1;
+   }
+
+   .sidebar li a{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    text-decoration: none;
+    color: var(--muted);
+    border-radius: var(--radius-sm);
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+   }
+
+   .sidebar li a:hover{
+    background: var(--light-green);
+    color: var(--accent1);
+   }
+
+   .sidebar li a.active{
+    background: linear-gradient(90deg, var(--accent1), var(--accent2));
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(15,122,74,0.2);
+   }
+
+   .sidebar li a .menu-icon {
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+   }
+
+   .sidebar li a .menu-text {
+    transition: opacity 0.3s ease;
+   }
+
+   .page-container.collapsed .sidebar li a .menu-text {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+   }
+
+   /* REMOVED: Mobile Logout Button in Sidebar */
+   .mobile-logout-container {
+    display: none !important;
+   }
+
+   /* Content Area */
+   .content-area{
+    background:linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.6));
+    border-radius:var(--radius);
+    padding:18px;
+    box-shadow:0 8px 22px rgba(10,20,16,0.06);
+    min-height:72vh;
+    height: calc(100vh - 120px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+   }
+
+   /* Content Header */
+   .content-header {
+    margin-top: 0;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+   }
+
+   .content-header h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: var(--accent1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+   }
+
+   /* Mobile Bottom Navigation - Fixed Position */
+   .mobile-bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid var(--border);
+    z-index: 1000;
+    padding: 8px 0;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+    height: 70px;
+    box-sizing: border-box;
+    overflow: hidden;
+   }
+
+   .mobile-nav-items {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+   }
+
+   .mobile-nav-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-decoration: none !important;
+    color: var(--muted) !important;
+    padding: 8px 12px !important;
+    border-radius: var(--radius-sm) !important;
+    transition: all 0.3s ease !important;
+    min-width: 60px !important;
+    flex: 1 !important;
+    height: 100% !important;
+    justify-content: center !important;
+   }
+
+   /* Admin items - initially hidden */
+   .mobile-nav-item.admin-only {
+    display: none !important;
+   }
+
+   /* Show admin items when user is admin */
+   .mobile-nav-item.admin-only.admin-visible {
+    display: flex !important;
+   }
+
+   /* Active state for all tabs */
+   .mobile-nav-item.active {
+    color: var(--accent1) !important;
+    background: var(--light-green) !important;
+   }
+
+   /* Icon and text for all tabs */
+   .mobile-nav-icon {
+    font-size: 1.2rem !important;
+    margin-bottom: 4px !important;
+    display: block !important;
+    text-align: center !important;
+    width: 100% !important;
+   }
+
+   .mobile-nav-text {
+    font-size: 0.7rem !important;
+    font-weight: 500 !important;
+    display: block !important;
+    text-align: center !important;
+    width: 100% !important;
+   }
+
+   /* Tablet Styles */
+   @media (min-width: 769px) and (max-width: 1024px) {
+    .page-container {
+        max-width: 95%;
+        grid-template-columns: 220px 1fr;
+        gap: 15px;
+        padding: 10px;
+    }
+    
+    .content-area {
+        padding: 15px;
+    }
+    
+    .mobile-bottom-nav {
+        display: none;
+    }
+   }
+
+   /* Desktop Styles */
+   @media (min-width: 1025px) {
+    .mobile-bottom-nav {
+        display: none;
+    }
+    
+    .mobile-menu-toggle {
+        display: none;
+    }
+   }
+
+   /* Print styles */
+   @media print {
+    body * {
+        visibility: hidden;
+        background: white !important;
+        color: black !important;
+    }
+    
+    .content-area,
+    .content-area * {
+        visibility: visible;
+        background: white !important;
+        color: black !important;
+        box-shadow: none !important;
+    }
+    
+    .content-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100% !important;
+        height: auto !important;
+        padding: 20px !important;
+        overflow: visible !important;
+        page-break-before: always;
+    }
+    
+    .page-container {
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+    
+    .topbar,
+    .sidebar,
+    .toolbar,
+    .mobile-bottom-nav,
+    .mobile-menu-toggle {
+        display: none !important;
+    }
+   }
+
+   /* Stats - Made Smaller */
+   .stats-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+   }
+
+   .stat-item {
+    text-align: center;
+    min-width: 70px;
+    padding: 6px 8px;
+    background: white;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+   }
+
+   .stat-item span {
+    font-size: 0.75rem;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 2px;
+   }
+
+   .stat-item .value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent1);
+    display: block;
+   }
+
+   /* Toolbar - New Layout */
+   .toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+   }
+
+   /* Toolbar Row with Search and Toggle */
+   .toolbar-row-1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+   }
+
+   /* Full width search bar */
+   .search-container {
+    position: relative;
+    flex: 1;
+    width: 100%;
+   }
+
+   .search-container i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 0.9rem;
+    z-index: 1;
+   }
+
+   .search-box{
+    padding: 10px 12px 10px 32px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    background: white;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+   }
+
+   .search-box:focus {
+    outline: none;
+    border-color: var(--accent1);
+    box-shadow: 0 0 0 3px rgba(15,122,74,0.1);
+   }
+
+   /* Simple toggle buttons on the right */
+   .toggle-buttons {
+    display: flex;
+    gap: 4px;
+    background: var(--light-green);
+    border-radius: var(--radius-sm);
+    padding: 2px;
+    min-width: 180px;
+    justify-content: center;
+   }
+
+   .toggle-btn {
+    padding: 6px 12px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--muted);
+    min-width: 60px;
+    text-align: center;
+    white-space: nowrap;
+   }
+
+   .toggle-btn:hover {
+    background: rgba(255,255,255,0.7);
+    color: var(--accent1);
+   }
+
+   .toggle-btn.active {
+    background: linear-gradient(90deg, var(--accent1), var(--accent2));
+    color: white;
+    box-shadow: 0 2px 4px rgba(15,122,74,0.2);
+   }
+
+   .toolbar-row-2 {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    align-items: center;
+   }
+
+   /* Cards Row */
+   .cards-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+   }
+
+   .card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    flex: 1;
+    min-width: 200px;
+   }
+
+   .card h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: var(--accent1);
+    font-size: 1rem;
+   }
+
+   .stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent1);
+    margin-top: 8px;
+   }
+
+   /* Fix table glitching - Improved */
+   .users-table-wrap {
+       flex: 1;
+       background: white;
+       border-radius: var(--radius);
+       box-shadow: var(--shadow);
+       overflow: hidden;
+       position: relative;
+       margin-bottom: 16px;
+       border: 1px solid var(--border);
+       min-height: 400px;
+       display: flex;
+       flex-direction: column;
+       overflow-x: auto;
+   }
+
+   .users-table {
+       width: 100%;
+       border-collapse: separate;
+       border-spacing: 0;
+       font-size: 14px;
+       table-layout: fixed;
+       min-width: 800px;
+   }
+
+   /* Fixed column widths for users table */
+   .users-table th:nth-child(1) { width: 20%; min-width: 120px; }
+   .users-table th:nth-child(2) { width: 25%; min-width: 150px; }
+   .users-table th:nth-child(3) { width: 15%; min-width: 100px; }
+   .users-table th:nth-child(4) { width: 25%; min-width: 150px; }
+   .users-table th:nth-child(5) { width: 15%; min-width: 120px; }
+
+   /* Fixed column widths for activity table */
+   #activityTable th:nth-child(1) { width: 15%; min-width: 100px; }
+   #activityTable th:nth-child(2) { width: 12%; min-width: 80px; }
+   #activityTable th:nth-child(3) { width: 20%; min-width: 140px; }
+   #activityTable th:nth-child(4) { width: 20%; min-width: 140px; }
+   #activityTable th:nth-child(5) { width: 15%; min-width: 100px; }
+   #activityTable th:nth-child(6) { width: 18%; min-width: 120px; }
+
+   /* Fixed column widths for logs table */
+   #logsTable th:nth-child(1) { width: 20%; min-width: 150px; }
+   #logsTable th:nth-child(2) { width: 15%; min-width: 100px; }
+   #logsTable th:nth-child(3) { width: 15%; min-width: 100px; }
+   #logsTable th:nth-child(4) { width: 15%; min-width: 100px; }
+   #logsTable th:nth-child(5) { width: 35%; min-width: 200px; }
+
+   .users-table th {
+       background: var(--light-green);
+       padding: 14px 10px;
+       text-align: center;
+       font-weight: 600;
+       position: sticky;
+       top: 0;
+       z-index: 100;
+       font-size: 14px;
+       color: var(--accent1);
+       border-bottom: 2px solid rgba(15,122,74,0.15);
+       white-space: nowrap;
+       vertical-align: middle;
+       height: 44px;
+       box-sizing: border-box;
+   }
+
+   .users-table td {
+       padding: 12px 10px;
+       font-size: 14px;
+       border-bottom: 1px solid rgba(15,122,74,0.08);
+       vertical-align: middle;
+       color: var(--muted);
+       text-align: center;
+       height: 44px;
+       box-sizing: border-box;
+       line-height: 1.4;
+       word-wrap: break-word;
+       overflow: hidden;
+       text-overflow: ellipsis;
+       white-space: nowrap;
+   }
+
+   #logsTable td:nth-child(5) {
+       white-space: normal;
+       word-wrap: break-word;
+       overflow-wrap: break-word;
+       text-align: left;
+       max-width: 300px;
+       min-width: 200px;
+       text-overflow: unset;
+   }
+
+   /* Center role badges */
+   .users-table td:nth-child(3) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   }
+
+   .users-table tbody tr:hover {
+    background: rgba(52,183,143,0.05);
+   }
+
+   /* Actions column */
+   .actions-cell {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+   }
+
+   .icon-btn {
+    background: none;
+    border: 0;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    transition: all 0.2s ease;
+   }
+
+   .icon-btn:hover {
+    background: var(--light-green);
+    color: var(--accent1);
+    transform: translateY(-1px);
+   }
+
+   /* Button styles */
+   .btn {
+    border: 0;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    background: linear-gradient(90deg, var(--accent1), var(--accent2));
+    color: #fff;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    height: 36px;
+    box-sizing: border-box;
+    position: relative;
+   }
+
+   .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(15,122,74,0.2);
+   }
+
+   .btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+   }
+
+   .btn-secondary {
+    background: transparent;
+    color: var(--accent1);
+    border: 1px solid var(--accent1);
+   }
+
+   /* Save button loading state */
+   .btn-saving {
+    opacity: 0.8;
+    pointer-events: none;
+   }
+
+   .btn-saving i {
+    animation: spin 1s linear infinite;
+   }
+
+   @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+   }
+
+   /* Modal overlay styles */
+   .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(2px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 16px;
+   }
+
+   /* Form styles */
+   .form-group {
+    margin-bottom: 10px;
+   }
+
+   .form-group label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    font-weight: 500;
+   }
+
+   .form-control {
+    width: 100%;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    box-sizing: border-box;
+    height: 36px;
+   }
+
+   .form-control:focus {
+    outline: none;
+    border-color: var(--accent1);
+    box-shadow: 0 0 0 3px rgba(15,122,74,0.1);
+   }
+
+   .form-hint {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 3px;
+   }
+
+   .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+   }
+
+   /* Modal body input with icon */
+   .modal-body .input-with-icon {
+    position: relative;
+   }
+
+   .modal-body .input-with-icon .password-toggle {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 3px;
+   }
+
+   .modal-body .input-with-icon input {
+    padding-right: 32px !important;
+   }
+
+   /* Tabs styling */
+   .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 4px;
+   }
+
+   .tab-btn {
+    padding: 8px 16px;
+    background: var(--light-green);
+    border: none;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--muted);
+    transition: all 0.2s ease;
+    position: relative;
+    bottom: -2px;
+   }
+
+   .tab-btn:hover {
+    background: rgba(15,122,74,0.1);
+   }
+
+   .tab-btn.active {
+    background: linear-gradient(90deg, var(--accent1), var(--accent2));
+    color: white;
+    box-shadow: 0 2px 4px rgba(15,122,74,0.2);
+    border-bottom: 2px solid var(--accent1);
+   }
+
+   .tab-content {
+    display: none;
+   }
+
+   .tab-content.active {
+    display: block;
+   }
+
+   /* Sub-tabs for audit logs */
+   .tab-btn-small {
+       padding: 6px 12px;
+       background: var(--light-green);
+       border: none;
+       border-radius: var(--radius-sm);
+       cursor: pointer;
+       font-weight: 500;
+       color: var(--muted);
+       transition: all 0.2s ease;
+       font-size: 0.85rem;
+       margin-right: 4px;
+   }
+
+   .tab-btn-small:hover {
+       background: rgba(15,122,74,0.1);
+   }
+
+   .tab-btn-small.active {
+       background: linear-gradient(90deg, var(--accent1), var(--accent2));
+       color: white;
+       box-shadow: 0 2px 4px rgba(15,122,74,0.2);
+   }
+
+   /* ============ FIXED STATUS BADGES - SMALL DOT ONLY, NO BACKGROUND ============ */
+   .status-badge {
+       display: inline-flex;
+       align-items: center;
+       gap: 4px;
+       font-size: 0.8rem;
+       font-weight: 500;
+       padding: 0;
+       background: transparent !important;
+       border: none !important;
+   }
+
+   .status-online {
+       color: #0f7a4a;
+       background: transparent !important;
+       border: none !important;
+   }
+
+   .status-online::before {
+       content: "●";
+       font-size: 0.65rem;
+       color: #22c55e;
+       margin-right: 3px;
+       display: inline-block;
+   }
+
+   .status-offline {
+       color: #94a3b8;
+       background: transparent !important;
+       border: none !important;
+   }
+
+   .status-offline::before {
+       content: "○";
+       font-size: 0.65rem;
+       color: #cbd5e1;
+       margin-right: 3px;
+       display: inline-block;
+   }
+
+   .status-idle {
+       color: #f59e0b;
+       background: transparent !important;
+       border: none !important;
+   }
+
+   .status-idle::before {
+       content: "◔";
+       font-size: 0.65rem;
+       color: #f59e0b;
+       margin-right: 3px;
+       display: inline-block;
+   }
+   
+   /* ============ FIXED TABLE GLITCHING ============ */
+   .users-table-wrap {
+       overflow-x: auto;
+       overflow-y: auto;
+       -webkit-overflow-scrolling: touch;
+       position: relative;
+       scroll-behavior: smooth;
+   }
+   
+   .users-table {
+       border-collapse: collapse;
+       width: 100%;
+   }
+   
+   .users-table th, 
+   .users-table td {
+       white-space: nowrap;
+       padding: 12px 12px;
+   }
+   
+   /* Allow description/wrapping columns to wrap */
+   #logsTable td:nth-child(5) {
+       white-space: normal;
+       word-break: break-word;
+       min-width: 200px;
+       max-width: 300px;
+   }
+   
+   #activityTable td:nth-child(3),
+   #activityTable td:nth-child(4) {
+       white-space: nowrap;
+   }
+   
+   /* Force scrollbar on users table */
+   .users-table-wrap {
+       overflow-y: auto !important;
+       max-height: 500px !important;
+   }
+
+   /* On desktop, make it taller */
+   @media (min-width: 1025px) {
+       .users-table-wrap {
+           max-height: calc(100vh - 300px) !important;
+       }
+   }
+   
+   /* Highlight search matches */
+   .highlight-match {
+       background-color: #fffe8a;
+       padding: 1px 2px;
+       border-radius: 3px;
+       font-weight: bold;
+   }
+
+   /* Keep original role cell styling */
+   .role-cell span {
+       display: inline-block;
+   }
+/* ===== UNIFIED DESKTOP UI v1 (desktop only - identical in every page; phone styles live in css/*.css) ===== */
+.admin-only { display: none !important; }
+.admin-only.admin-visible { display: flex !important; }
+li.admin-only { display: none !important; }
+li.admin-only.admin-visible { display: list-item !important; }
+.mobile-nav-item.admin-only { display: none !important; }
+.mobile-nav-item.admin-only.admin-visible { display: flex !important; }
+body.guest-user .sidebar li a[href="main.html"],
+body.guest-user .sidebar li a[href="dataForm.html"],
+body.guest-user .sidebar li a[href="records.html"],
+body.guest-user .sidebar li a[href="charts.html"],
+body.guest-user .sidebar li a[href="users.html"],
+body.guest-user .mobile-nav-item[href="main.html"],
+body.guest-user .mobile-nav-item[href="dataForm.html"],
+body.guest-user .mobile-nav-item[href="records.html"],
+body.guest-user .mobile-nav-item[href="charts.html"],
+body.guest-user .mobile-nav-item[href="users.html"] { display: none !important; }
+body.guest-user .mobile-nav-item[href="dashboard.html"] { flex: 1 !important; width: 100% !important; }
+
+.mobile-bottom-nav { display: none !important; }
+@media (min-width: 769px) {
+/* ---- header, sidebar icons, background (desktop) ---- */
+/* ============================================
+   GLOBAL HEADER STYLES - Desktop & Mobile
+   Fixed: Sidebar Icons, Scrolling Background
+   ============================================ */
+
+/* Header / Topbar */
+.topbar {
+    background: linear-gradient(90deg, #0f7a4a, #34b78f);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    grid-column: 1/-1;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+/* Brand Section */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* Logo - NO background */
+.brand .logo {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+    background: transparent !important;
+}
+
+/* BIGGER TEXT ON DESKTOP */
+.brand-text h1 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+}
+
+.brand-text p {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.85);
+    margin: 2px 0 0 0;
+}
+
+/* User Info Section */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* NO Hamburger Menu */
+.mobile-menu-toggle {
+    display: none !important;
+}
+
+/* User Dropdown */
+.user-dropdown {
+    position: relative;
+}
+
+/* User Button */
+.user-btn {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 40px;
+    padding: 8px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.user-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.user-btn i:first-child {
+    font-size: 1.1rem;
+}
+
+.user-info-dropdown {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.3;
+}
+
+.user-fullname {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: white;
+}
+
+.user-role-dropdown {
+    font-size: 0.65rem;
+    opacity: 0.75;
+    color: white;
+}
+
+.user-btn i:last-child {
+    font-size: 0.7rem;
+    transition: transform 0.2s ease;
+}
+
+.user-dropdown.active .user-btn i:last-child {
+    transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    background: transparent;
+    min-width: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    z-index: 1000;
+}
+
+.user-dropdown.active .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Logout Button - Desktop */
+.dropdown-menu a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 40px;
+    color: #ff6b6b !important;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.dropdown-menu a i {
+    color: #ff6b6b !important;
+    font-size: 0.95rem;
+}
+
+.dropdown-menu a:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateY(-1px);
+}
+
+/* ============ SIDEBAR ICON FIXES ============ */
+.sidebar li a .menu-icon {
+    font-size: 1.2rem;
+    width: 28px;
+    text-align: center;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar li a .menu-icon i {
+    font-size: 1.2rem;
+    width: auto;
+    color: inherit;
+}
+
+/* Active sidebar icon color */
+.sidebar li a.active .menu-icon i {
+    color: white;
+}
+
+/* Sidebar icon hover */
+.sidebar li a:hover .menu-icon i {
+    color: var(--accent1);
+}
+
+.sidebar li a.active:hover .menu-icon i {
+    color: white;
+}
+
+/* ============ FIXED SCROLLING BACKGROUND ============ */
+body {
+    background-color: var(--bg, #f6f8f7);
+    margin: 0;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Fixed background pattern - DOES NOT SCROLL */
+.bg-pattern {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.bg-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(15, 122, 74, 0.05);
+}
+
+.circle-1 {
+    width: 300px;
+    height: 300px;
+    top: -150px;
+    right: -150px;
+}
+
+.circle-2 {
+    width: 200px;
+    height: 200px;
+    bottom: -100px;
+    left: -100px;
+    background: rgba(255, 122, 0, 0.05);
+}
+
+.circle-3 {
+    width: 150px;
+    height: 150px;
+    top: 50%;
+    left: 10%;
+    background: rgba(52, 183, 143, 0.05);
+}
+
+/* Content area background - semi-transparent so fixed bg shows through */
+.content-area {
+    background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.75));
+    backdrop-filter: blur(2px);
+}
+
+/* ============ MOBILE STYLES - BIGGER LOGO & TEXT ============ */
+@media (max-width: 768px) {
+    /* Topbar keeps normal padding */
+    .topbar {
+        padding: 10px 14px;
+        margin: 6px;
+        border-radius: 14px;
+    }
+    
+    .brand {
+        gap: 12px;
+    }
+    
+    /* LOGO - MUCH BIGGER ON MOBILE */
+    .brand .logo {
+        width: 55px !important;
+        height: 55px !important;
+    }
+    
+    /* Title - bigger */
+    .brand-text h1 {
+        font-size: 0.9rem !important;
+        font-weight: 700 !important;
+        line-height: 1.2 !important;
+    }
+    
+    /* Subtitle - bigger */
+    .brand-text p {
+        font-size: 0.65rem !important;
+        opacity: 0.9 !important;
+        margin-top: 2px !important;
+        line-height: 1.3 !important;
+    }
+    
+    /* User button */
+    .user-btn {
+        padding: 6px 14px;
+        gap: 8px;
+    }
+    
+    .user-btn i:first-child {
+        font-size: 1rem;
+    }
+    
+    .user-fullname {
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .user-role-dropdown {
+        font-size: 0.55rem;
+        opacity: 0.8;
+    }
+    
+    .user-btn i:last-child {
+        font-size: 0.65rem;
+    }
+    
+    /* Logout button */
+    .dropdown-menu {
+        margin-top: 5px;
+    }
+    
+    .dropdown-menu a {
+        padding: 5px 12px;
+        font-size: 0.7rem;
+        gap: 6px;
+    }
+    
+    .dropdown-menu a i {
+        font-size: 0.7rem;
+    }
+    
+    /* Sidebar icons on mobile (if visible) */
+    .sidebar li a .menu-icon {
+        width: 32px;
+    }
+    
+    .sidebar li a .menu-icon i {
+        font-size: 1.1rem;
+    }
+}
+
+/* ============ VERY SMALL MOBILE (480px and below) ============ */
+@media (max-width: 480px) {
+    .topbar {
+        padding: 8px 12px;
+        margin: 4px;
+    }
+    
+    .brand {
+        gap: 10px;
+    }
+    
+    /* LOGO - STILL BIG on small screens */
+    .brand .logo {
+        width: 50px !important;
+        height: 50px !important;
+    }
+    
+    /* Title - good size */
+    .brand-text h1 {
+        font-size: 0.8rem !important;
+        font-weight: 700 !important;
+    }
+    
+    /* Subtitle - readable */
+    .brand-text p {
+        font-size: 0.6rem !important;
+        line-height: 1.3 !important;
+        margin-top: 2px !important;
+    }
+    
+    .user-btn {
+        padding: 5px 10px;
+        gap: 6px;
+    }
+    
+    .user-btn i:first-child {
+        font-size: 0.9rem;
+    }
+    
+    .user-fullname {
+        font-size: 0.7rem;
+    }
+    
+    .user-role-dropdown {
+        font-size: 0.5rem;
+    }
+    
+    .dropdown-menu a {
+        padding: 4px 10px;
+        font-size: 0.65rem;
+    }
+    
+    .dropdown-menu a i {
+        font-size: 0.65rem;
+    }
+}
+
+/* ============ EXTRA SMALL (380px and below) ============ */
+@media (max-width: 380px) {
+    .brand {
+        gap: 8px;
+    }
+    
+    /* LOGO - Keep visible even on smallest screens */
+    .brand .logo {
+        width: 45px !important;
+        height: 45px !important;
+    }
+    
+    .brand-text h1 {
+        font-size: 0.75rem !important;
+    }
+    
+    .brand-text p {
+        font-size: 0.55rem !important;
+        line-height: 1.25 !important;
+    }
+    
+    .user-fullname {
+        font-size: 0.65rem;
+    }
+    
+    .user-role-dropdown {
+        font-size: 0.45rem;
+    }
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+    .mobile-menu-toggle {
+        display: none !important;
+    }
+}
+/* ---- layout ---- */
+.sidebar { background: linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.25)); }
+.sidebar { box-sizing: border-box; }
+.page-container .sidebar, .page-container.collapsed .sidebar { width: auto !important; min-width: 0 !important; max-width: none !important; }
+.sidebar li a.active .menu-icon i, .sidebar li a.active .menu-text { color: #fff; }
+.content-area { padding: 20px !important; background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.75)); border-radius: var(--radius, 16px); box-shadow: 0 8px 22px rgba(10,20,16,0.06); backdrop-filter: blur(2px); }
+.content-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 0 0 14px !important; }
+.content-header h2 { margin: 0; font-size: 1.4rem !important; font-weight: 700; color: var(--accent1); display: flex; align-items: center; gap: 8px; }
+#disc { margin: 0 0 14px !important; padding: 12px 16px !important; background: var(--light-green); border-radius: var(--radius-sm, 10px); border-left: 3px solid var(--accent1); font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+.welcome-content > h2, .welcome-content h2:first-child { margin: 0 0 14px !important; font-size: 1.4rem !important; font-weight: 700; color: var(--accent1); }
+.btn { padding: 7px 14px; font-size: 0.85rem; font-weight: 600; border-radius: var(--radius-sm, 10px); }
+}
+/* ---- DESIGN v4 (desktop) ---- */
+@media (min-width: 769px) {
+
+:root {
+  --bg:#f5f9f7; --card-bg:#ffffff; --muted:#5b6b64; --ink:#0f2019;
+  --accent1:#0f7a4a; --accent2:#2fb585; --accent3:#ff7a00; --accent4:#ffa500;
+  --light-green:#eaf6f0; --light-orange:#eaf6f0; --border:#e3ece7; --surface:#f7fbf9;
+  --shadow:0 1px 2px rgba(10,40,25,.04), 0 8px 24px rgba(10,40,25,.06);
+  --shadow-dark:0 16px 44px rgba(10,40,25,.16);
+  --radius:20px; --radius-sm:12px;
+  --ring:0 0 0 4px rgba(15,122,74,.14);
+}
+
+body { font-family: "Inter","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif; color: var(--ink); background: var(--bg) !important; -webkit-font-smoothing: antialiased; position: relative; }
+body::before { content:""; position: fixed; inset: 0 0 auto 0; height: 420px; background: radial-gradient(700px 320px at 15% 0%, rgba(47,181,133,.28), transparent 70%), radial-gradient(600px 300px at 90% 0%, rgba(15,122,74,.16), transparent 70%); z-index: -1; pointer-events: none; }
+.bg-pattern { display: none !important; }
+/* brand + user pill */
+.topbar { background: transparent !important; border: 0 !important; box-shadow: none !important; border-radius: 0 !important; color: var(--ink) !important; overflow: visible; }
+.topbar::before, .topbar::after { display: none !important; }
+.brand .logo { filter: none !important; background: transparent !important; }
+.brand-text h1 { color: var(--accent1) !important; font-weight: 800 !important; letter-spacing: -.01em !important; }
+.brand-text p { color: var(--muted) !important; opacity: 1 !important; }
+.user-btn { background: #fff !important; border: 1px solid var(--border) !important; color: var(--ink) !important; box-shadow: var(--shadow); border-radius: 999px !important; backdrop-filter: none !important; }
+.user-btn:hover { border-color: var(--accent2) !important; }
+.user-btn i, .user-fullname { color: var(--ink) !important; }
+.user-role-dropdown { color: var(--accent1) !important; opacity: .9 !important; font-weight: 600; }
+.dropdown-menu { background: #fff !important; border: 1px solid var(--border) !important; border-radius: 16px !important; padding: 6px !important; box-shadow: var(--shadow-dark) !important; }
+.dropdown-menu a { background: #fff5f5 !important; border: 1px solid #fde0e0 !important; }
+/* content canvas: transparent, cards carry the surface */
+.content-area { background: transparent !important; border: 0 !important; box-shadow: none !important; backdrop-filter: none !important; }
+.content-header h2, .welcome-content > h2, .welcome-content h2:first-child { color: var(--ink) !important; font-weight: 800 !important; letter-spacing: -.025em; }
+.content-header h2 i { color: var(--accent1); }
+#disc { background: transparent !important; border: 0 !important; border-left: 0 !important; padding: 0 !important; color: var(--muted) !important; max-width: 80ch; }
+.card, .info-card, .module-card, .chart-card, .edit-card, .users-table-wrap, .breakdown-table-container { background: #fff; }
+/* cards */
+.card, .info-card, .module-card, .chart-card, .edit-card, .animal-card, .stat-badge { border-radius: var(--radius) !important; border: 1px solid var(--border) !important; box-shadow: var(--shadow) !important; box-sizing: border-box; transition: transform .18s ease, box-shadow .18s ease; }
+.module-card:hover, .info-card:hover, .chart-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-dark) !important; }
+.card-value { color: var(--accent1); }
+.info-card h3, .info-card h4 { border-left-color: var(--accent2) !important; }
+/* buttons */
+.btn { border-radius: 12px !important; letter-spacing: .01em; box-shadow: 0 4px 12px rgba(15,122,74,.16); transition: transform .15s ease, box-shadow .15s ease, filter .15s ease; }
+.btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(15,122,74,.24); }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+.btn-export, .btn-print, .btn-reset { background: linear-gradient(135deg,var(--accent3),var(--accent4)) !important; color: #fff !important; box-shadow: 0 4px 12px rgba(255,122,0,.22) !important; }
+.btn-secondary:not([style]), .btn-back { background: #fff !important; color: var(--accent1) !important; border: 1px solid var(--border) !important; box-shadow: none !important; }
+.btn-secondary[style] { background: #fff; box-shadow: none; }
+/* form controls */
+input[type="text"], input[type="number"], input[type="date"], input[type="email"], input[type="password"], input[type="search"], input[type="tel"], select, textarea { border-radius: 12px !important; border-color: var(--border) !important; background-color: #fff; transition: border-color .15s ease, box-shadow .15s ease; }
+input:focus, select:focus, textarea:focus { outline: none !important; border-color: var(--accent2) !important; box-shadow: var(--ring) !important; }
+input[type="checkbox"], input[type="radio"] { accent-color: var(--accent1); }
+/* tables */
+table thead th, .users-table thead th, .breakdown-table thead th { background: var(--surface) !important; color: var(--accent1) !important; font-weight: 700; border-bottom: 1px solid var(--border) !important; }
+table tbody tr { transition: background .12s ease; }
+table tbody tr:hover { background: var(--light-green); }
+.users-table-wrap, .breakdown-table-container { border-radius: var(--radius); border: 1px solid var(--border); overflow: auto; }
+.chip { border-radius: 999px !important; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: #c5d8ce; border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent2); background-clip: content-box; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ---------- pop-up modals (centered dialogs) ---------- */
+.modal-overlay, .coordinate-modal, .pdf-viewer-modal { background: rgba(10,28,20,.45) !important; backdrop-filter: blur(8px) saturate(1.1); -webkit-backdrop-filter: blur(8px) saturate(1.1); }
+.modal-box, .modal-content, .coordinate-modal-content { border-radius: 24px !important; border: 1px solid rgba(255,255,255,.7); box-shadow: 0 32px 80px rgba(5,30,18,.30) !important; background: #fff; overflow: hidden; animation: pkModalIn .22s cubic-bezier(.2,.8,.2,1); }
+@keyframes pkModalIn { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+.modal-header { background: var(--surface) !important; border-bottom: 1px solid var(--border) !important; color: var(--accent1) !important; }
+.modal-header h3, .modal-header h2 { color: var(--accent1) !important; letter-spacing: -.01em; }
+.modal-header .close, .modal-header button { border-radius: 50%; transition: background .15s ease; }
+.modal-header .close:hover, .modal-header button:hover { background: var(--light-green); }
+.modal-body { background: #fff; }
+.modal-actions, .modal-coordinate-actions { background: var(--surface); border-top: 1px solid var(--border); }
+.modal-actions .btn:not(.btn-secondary) { background: linear-gradient(135deg,var(--accent1),var(--accent2)); color: #fff; }
+
+/* ---------- slide-in edit / member panels (kept scrollable; no overflow clipping, no animation) ---------- */
+.panel-overlay { background: rgba(10,28,20,.40) !important; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.member-panel { border-radius: 24px 0 0 24px !important; box-shadow: -24px 0 60px rgba(10,40,25,.18) !important; background: linear-gradient(180deg,#ffffff,#f8fbf9) !important; border-left: 1px solid var(--border); }
+.member-panel .panel-header { padding: 8px 4px 12px; border-bottom: 1px solid var(--border); }
+.member-panel .panel-header h3 { color: var(--accent1); letter-spacing: -.01em; }
+.member-panel .panel-actions { padding-top: 12px; border-top: 1px solid var(--border); }
+.member-panel .edit-card { box-shadow: none !important; background: #fff; }
+
+/* ===== MODERN+ refinements ===== */
+html { scroll-behavior: smooth; }
+.content-area > *, .welcome-content > * { animation: pkRise .35s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes pkRise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+:focus-visible { outline: 3px solid rgba(15,122,74,.35); outline-offset: 2px; border-radius: 8px; }
+/* topbar: brand + glass user pill */
+/* sidebar polish */
+/* section headings with a green tick instead of heavy borders */
+.content-header h2 { font-weight: 800 !important; }
+.welcome-content h3, .info-card h3, .info-card h4 { letter-spacing: -.01em; }
+/* stat/KPI cards: gradient hairline top */
+.card, .stat-badge, .chart-card, .module-card { position: relative; }
+.module-card { background: linear-gradient(180deg,#fff,var(--surface)) !important; }
+.module-card:hover { border-color: var(--accent2) !important; }
+/* inputs: filled, soft */
+input[type="text"], input[type="number"], input[type="date"], input[type="email"], input[type="password"], input[type="search"], input[type="tel"], select, textarea { background-color: var(--surface) !important; border: 1.5px solid var(--border) !important; }
+input:focus, select:focus, textarea:focus { background-color: #fff !important; }
+input::placeholder, textarea::placeholder { color: #9bafa5; }
+/* buttons: modern solid + sheen */
+.btn:active:not(:disabled) { transform: translateY(0) scale(.98); }
+/* tables */
+table { border-collapse: separate; border-spacing: 0; }
+table tbody td { border-bottom: 1px solid #edf3ef; }
+table thead th { position: sticky; top: 0; z-index: 1; text-transform: uppercase; font-size: .72rem; letter-spacing: .06em; }
+/* chips / badges / pills */
+.chip, .stat-badge, .badge, [class*="status-"] { border-radius: 999px; }
+/* modal refinements */
+.modal-header { padding-top: 18px !important; padding-bottom: 16px !important; }
+.modal-header h3 { font-size: 1.05rem !important; font-weight: 800 !important; }
+.modal-actions .btn, .modal-actions button { border-radius: 999px !important; padding-left: 20px !important; padding-right: 20px !important; }
+.modal-body label { font-weight: 600; color: var(--ink); }
+
+/* ===== NEW LAYOUT: hero banner + bento tiles ===== */
+.pk-hero { position: relative; overflow: hidden; background: linear-gradient(120deg,#08402a 0%,#0f7a4a 55%,#2fb585 100%); border-radius: 32px; padding: 34px 38px; margin: 0 0 26px; color: #fff; box-shadow: 0 24px 50px rgba(10,80,50,.28); }
+.pk-hero::before { content:""; position:absolute; width:340px; height:340px; right:-90px; top:-150px; border-radius:50%; background: radial-gradient(circle, rgba(255,255,255,.28), transparent 70%); pointer-events:none; }
+.pk-hero::after { content:""; position:absolute; width:220px; height:220px; left:38%; bottom:-140px; border-radius:50%; background: rgba(255,255,255,.07); pointer-events:none; }
+.pk-hero > * { position: relative; z-index: 1; }
+.pk-hero { flex-shrink: 0; }
+.pk-hero .welcome-content h2, .pk-hero h2:first-child, .welcome-content .pk-hero h2 { color: #fff !important; font-size: 2.1rem !important; margin: 0 0 6px !important; }
+.pk-hero h2 i { color: #fff !important; }
+.pk-hero .content-header { margin: 0 0 10px !important; }
+.pk-hero h2, .pk-hero .content-header h2 { color: #fff !important; margin: 0 !important; font-size: 2.1rem !important; font-weight: 800 !important; letter-spacing: -.03em; }
+.pk-hero h2 i, .pk-hero h2 .menu-icon i { color: #fff !important; opacity: .9; }
+.pk-hero p, .pk-hero #disc { color: rgba(255,255,255,.88) !important; font-size: .95rem !important; margin: 6px 0 0 !important; max-width: 72ch; background: transparent !important; }
+.pk-hero button, .pk-hero .btn { background: rgba(255,255,255,.18) !important; color: #fff !important; border: 1px solid rgba(255,255,255,.38) !important; border-radius: 999px !important; box-shadow: none !important; backdrop-filter: blur(6px); }
+.pk-hero button:hover { background: rgba(255,255,255,.3) !important; }
+.pk-hero .toggle-buttons { background: rgba(255,255,255,.14) !important; border: 1px solid rgba(255,255,255,.3) !important; border-radius: 999px !important; padding: 3px; }
+.pk-hero .toggle-btn { border: 0 !important; background: transparent !important; box-shadow: none !important; }
+.pk-hero .toggle-btn.active { background: #fff !important; color: var(--accent1) !important; }
+/* bento tiles */
+.card, .info-card, .module-card, .chart-card, .edit-card, .users-table-wrap, .breakdown-table-container { border: 0 !important; border-radius: 28px !important; box-shadow: 0 2px 4px rgba(10,40,25,.04), 0 18px 40px rgba(10,60,40,.08) !important; }
+.module-card { background: linear-gradient(160deg,#f1fbf6,#ffffff) !important; padding: 22px !important; }
+.module-card i { background: linear-gradient(135deg,var(--accent1),var(--accent2)); color: #fff !important; width: 48px; height: 48px; border-radius: 16px; display: inline-flex !important; align-items: center; justify-content: center; margin-bottom: 8px; box-shadow: 0 10px 20px rgba(15,122,74,.28); }
+.card-value, .stat-value { font-size: 2.4rem !important; font-weight: 800 !important; letter-spacing: -.03em; background: linear-gradient(135deg,var(--accent1),var(--accent2)); -webkit-background-clip: text; background-clip: text; color: transparent !important; }
+.btn { border-radius: 999px !important; padding-left: 18px; padding-right: 18px; }
+input[type="text"], input[type="number"], input[type="date"], input[type="email"], input[type="password"], input[type="search"], input[type="tel"], select { min-height: 44px; border-radius: 14px !important; }
+.card h3, .info-card h3, .chart-card h3 { font-weight: 800; letter-spacing: -.01em; }
+
+.page-container, .page-container.collapsed { display: grid !important; grid-template-columns: minmax(0,1fr) !important; grid-template-rows: auto auto 1fr; max-width: 1360px !important; margin: 0 auto !important; padding: 0 32px 56px !important; gap: 18px !important; align-items: start; }
+.topbar { grid-column: 1 !important; grid-row: 1; padding: 22px 0 0 !important; }
+.brand .logo { width: 56px !important; height: 56px !important; }
+.brand-text h1 { font-size: 1.35rem !important; }
+/* top navigation: floating pill menu (the old sidebar element, restyled) */
+.sidebar, .page-container.collapsed .sidebar { grid-column: 1 !important; grid-row: 2; position: sticky; top: 12px; z-index: 60; justify-self: center; width: auto !important; min-width: 0 !important; max-width: 100% !important; padding: 6px !important; background: rgba(255,255,255,.82) !important; backdrop-filter: blur(14px) saturate(1.2); border: 1px solid var(--border) !important; border-radius: 999px !important; box-shadow: 0 10px 30px rgba(10,40,25,.10) !important; height: auto !important; min-height: 0 !important; }
+.sidebar-container { display: block; }
+.sidebar-toggle, #sidebarToggle { display: none !important; }
+.sidebar ul { display: flex !important; flex-direction: row !important; align-items: center; gap: 4px !important; margin: 0 !important; padding: 0 !important; list-style: none; }
+.sidebar li { margin: 0 !important; }
+.sidebar li a, .page-container.collapsed .sidebar li a { display: flex !important; flex-direction: row !important; align-items: center; gap: 8px !important; padding: 10px 18px !important; border-radius: 999px !important; white-space: nowrap; color: var(--muted) !important; font-weight: 600; font-size: .9rem; background: transparent !important; box-shadow: none !important; transition: background .18s ease, color .18s ease; }
+.sidebar li a .menu-text, .page-container.collapsed .sidebar li a .menu-text { opacity: 1 !important; width: auto !important; overflow: visible !important; color: inherit !important; }
+.sidebar li a .menu-icon, .sidebar li a .menu-icon i { color: inherit !important; font-size: 1rem !important; width: auto !important; }
+.sidebar li a:hover { background: var(--light-green) !important; color: var(--accent1) !important; }
+.sidebar li a.active { background: linear-gradient(135deg,var(--accent1),var(--accent2)) !important; color: #fff !important; box-shadow: 0 8px 18px rgba(15,122,74,.30) !important; }
+.sidebar li a.active .menu-icon i, .sidebar li a.active .menu-text { color: #fff !important; }
+.content-area { grid-column: 1 !important; grid-row: 3; padding: 10px 0 0 !important; min-height: 0 !important; }
+.content-header h2, .welcome-content > h2, .welcome-content h2:first-child { font-size: 2rem !important; }
+.card, .info-card, .module-card, .chart-card, .edit-card, .users-table-wrap, .breakdown-table-container { box-shadow: var(--shadow) !important; }
+}
+
+/* ===== END UNIFIED DESKTOP UI ===== */
+</style>
+<link rel="stylesheet" href="css/header-styles.css">
+<link rel="stylesheet" href="css/uniform-styles.css">
+<link rel="stylesheet" href="css/user-style.css">
+<link rel="stylesheet" href="css/theme-mobile.css">
+
+</head>
+<body>
+    <!-- Background pattern -->
+    <div class="bg-pattern">
+        <div class="bg-circle circle-1"></div>
+        <div class="bg-circle circle-2"></div>
+        <div class="bg-circle circle-3"></div>
+    </div>
+<div class="page-container">
+<header class="topbar">
+    <div class="brand">
+        <img src="assets/MDRRMO Logo.png" class="logo" alt="Logo"/>
+        <div class="brand-text">
+            <h1>PUROK KALIGTASAN 133</h1>
+            <p>MDRRMO Alitagtag – Household Records System</p>
+        </div>
+    </div>
+    <div class="user-info">
+        <div class="user-dropdown" id="userDropdown">
+            <div class="user-btn" id="userBtn">
+                <i class="fas fa-user-circle"></i>
+                <div class="user-info-dropdown">
+                    <span class="user-fullname" id="userFullname">Loading...</span>
+                    <span class="user-role-dropdown" id="userRole">Loading...</span>
+                </div>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="dropdown-menu">
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-container">
+      <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+<ul>
+    <li><a href="main.html">
+        <span class="menu-icon"><i class="fas fa-home"></i></span>
+        <span class="menu-text">Home</span>
+    </a></li>
+    <li><a href="dataForm.html">
+        <span class="menu-icon"><i class="fas fa-edit"></i></span>
+        <span class="menu-text">Data Entry</span>
+    </a></li>
+    <li><a href="records.html">
+        <span class="menu-icon"><i class="fas fa-database"></i></span>
+        <span class="menu-text">Records &amp; Management</span>
+    </a></li>
+    <li><a href="dashboard.html">
+        <span class="menu-icon"><i class="fas fa-tachometer-alt"></i></span>
+        <span class="menu-text">Dashboard</span>
+    </a></li>
+    <li><a href="charts.html">
+        <span class="menu-icon"><i class="fas fa-chart-bar"></i></span>
+        <span class="menu-text">Charts &amp; Analytics</span>
+    </a></li>
+    <li class="admin-only"><a href="users.html" class="active">
+        <span class="menu-icon"><i class="fas fa-users-cog"></i></span>
+        <span class="menu-text">User Management</span>
+    </a></li>
+</ul>
+    </div>
+  </aside>
+
+  <!-- Error Message -->
+  <div class="error-message" id="errorMessage" style="display: none;">
+    <i class="fas fa-exclamation-triangle"></i> 
+    <span id="errorText">Failed to fetch data. Please check your connection.</span>
+    <button onclick="document.getElementById('errorMessage').style.display = 'none'" style="float:right; background:none; border:none; color:#c00; cursor:pointer;">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <main class="content-area">
+    <div class="pk-hero"><div class="content-header">
+      <h2><i class="fas fa-users-cog"></i>User Management</h2>
+    </div>
+     <div id="disc">The User Management section allows administrators to create, update, and control access for all system users. It ensures that only authorized personnel can view, edit, or manage household records. Through this section, admins can assign roles, reset passwords, activate or deactivate accounts, and monitor user activity to maintain data security and system integrity.</div></div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <!-- Row with Search and Toggle Buttons -->
+      <div class="toolbar-row-1">
+        <!-- Full Width Search Bar -->
+        <div class="search-container">
+          <i class="fas fa-search"></i>
+          <input id="filterUser" class="search-box" placeholder="Search by username or full name..." />
+        </div>
+        
+        <!-- Toggle Buttons Only (right side) -->
+        <div class="toggle-buttons" id="roleToggle">
+          <button class="toggle-btn active" data-role="all">All</button>
+          <button class="toggle-btn" data-role="Admin">Admin</button>
+          <button class="toggle-btn" data-role="Staff">Staff</button>
+        </div>
+      </div>
+      
+    <div class="toolbar-row-2">
+        <button id="forceLogoutAllBtn" class="btn btn-secondary" style="border-color: #dc2626; color: #dc2626;">
+            <i class="fas fa-users-slash"></i> Logout All
+        </button>
+        <button id="viewLogsBtn" class="btn btn-secondary">
+            <i class="fas fa-history"></i> View Logs
+        </button>
+        <button id="openAddUser" class="btn">
+            <i class="fas fa-user-plus"></i> Add User
+        </button>
+    </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="cards-row">
+      <div class="card">
+        <h3>Total Users</h3>
+        <div id="statTotal" class="stat-value">0</div>
+      </div>
+      <div class="card">
+        <h3>Admins</h3>
+        <div id="statAdmins" class="stat-value">0</div>
+      </div>
+      <div class="card">
+        <h3>Staff</h3>
+        <div id="statStaff" class="stat-value">0</div>
+      </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="users-table-wrap">
+      <table class="users-table" id="usersTable">
+<thead>
+  <tr>
+    <th style="text-transform: uppercase; color: #4a5568; font-size: 0.75rem;">Username</th>
+    <th style="text-transform: uppercase; color: #4a5568; font-size: 0.75rem;">Full Name</th>
+    <th style="text-transform: uppercase; color: #4a5568; font-size: 0.75rem;">Role</th>
+    <th style="text-transform: uppercase; color: #4a5568; font-size: 0.75rem;">Barangay</th>
+    <th style="text-transform: uppercase; color: #4a5568; font-size: 0.75rem;">Actions</th>
+  </tr>
+</thead>
+        <tbody id="usersBody">
+          <tr><td colspan="5" style="text-align: center; padding: 20px;">Loading users...
+        </tbody>
+        </table>
+    </div>
+
+  </main>
+</div>
+
+<!-- Mobile Bottom Navigation -->
+<nav class="mobile-bottom-nav" id="mobileBottomNav">
+  <div class="mobile-nav-items">
+    <a href="main.html" class="mobile-nav-item" title="Home">
+      <span class="mobile-nav-icon"><i class="fas fa-home"></i></span>
+      <span class="mobile-nav-text">Home</span>
+    </a>
+    <a href="dataForm.html" class="mobile-nav-item" title="Data Entry">
+      <span class="mobile-nav-icon"><i class="fas fa-edit"></i></span>
+      <span class="mobile-nav-text">Data Entry</span>
+    </a>
+    <a href="records.html" class="mobile-nav-item" title="Records">
+      <span class="mobile-nav-icon"><i class="fas fa-database"></i></span>
+      <span class="mobile-nav-text">Records</span>
+    </a>
+    <a href="dashboard.html" class="mobile-nav-item" title="Dashboard">
+      <span class="mobile-nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+      <span class="mobile-nav-text">Dashboard</span>
+    </a>
+    <a href="charts.html" class="mobile-nav-item" title="Charts">
+      <span class="mobile-nav-icon"><i class="fas fa-chart-bar"></i></span>
+      <span class="mobile-nav-text">Charts</span>
+    </a>
+    <a href="users.html" class="mobile-nav-item admin-only active" title="Users" id="mobileUsersNav">
+      <span class="mobile-nav-icon"><i class="fas fa-users-cog"></i></span>
+      <span class="mobile-nav-text">Users</span>
+    </a>
+  </div>
+</nav>
+
+<!-- Add/Edit User Modal -->
+<div id="userModal" class="modal-overlay">
+  <div class="modal-box" style="background: white; border-radius: 12px; max-width: 420px; width: 100%; box-shadow: 0 15px 30px rgba(0,0,0,0.1); animation: modalSlideUp 0.2s ease; overflow: hidden;">
+    <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border);">
+      <h3 id="modalTitle" style="margin: 0; color: var(--accent1); font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-user-plus"></i> Add New User
+      </h3>
+      <button id="closeModal" class="icon-btn" style="background: none; border: none; font-size: 1rem; cursor: pointer; color: var(--muted);">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body" style="padding: 20px;">
+      <form id="userForm">
+        <div class="form-group">
+          <label for="user_username">Username *</label>
+          <input id="user_username" class="form-control" required placeholder="letters, numbers, . _ -" />
+          <small style="color:#64748b;">Login will be <b>username</b>@alitagtag.pk133</small>
+        </div>
+        <div class="form-group">
+          <label for="user_fullname">Full Name</label>
+          <input id="user_fullname" class="form-control" />
+        </div>
+        <div class="form-group">
+          <label for="user_role">Role</label>
+          <select id="user_role" class="form-control">
+            <option value="Staff">Staff</option>
+            <option value="Admin">Admin</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="user_barangay">Assigned Barangay</label>
+          <select id="user_barangay" class="form-control">
+            <option value="">All</option>
+            <option>Balagbag</option><option>Concepcion</option><option>Concordia</option>
+            <option>Dalipit East</option><option>Dalipit West</option>
+            <option>Dominador East</option><option>Dominador West</option>
+            <option>Munlawin Sur / Salvador Agito</option><option>Munlawin Norte</option>
+            <option>Muzon Primero</option><option>Muzon Segundo</option>
+            <option>Pinagkurusan</option><option>Ping-As</option>
+            <option>Poblacion East</option><option>Poblacion West</option>
+            <option>San Jose</option><option>San Juan</option>
+            <option>Santa Cruz</option><option>Tadlac</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="user_password">Password <span id="passwordRequired" style="color: #ef4444; font-size: 0.7rem;">*</span></label>
+          <div class="input-with-icon" style="position: relative;">
+            <input id="user_password" type="password" class="form-control" placeholder="Enter new password" style="padding-right: 35px;" />
+            <button type="button" class="password-toggle" id="toggleModalPassword" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #6b6f6b; cursor: pointer; font-size: 0.9rem; padding: 5px; z-index: 10;">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div id="passwordHint" class="form-hint password-strength" style="font-size: 0.7rem; margin-top: 5px;"></div>
+          <div class="form-hint" style="font-size: 0.65rem; color: #666; margin-top: 5px;">
+            <i class="fas fa-info-circle"></i> Password must be at least 8 characters with uppercase, lowercase, numbers, and special characters
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="form-actions" style="display: flex; gap: 8px; justify-content: flex-end; padding: 16px 20px; border-top: 1px solid var(--border);">
+      <button id="cancelModal" class="btn btn-secondary">Cancel</button>
+      <button id="saveUserBtn" class="btn">
+        <i class="fas fa-save"></i> Save
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- User Saved Success Modal -->
+<div id="userSavedSuccessModal" class="modal-overlay">
+  <div style="background: white; border-radius: 12px; max-width: 280px; width: 100%; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 3px 8px rgba(0, 0, 0, 0.05); animation: modalSlideUp 0.2s ease; overflow: hidden;">
+    <div style="padding: 20px 20px 12px 20px; text-align: center;">
+      <div style="margin-bottom: 8px;">
+        <i class="fas fa-check-circle" style="font-size: 1.6rem; color: #0f7a4a; opacity: 0.7;"></i>
+      </div>
+      <h3 style="margin: 0 0 4px 0; color: #1e293b; font-size: 1rem; font-weight: 600; letter-spacing: -0.01em;" id="userSavedTitle">
+        User Saved Successfully!
+      </h3>
+      <p style="margin: 0; color: #64748b; font-size: 0.8rem; line-height: 1.4; font-weight: 400;" id="userSavedMessage">
+        The user has been successfully saved to the system.
+      </p>
+    </div>
+    <div style="display: flex; gap: 8px; padding: 4px 20px 20px 20px;">
+      <button id="closeUserSavedSuccess" style="flex: 1; padding: 6px 10px; border-radius: 6px; font-weight: 500; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.15s ease; outline: none; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); letter-spacing: 0.3px; border: 1.5px solid #0f7a4a; background: transparent; color: #0f7a4a;"
+        onmouseover="this.style.backgroundColor='#0f7a4a'; this.style.color='white';"
+        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#0f7a4a';">
+        <i class="fas fa-check"></i> OK
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Reset Password Modal - Confirmation -->
+<div id="resetModal" class="modal-overlay">
+  <div style="background: white; border-radius: 12px; max-width: 280px; width: 100%; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 3px 8px rgba(0, 0, 0, 0.05); animation: modalSlideUp 0.2s ease; overflow: hidden;">
+    <div style="padding: 20px 20px 12px 20px; text-align: center;">
+      <div style="margin-bottom: 8px;">
+        <i class="fas fa-key" style="font-size: 1.6rem; color: #ff9800; opacity: 0.7;"></i>
+      </div>
+      <h3 style="margin: 0 0 4px 0; color: #1e293b; font-size: 1rem; font-weight: 600; letter-spacing: -0.01em;">
+        Reset Password
+      </h3>
+      <p style="margin: 0 0 8px 0; color: #64748b; font-size: 0.8rem; line-height: 1.4; font-weight: 400;">
+        Are you sure you want to reset the password for this user?
+      </p>
+      <div style="margin: 8px 0; padding: 6px; background: #e9f7f2; border-radius: 6px; font-size: 0.75rem;">
+        <span style="color: #0f7a4a; font-weight: 600;">User:</span> <span id="resetUserName" style="color: #1e293b;">user</span>
+      </div>
+      <div style="margin-top: 8px; padding: 6px; background: #f8fafc; border-radius: 6px; font-size: 0.7rem; text-align: left;">
+        <i class="fas fa-info-circle" style="color: #ff9800; margin-right: 4px;"></i>
+        Password will be reset to: <code style="background: #fff8e1; padding: 2px 4px; border-radius: 4px;">password123</code>
+      </div>
+    </div>
+    <div style="display: flex; gap: 8px; padding: 4px 20px 20px 20px;">
+      <button id="cancelReset" style="flex: 1; padding: 6px 10px; border-radius: 6px; font-weight: 500; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.15s ease; outline: none; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); letter-spacing: 0.3px; border: 1.5px solid #ef4444; background: transparent; color: #ef4444;"
+        onmouseover="this.style.backgroundColor='#ef4444'; this.style.color='white';"
+        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#ef4444';">
+        <i class="fas fa-times"></i> Cancel
+      </button>
+      <button id="confirmReset" style="flex: 1; padding: 6px 10px; border-radius: 6px; font-weight: 500; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.15s ease; outline: none; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); letter-spacing: 0.3px; border: 1.5px solid #0f7a4a; background: transparent; color: #0f7a4a;"
+        onmouseover="this.style.backgroundColor='#0f7a4a'; this.style.color='white';"
+        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#0f7a4a';">
+        <i class="fas fa-redo-alt"></i> Reset
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Reset Password Success Modal -->
+<div id="resetSuccessModal" class="modal-overlay">
+  <div style="background: white; border-radius: 12px; max-width: 280px; width: 100%; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 3px 8px rgba(0, 0, 0, 0.05); animation: modalSlideUp 0.2s ease; overflow: hidden;">
+    <div style="padding: 20px 20px 12px 20px; text-align: center;">
+      <div style="margin-bottom: 8px;">
+        <i class="fas fa-check-circle" style="font-size: 1.6rem; color: #0f7a4a; opacity: 0.7;"></i>
+      </div>
+      <h3 style="margin: 0 0 4px 0; color: #1e293b; font-size: 1rem; font-weight: 600; letter-spacing: -0.01em;">
+        Password Reset Successful!
+      </h3>
+      <p style="margin: 8px 0 0 0; color: #64748b; font-size: 0.7rem; line-height: 1.4;">
+        <i class="fas fa-info-circle"></i> User must change password on next login.
+      </p>
+    </div>
+    <div style="display: flex; gap: 8px; padding: 4px 20px 20px 20px;">
+      <button id="closeResetSuccess" style="flex: 1; padding: 6px 10px; border-radius: 6px; font-weight: 500; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.15s ease; outline: none; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); letter-spacing: 0.3px; border: 1.5px solid #0f7a4a; background: transparent; color: #0f7a4a;"
+        onmouseover="this.style.backgroundColor='#0f7a4a'; this.style.color='white';"
+        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#0f7a4a';">
+        <i class="fas fa-check"></i> OK
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal-overlay">
+  <div style="background: white; border-radius: 12px; max-width: 280px; width: 100%; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 3px 8px rgba(0, 0, 0, 0.05); animation: modalSlideUp 0.2s ease; overflow: hidden;">
+    <div style="padding: 20px 20px 12px 20px; text-align: center;">
+      <div style="margin-bottom: 8px;">
+        <i class="fas fa-exclamation-triangle" style="font-size: 1.6rem; color: #ef4444; opacity: 0.7;"></i>
+      </div>
+      <h3 style="margin: 0 0 4px 0; color: #1e293b; font-size: 1rem; font-weight: 600; letter-spacing: -0.01em;">
+        Delete User
+      </h3>
+      <p style="margin: 0 0 8px 0; color: #64748b; font-size: 0.8rem; line-height: 1.4; font-weight: 400;">
+        Are you sure you want to delete this user? This action cannot be undone.
+      </p>
+      <div style="margin: 8px 0; padding: 6px; background: #e9f7f2; border-radius: 6px; font-size: 0.75rem;">
+        <span style="color: #0f7a4a; font-weight: 600;">User:</span> <span id="deleteUserName" style="color: #1e293b;">user</span>
+      </div>
+      <div style="margin-top: 8px; padding: 6px; background: #ffeaea; border-radius: 6px; font-size: 0.7rem; text-align: left;">
+        <i class="fas fa-exclamation-circle" style="color: #ef4444; margin-right: 4px;"></i>
+        All associated data will be permanently removed.
+      </div>
+    </div>
+    <div style="display: flex; gap: 8px; padding: 4px 20px 20px 20px;">
+      <button id="cancelDelete" style="flex: 1; padding: 6px 10px; border-radius: 6px; font-weight: 500; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.15s ease; outline: none; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); letter-spacing: 0.3px; border: 1.5px solid #ef4444; background: transparent; color: #ef4444;"
+        onmouseover="this.style.backgroundColor='#ef4444'; this.style.color='white';"
+        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#ef4444';">
+        <i class="fas fa-times"></i> Cancel
+      </button>
+      <button id="confirmDelete" style="flex: 1; padding: 6px 10px; border-radius: 6px; font-weight: 500; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.15s ease; outline: none; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); letter-spacing: 0.3px; border: 1.5px solid #0f7a4a; background: transparent; color: #0f7a4a;"
+        onmouseover="this.style.backgroundColor='#0f7a4a'; this.style.color='white';"
+        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#0f7a4a';">
+        <i class="fas fa-trash-alt"></i> Delete
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Success Modal -->
+<div id="deleteSuccessModal" class="modal-overlay">
+  <div style="background: white; border-radius: 12px; max-width: 280px; width: 100%; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 3px 8px rgba(0, 0, 0, 0.05); animation: modalSlideUp 0.2s ease; overflow: hidden;">
+    <div style="padding: 20px 20px 12px 20px; text-align: center;">
+      <div style="margin-bottom: 8px;">
+        <i class="fas fa-trash-alt" style="font-size: 1.6rem; color: #ef4444; opacity: 0.7;"></i>
+      </div>
+      <h3 style="margin: 0 0 4px 0; color: #1e293b; font-size: 1rem; font-weight: 600; letter-spacing: -0.01em;">
+        User Deleted
+      </h3>
+      <p style="margin: 0; color: #64748b; font-size: 0.8rem; line-height: 1.4; font-weight: 400;">
+        The user has been successfully deleted from the system.
+      </p>
+    </div>
+    <div style="display: flex; gap: 8px; padding: 4px 20px 20px 20px;">
+      <button id="closeDeleteSuccess" style="flex: 1; padding: 6px 10px; border-radius: 6px; font-weight: 500; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.15s ease; outline: none; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); letter-spacing: 0.3px; border: 1.5px solid #0f7a4a; background: transparent; color: #0f7a4a;"
+        onmouseover="this.style.backgroundColor='#0f7a4a'; this.style.color='white';"
+        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#0f7a4a';">
+        <i class="fas fa-check"></i> OK
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Custom Alert Modal -->
+<div id="customAlertModal" class="modal-overlay">
+  <div style="background: white; border-radius: 12px; max-width: 320px; width: 100%; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 3px 8px rgba(0, 0, 0, 0.05); animation: modalSlideUp 0.2s ease; overflow: hidden;">
+    <div style="padding: 20px 20px 12px 20px; text-align: center;">
+      <div style="margin-bottom: 8px;">
+        <i id="alertIcon" class="fas fa-exclamation-triangle" style="font-size: 1.6rem; color: #ff9800; opacity: 0.7;"></i>
+      </div>
+      <h3 id="alertTitle" style="margin: 0 0 8px 0; color: #1e293b; font-size: 1rem; font-weight: 600; letter-spacing: -0.01em;">
+        Notice
+      </h3>
+      <p id="alertMessage" style="margin: 0; color: #64748b; font-size: 0.85rem; line-height: 1.4; font-weight: 400;">
+        Message here
+      </p>
+    </div>
+    <div style="display: flex; gap: 8px; padding: 4px 20px 20px 20px;">
+      <button id="closeAlertBtn" style="flex: 1; padding: 8px 10px; border-radius: 6px; font-weight: 500; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.15s ease; outline: none; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); letter-spacing: 0.3px; border: 1.5px solid #0f7a4a; background: transparent; color: #0f7a4a;"
+        onmouseover="this.style.backgroundColor='#0f7a4a'; this.style.color='white';"
+        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#0f7a4a';">
+        <i class="fas fa-check"></i> OK
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Custom Confirm Modal -->
+<div id="customConfirmModal" class="modal-overlay">
+  <div style="background: white; border-radius: 12px; max-width: 320px; width: 100%; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 3px 8px rgba(0, 0, 0, 0.05); animation: modalSlideUp 0.2s ease; overflow: hidden;">
+    <div style="padding: 20px 20px 12px 20px; text-align: center;">
+      <div style="margin-bottom: 8px;">
+        <i id="confirmIcon" class="fas fa-question-circle" style="font-size: 1.6rem; color: #ff9800; opacity: 0.7;"></i>
+      </div>
+      <h3 id="confirmTitle" style="margin: 0 0 8px 0; color: #1e293b; font-size: 1rem; font-weight: 600; letter-spacing: -0.01em;">
+        Confirm Action
+      </h3>
+      <p id="confirmMessage" style="margin: 0; color: #64748b; font-size: 0.85rem; line-height: 1.4; font-weight: 400;">
+        Are you sure?
+      </p>
+    </div>
+    <div style="display: flex; gap: 8px; padding: 4px 20px 20px 20px;">
+      <button id="confirmCancelBtn" style="flex: 1; padding: 8px 10px; border-radius: 6px; font-weight: 500; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.15s ease; outline: none; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); letter-spacing: 0.3px; border: 1.5px solid #ef4444; background: transparent; color: #ef4444;"
+        onmouseover="this.style.backgroundColor='#ef4444'; this.style.color='white';"
+        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#ef4444';">
+        <i class="fas fa-times"></i> Cancel
+      </button>
+      <button id="confirmOkBtn" style="flex: 1; padding: 8px 10px; border-radius: 6px; font-weight: 500; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.15s ease; outline: none; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); letter-spacing: 0.3px; border: 1.5px solid #0f7a4a; background: transparent; color: #0f7a4a;"
+        onmouseover="this.style.backgroundColor='#0f7a4a'; this.style.color='white';"
+        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#0f7a4a';">
+        <i class="fas fa-check"></i> Confirm
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Enhanced Logs Modal with User Activity - Updated Header -->
+<div id="logsModal" class="modal-overlay">
+  <div class="modal-box" style="background: white; border-radius: 12px; max-width: 1100px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 15px 30px rgba(0,0,0,0.1); animation: modalSlideUp 0.2s ease;">
+    <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border);">
+      <h3 style="margin: 0; color: var(--accent1); font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-user-clock"></i> User Activity & Audit Logs
+      </h3>
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <button id="refreshLogsBtn" class="icon-btn" style="background: none; border: none; font-size: 1rem; cursor: pointer; color: var(--muted);" title="Refresh">
+          <i class="fas fa-sync-alt"></i>
+        </button>
+        <button id="closeLogsModalBtn" class="icon-btn" style="background: none; border: none; font-size: 1rem; cursor: pointer; color: var(--muted);">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="modal-body" style="padding: 20px;">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="activity">User Activity</button>
+        <button class="tab-btn" data-tab="audit">Audit Logs</button>
+      </div>
+      
+      <!-- User Activity Tab -->
+      <div class="tab-content active" id="activityTab">
+        <div class="stats-container" style="justify-content: flex-start; margin-bottom: 16px;">
+          <div class="stat-item">
+            <span>Online Now</span>
+            <div id="statOnline" class="value" style="color: #0f7a4a;">0</div>
+          </div>
+          <div class="stat-item">
+            <span>Active User Today</span>
+            <div id="statToday" class="value">0</div>
+          </div>
+          <div class="stat-item">
+            <span>Total Users</span>
+            <div id="statTotalUsers" class="value">0</div>
+          </div>
+        </div>
+        
+        <div class="search-container" style="margin-bottom: 16px;">
+          <i class="fas fa-search"></i>
+          <input id="searchActivity" class="search-box" placeholder="Search users..." />
+        </div>
+        
+        <div class="users-table-wrap" style="min-height: 300px; overflow-x: auto;">
+          <table class="users-table" id="activityTable" style="min-width: 600px;">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Status</th>
+                <th>Last Login</th>
+                <th>Last Activity</th>
+                <th>Active Time</th>
+                <th>Session Duration</th>
+              </tr>
+            </thead>
+            <tbody id="activityBody">
+              <tr><td colspan="6" style="text-align: center; padding: 20px;">Loading activity data...
+            </tbody>
+            </table>
+        </div>
+      </div>
+      
+      <!-- Audit Logs Tab -->
+      <div class="tab-content" id="auditTab">
+        <div class="tabs" style="margin-bottom: 16px; border-bottom: 1px solid var(--border);">
+          <button class="tab-btn-small active" data-category="all">All Logs</button>
+          <button class="tab-btn-small" data-category="today">Today</button>
+          <button class="tab-btn-small" data-category="yesterday">Yesterday</button>
+          <button class="tab-btn-small" data-category="older">Older</button>
+        </div>
+        
+        <div class="search-container" style="margin-bottom: 16px;">
+          <i class="fas fa-search"></i>
+          <input id="searchAudit" class="search-box" placeholder="Search audit logs..." />
+        </div>
+        
+        <div class="users-table-wrap" style="min-height: 300px; overflow-x: auto;">
+          <table class="users-table" id="logsTable" style="min-width: 800px;">
+            <thead>
+              <tr>
+                <th style="width: 20%;">Timestamp</th>
+                <th style="width: 15%;">Action</th>
+                <th style="width: 15%;">User</th>
+                <th style="width: 15%;">Target</th>
+                <th style="width: 35%; text-align: left;">Details</th>
+              </tr>
+            </thead>
+            <tbody id="logsBody">
+              <tr><td colspan="5" style="text-align: center; padding: 20px;">Loading logs...
+            </tbody>
+           </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Take Over Warning Modal (Device B) - Matching style -->
+<div id="takeOverWarningModal" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(2px); display: none; align-items: center; justify-content: center; z-index: 10003; padding: 16px;">
+    <div style="background: white; border-radius: 12px; max-width: 280px; width: 100%; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 3px 8px rgba(0, 0, 0, 0.05); animation: modalSlideUp 0.2s ease; overflow: hidden;">
+        <div style="padding: 20px 20px 12px 20px; text-align: center;">
+            <div style="margin-bottom: 8px;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 1.6rem; color: #ff7a00; opacity: 0.7;"></i>
+            </div>
+            <h3 style="margin: 0 0 4px 0; color: #1e293b; font-size: 1rem; font-weight: 600;">Take Over Warning</h3>
+            <p style="margin: 0 0 8px 0; color: #64748b; font-size: 0.8rem; line-height: 1.4;">
+                Taking over will immediately log out the other device.
+            </p>
+            <p style="margin: 0; color: #dc2626; font-size: 0.75rem; font-weight: 500;">
+                Any unsaved work on the other device may be lost.
+            </p>
+        </div>
+        <div style="display: flex; gap: 8px; padding: 4px 20px 20px 20px;">
+            <button id="cancelTakeOverBtn" style="flex: 1; padding: 6px 10px; border-radius: 6px; font-weight: 500; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.15s ease; outline: none; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); letter-spacing: 0.3px; border: 1.5px solid #ef4444; background: transparent; color: #ef4444;">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button id="confirmTakeOverBtn" style="flex: 1; padding: 6px 10px; border-radius: 6px; font-weight: 500; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.15s ease; outline: none; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); letter-spacing: 0.3px; border: 1.5px solid #0f7a4a; background: transparent; color: #0f7a4a;">
+                <i class="fas fa-check"></i> Take Over
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Session Taken Over Modal (Device A) - Matching style -->
+<div id="sessionTakenOverModal" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(2px); display: none; align-items: center; justify-content: center; z-index: 10003; padding: 16px;">
+    <div style="background: white; border-radius: 12px; max-width: 280px; width: 100%; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 3px 8px rgba(0, 0, 0, 0.05); animation: modalSlideUp 0.2s ease; overflow: hidden;">
+        <div style="padding: 20px 20px 12px 20px; text-align: center;">
+            <div style="margin-bottom: 8px;">
+                <i class="fas fa-exchange-alt" style="font-size: 1.6rem; color: #dc2626; opacity: 0.7;"></i>
+            </div>
+            <h3 style="margin: 0 0 4px 0; color: #1e293b; font-size: 1rem; font-weight: 600;">Session Taken Over!</h3>
+            <p style="margin: 0 0 8px 0; color: #64748b; font-size: 0.8rem; line-height: 1.4;">
+                Another device has taken over this account.
+            </p>
+            <div style="margin-top: 12px; background: #fef2f2; padding: 8px; border-radius: 8px;">
+                <div style="font-size: 0.7rem; color: #dc2626; font-weight: 500;">You will be logged out in</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #dc2626;" id="takeOverCountdown">5</div>
+                <div style="font-size: 0.7rem; color: var(--text-light);">seconds</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Force Logout Modal -->
+<div id="adminForceLogoutModal" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(2px); display: none; align-items: center; justify-content: center; z-index: 10004; padding: 16px;">
+    <div style="background: white; border-radius: 12px; max-width: 280px; width: 100%; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 3px 8px rgba(0, 0, 0, 0.05); animation: modalSlideUp 0.2s ease; overflow: hidden;">
+        <div style="padding: 20px 20px 12px 20px; text-align: center;">
+            <div style="margin-bottom: 8px;">
+                <i class="fas fa-user-shield" style="font-size: 1.6rem; color: #ff7a00; opacity: 0.7;"></i>
+            </div>
+            <h3 style="margin: 0 0 4px 0; color: #1e293b; font-size: 1rem; font-weight: 600;">Account Logged Out by Admin</h3>
+            <p style="margin: 0 0 8px 0; color: #64748b; font-size: 0.8rem; line-height: 1.4;">
+                An administrator has logged you out from all devices.
+            </p>
+            <div style="margin-top: 12px; background: #fff8e1; padding: 8px; border-radius: 8px;">
+                <div style="font-size: 0.7rem; color: #ff7a00; font-weight: 500;">You will be redirected to login</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #ff7a00;" id="adminForceLogoutCountdown">5</div>
+                <div style="font-size: 0.7rem; color: var(--text-light);">seconds</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal for Logout -->
+<div id="confirmModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(2px); display: none; align-items: center; justify-content: center; z-index: 10001; padding: 16px;">
+    <div style="background: white; border-radius: 12px; max-width: 280px; width: 100%; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); animation: modalSlideUp 0.2s ease; overflow: hidden;">
+        <div style="padding: 20px 20px 12px 20px; text-align: center;">
+            <div style="margin-bottom: 8px;">
+                <i class="fas fa-question-circle" style="font-size: 1.6rem; color: #ff7a00; opacity: 0.7;"></i>
+            </div>
+            <h3 style="margin: 0 0 4px 0; color: #1e293b; font-size: 1rem; font-weight: 600;">Confirm Action</h3>
+            <p style="margin: 0; color: #64748b; font-size: 0.8rem; line-height: 1.4;">Are you sure you want to logout?</p>
+        </div>
+        <div style="display: flex; gap: 8px; padding: 4px 20px 20px 20px;">
+            <button id="confirmNoBtn" style="flex: 1; padding: 6px 10px; border-radius: 6px; font-weight: 500; font-size: 0.75rem; cursor: pointer; border: 1.5px solid #ef4444; background: transparent; color: #ef4444;">
+                <i class="fas fa-times"></i> No
+            </button>
+            <button id="confirmYesBtn" style="flex: 1; padding: 6px 10px; border-radius: 6px; font-weight: 500; font-size: 0.75rem; cursor: pointer; border: 1.5px solid #0f7a4a; background: transparent; color: #0f7a4a;">
+                <i class="fas fa-check"></i> Yes
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ============ SUPABASE CONFIGURATION ============
+const SUPABASE_URL = 'https://opibntxwagnjazpbtxrv.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_UwyTZU3BYj41z0D7beu9Hg_pIZcLeWN';
+
+let supabaseClient;
+if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} else {
+    console.error('Supabase not loaded');
+}
+
+/* ============ STATE ============ */
+let ALL_USERS = [];
+let EDIT_TARGET = null;
+let CURRENT_ROLE_FILTER = 'all';
+let ACTIVITY_DATA = [];
+let AUDIT_LOGS_DATA = [];
+let DELETE_TARGET_USER = null;
+let RESET_TARGET_USER = null;
+let REFRESH_INTERVAL = null;
+let ACTIVITY_REFRESH_INTERVAL = null;
+
+function isProtectedAdmin(user) {
+  return user && user.Username && user.Username.toLowerCase() === 'admin';
+}
+
+/* ============ UPDATE USER ACTIVITY - FIXES THE ONLINE ISSUE ============ */
+async function updateCurrentUserActivity() {
+  const username = localStorage.getItem('username');
+  if (!username) return;
+  
+  try {
+    const now = new Date().toISOString();
+    const { error } = await supabaseClient
+      .from('users')
+      .update({ 
+        last_login: now,
+        last_activity: now,
+        updated_at: now
+      })
+      .eq('username', username);
+    
+    if (error) {
+      console.error('Activity update error:', error);
+    } else {
+      console.log('Activity updated for:', username);
+    }
+  } catch(err) {
+    console.error('Failed to update activity:', err);
+  }
+}
+
+/* ============ HASH PASSWORD ============ */
+async function hashPassword(password) {
+    const msgBuffer = new TextEncoder().encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+/* ============ CUSTOM ALERT MODAL ============ */
+function showAlert(message, title = "Notice", type = "warning") {
+  return new Promise((resolve) => {
+    const modal = document.getElementById('customAlertModal');
+    const titleEl = document.getElementById('alertTitle');
+    const messageEl = document.getElementById('alertMessage');
+    const iconEl = document.getElementById('alertIcon');
+    const closeBtn = document.getElementById('closeAlertBtn');
+    
+    if (!modal) {
+      alert(message);
+      resolve();
+      return;
+    }
+    
+    if (type === "error") {
+      iconEl.className = "fas fa-times-circle";
+      iconEl.style.color = "#ef4444";
+      titleEl.textContent = title || "Error";
+    } else if (type === "success") {
+      iconEl.className = "fas fa-check-circle";
+      iconEl.style.color = "#0f7a4a";
+      titleEl.textContent = title || "Success";
+    } else if (type === "warning") {
+      iconEl.className = "fas fa-exclamation-triangle";
+      iconEl.style.color = "#ff9800";
+      titleEl.textContent = title || "Warning";
+    } else {
+      iconEl.className = "fas fa-info-circle";
+      iconEl.style.color = "#0f7a4a";
+      titleEl.textContent = title || "Information";
+    }
+    
+    titleEl.textContent = title;
+    messageEl.textContent = message;
+    modal.style.display = 'flex';
+    
+    const handleClose = () => {
+      modal.style.display = 'none';
+      closeBtn.removeEventListener('click', handleClose);
+      resolve();
+    };
+    
+    closeBtn.addEventListener('click', handleClose);
+    
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+        resolve();
+      }
+    });
+  });
+}
+
+/* ============ CUSTOM CONFIRM MODAL ============ */
+function showConfirm(message, title = "Confirm Action") {
+  return new Promise((resolve) => {
+    const modal = document.getElementById('customConfirmModal');
+    const titleEl = document.getElementById('confirmTitle');
+    const messageEl = document.getElementById('confirmMessage');
+    const confirmBtn = document.getElementById('confirmOkBtn');
+    const cancelBtn = document.getElementById('confirmCancelBtn');
+    
+    if (!modal) {
+      resolve(confirm(message));
+      return;
+    }
+    
+    titleEl.textContent = title;
+    messageEl.textContent = message;
+    modal.style.display = 'flex';
+    
+    const handleConfirm = () => {
+      modal.style.display = 'none';
+      cleanup();
+      resolve(true);
+    };
+    
+    const handleCancel = () => {
+      modal.style.display = 'none';
+      cleanup();
+      resolve(false);
+    };
+    
+    const cleanup = () => {
+      confirmBtn.removeEventListener('click', handleConfirm);
+      cancelBtn.removeEventListener('click', handleCancel);
+    };
+    
+    confirmBtn.addEventListener('click', handleConfirm);
+    cancelBtn.addEventListener('click', handleCancel);
+    
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+        cleanup();
+        resolve(false);
+      }
+    });
+  });
+}
+
+/* ============ PASSWORD STRENGTH CHECKER ============ */
+function checkPasswordStrength(password) {
+  if (!password) return { score: 0, message: '', class: '' };
+  
+  let score = 0;
+  let message = '';
+  let className = '';
+  
+  if (password.length >= 8) score++;
+  if (password.length >= 12) score++;
+  if (/[a-z]/.test(password)) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score++;
+  
+  if (score <= 2) {
+    message = 'Weak password - use at least 8 characters with uppercase, numbers, and symbols';
+    className = 'strength-weak';
+  } else if (score <= 4) {
+    message = 'Medium password - add uppercase letters and symbols for better security';
+    className = 'strength-medium';
+  } else if (score <= 6) {
+    message = 'Strong password!';
+    className = 'strength-strong';
+  } else {
+    message = 'Very Strong password! Excellent security!';
+    className = 'strength-very-strong';
+  }
+  
+  return { score, message, className };
+}
+
+/* ============ LOAD USERS FROM SUPABASE ============ */
+async function loadUsers() {
+  if (!supabaseClient) {
+    console.error('Supabase client not initialized');
+    return;
+  }
+  
+  try {
+    console.log('Loading users from Supabase...');
+    const { data, error } = await supabaseClient
+      .from('users')
+      .select('username, full_name, role, assigned_barangay, email, is_active, last_login, created_at')
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    
+    ALL_USERS = (data || []).map(user => {
+      let roleDisplay = 'Staff';
+      if (user.role) {
+        const roleLower = user.role.toLowerCase();
+        if (roleLower === 'admin') {
+          roleDisplay = 'Admin';
+        } else if (roleLower === 'staff') {
+          roleDisplay = 'Staff';
+        }
+      }
+      
+      return {
+        Username: user.username,
+        FullName: user.full_name || '',
+        Role: roleDisplay,
+        AssignedBarangay: user.assigned_barangay || 'All',
+        Email: user.email || '',
+        IsActive: user.is_active,
+        LastLogin: user.last_login,
+        CreatedAt: user.created_at,
+        RawRole: user.role
+      };
+    });
+    
+    // ✅ Preserve current search and filter during auto-refresh
+    const currentSearch = document.getElementById('filterUser')?.value || '';
+    renderUsers(currentSearch, CURRENT_ROLE_FILTER);
+    updateStats();
+    
+  } catch(err) {
+    console.error('Load users error:', err);
+    await showAlert("Error loading users: " + err.message, "Error", "error");
+  }
+}
+
+/* ============ RENDER USERS ============ */
+function renderUsers(filter = "", roleFilter = CURRENT_ROLE_FILTER) {
+  const tbody = document.getElementById("usersBody");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+  
+  let filtered = [...ALL_USERS];
+  
+  if (roleFilter !== 'all') {
+    filtered = filtered.filter(user => {
+      const userRole = user.Role || 'Staff';
+      return userRole === roleFilter;
+    });
+  }
+  
+  if (filter) {
+    const searchLower = filter.toLowerCase();
+    filtered = filtered.filter(user => {
+      const searchStr = `${user.Username || ''} ${user.FullName || ''} ${user.Role || ''} ${user.AssignedBarangay || ''}`.toLowerCase();
+      return searchStr.includes(searchLower);
+    });
+  }
+  
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 40px 20px; color: var(--muted); font-style: italic;">
+      No users found. Total users in system: ${ALL_USERS.length}
+      </table></tr>`;
+    return;
+  }
+  
+  filtered.forEach(user => {
+    const tr = document.createElement("tr");
+    const isProtected = isProtectedAdmin(user);
+    
+    let actionButtonsHtml = '';
+    if (isProtected) {
+      actionButtonsHtml = `
+        <button class="icon-btn" disabled title="Protected admin cannot be edited" style="opacity: 0.5; cursor: not-allowed;">
+          <i class="fas fa-edit" style="color: #ccc;"></i>
+        </button>
+        <button class="icon-btn" disabled title="Protected admin password cannot be reset" style="opacity: 0.5; cursor: not-allowed;">
+          <i class="fas fa-key" style="color: #ccc;"></i>
+        </button>
+        <button class="icon-btn" disabled title="Protected admin cannot be force logged out" style="opacity: 0.5; cursor: not-allowed;">
+          <i class="fas fa-sign-out-alt" style="color: #ccc;"></i>
+        </button>
+        <button class="icon-btn" disabled title="Protected admin cannot be deleted" style="opacity: 0.5; cursor: not-allowed;">
+          <i class="fas fa-trash" style="color: #ccc;"></i>
+        </button>
+      `;
+    } else {
+      actionButtonsHtml = `
+        <button class="icon-btn" onclick="editUser('${escapeHtml(user.Username)}')" title="Edit">
+          <i class="fas fa-edit"></i>
+        </button>
+        <button class="icon-btn" onclick="showResetModal('${escapeHtml(user.Username)}')" title="Reset Password">
+          <i class="fas fa-key"></i>
+        </button>
+        <button class="icon-btn" onclick="forceLogoutUser('${escapeHtml(user.Username)}')" title="Force Logout" style="color: #ff7a00;">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+        <button class="icon-btn" onclick="showDeleteModal('${escapeHtml(user.Username)}')" title="Delete" style="color: #ff4444;">
+          <i class="fas fa-trash"></i>
+        </button>
+      `;
+    }
+    
+    let protectedBadge = '';
+    if (isProtected) {
+      protectedBadge = '<span style="color: #0f7a4a; font-weight: bold; font-size: 0.8rem; background: #e9f7f2; padding: 2px 6px; border-radius: 10px; margin-left: 5px;">🔒 Protected</span>';
+    }
+    
+    let usernameDisplay = user.Username || '';
+    let fullnameDisplay = user.FullName || '';
+    let barangayDisplay = user.AssignedBarangay || 'All';
+    let roleDisplay = user.Role || 'Staff';
+    
+    if (filter) {
+      const searchRegex = new RegExp(`(${escapeRegex(filter)})`, 'gi');
+      usernameDisplay = usernameDisplay.replace(searchRegex, '<span class="highlight-match">$1</span>');
+      fullnameDisplay = fullnameDisplay.replace(searchRegex, '<span class="highlight-match">$1</span>');
+      barangayDisplay = barangayDisplay.replace(searchRegex, '<span class="highlight-match">$1</span>');
+    }
+    
+    tr.innerHTML = `
+      <td>${usernameDisplay}${protectedBadge}</td>
+      <td>${fullnameDisplay}</td>
+      <td class="role-cell"><span style="padding: 4px 10px; border-radius: 12px; background: ${user.Role === 'Admin' ? '#e9f7f2' : '#f0f0f0'}; color: ${user.Role === 'Admin' ? '#0f7a4a' : '#666'}; display: inline-block;">${roleDisplay}</span></td>
+      <td>${barangayDisplay}</td>
+      <td class="actions-cell">${actionButtonsHtml}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/* ============ UPDATE STATS ============ */
+function updateStats() {
+  const total = ALL_USERS.length;
+  const admins = ALL_USERS.filter(u => u.Role === 'Admin').length;
+  const staff = ALL_USERS.filter(u => u.Role === 'Staff').length;
+  
+  const statTotal = document.getElementById('statTotal');
+  const statAdmins = document.getElementById('statAdmins');
+  const statStaff = document.getElementById('statStaff');
+  
+  if (statTotal) statTotal.textContent = total;
+  if (statAdmins) statAdmins.textContent = admins;
+  if (statStaff) statStaff.textContent = staff;
+}
+
+/* ============ ROLE TOGGLE ============ */
+function setupRoleToggle() {
+  const toggleButtons = document.querySelectorAll('#roleToggle .toggle-btn');
+  
+  const savedFilter = localStorage.getItem('roleFilter');
+  if (savedFilter) {
+    CURRENT_ROLE_FILTER = savedFilter;
+  }
+  
+  toggleButtons.forEach(btn => {
+    const roleValue = btn.getAttribute('data-role');
+    if (roleValue === CURRENT_ROLE_FILTER) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+  
+  toggleButtons.forEach(btn => {
+    btn.addEventListener('click', function() {
+      toggleButtons.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      
+      const role = this.getAttribute('data-role');
+      CURRENT_ROLE_FILTER = role;
+      localStorage.setItem('roleFilter', role);
+      
+      const searchFilter = document.getElementById('filterUser').value;
+      renderUsers(searchFilter, role);
+    });
+  });
+}
+
+/* ============ USER OPERATIONS ============ */
+function openUserModal(mode = 'add', username = null) {
+  EDIT_TARGET = username;
+  
+  const modal = document.getElementById('userModal');
+  const title = document.getElementById('modalTitle');
+  const barangaySelect = document.getElementById('user_barangay');
+  
+  if (!modal) return;
+  
+  document.getElementById('userForm').reset();
+  const passwordHint = document.getElementById('passwordHint');
+  if (passwordHint) passwordHint.innerHTML = '';
+  
+  if (mode === 'edit' && username) {
+    if (title) title.innerHTML = '<i class="fas fa-user-edit"></i> Edit User';
+    const user = ALL_USERS.find(u => u.Username === username);
+    if (user) {
+      document.getElementById('user_username').value = user.Username;
+      document.getElementById('user_fullname').value = user.FullName || '';
+      const roleValue = user.Role === 'Admin' ? 'Admin' : 'Staff';
+      document.getElementById('user_role').value = roleValue;
+      
+      // FIX: Set the barangay value from database (will be "All" or specific barangay)
+      const barangayValue = user.AssignedBarangay || 'All';
+      
+      // Find and select the matching option
+      let barangayFound = false;
+      for (let i = 0; i < barangaySelect.options.length; i++) {
+        if (barangaySelect.options[i].value === barangayValue) {
+          barangaySelect.value = barangayValue;
+          barangayFound = true;
+          break;
+        }
+      }
+      if (!barangayFound) {
+        barangaySelect.value = 'All';
+      }
+      
+      document.getElementById('user_username').disabled = true;
+      document.getElementById('user_password').required = false;
+      document.getElementById('user_password').placeholder = "Leave blank to keep current password";
+      const passwordRequired = document.getElementById('passwordRequired');
+      if (passwordRequired) passwordRequired.style.display = 'none';
+    }
+  } else {
+    if (title) title.innerHTML = '<i class="fas fa-user-plus"></i> Add New User';
+    document.getElementById('user_username').disabled = false;
+    document.getElementById('user_password').required = true;
+    document.getElementById('user_password').placeholder = "Enter new password";
+    document.getElementById('user_password').value = '';
+    // Set default to "All" for new users
+    barangaySelect.value = 'All';
+    const passwordRequired = document.getElementById('passwordRequired');
+    if (passwordRequired) passwordRequired.style.display = 'inline';
+  }
+  
+  modal.style.display = 'flex';
+}
+
+async function editUser(username) {
+  const user = ALL_USERS.find(u => u.Username === username);
+  
+  if (user && isProtectedAdmin(user)) {
+    await showAlert('The main admin account (username: admin) is protected. Username cannot be changed.', 'Protected Account', 'warning');
+    return;
+  }
+  
+  openUserModal('edit', username);
+}
+
+async function saveUser() {
+  const username = document.getElementById('user_username').value.trim();
+  const fullname = document.getElementById('user_fullname').value.trim();
+  const role = document.getElementById('user_role').value;
+  const barangay = document.getElementById('user_barangay').value;
+  const password = document.getElementById('user_password').value.trim();
+  
+  const currentUser = localStorage.getItem("staffName") || localStorage.getItem("username") || "System";
+  
+  if (!username) {
+    await showAlert('Username is required', 'Validation Error', 'error');
+    return;
+  }
+  
+  if (!EDIT_TARGET && !/^[A-Za-z0-9._-]+$/.test(username)) {
+    await showAlert('Username may only contain letters, numbers, dots (.), underscores (_) and dashes (-). No spaces or @.', 'Validation Error', 'error');
+    return;
+  }
+  
+  if (!EDIT_TARGET && !password) {
+    await showAlert('Password is required for new users', 'Validation Error', 'error');
+    return;
+  }
+  
+  if (password) {
+    const strength = checkPasswordStrength(password);
+    if (strength.score < 3) {
+      await showAlert(
+        'Password is too weak!\n\nRequirements:\n• At least 8 characters long\n• Include uppercase and lowercase letters\n• Include numbers\n• Include special characters (!@#$%^&* etc.)\n\nPlease choose a stronger password.',
+        'Weak Password',
+        'error'
+      );
+      return;
+    }
+  }
+  
+  const saveBtn = document.getElementById('saveUserBtn');
+  const originalText = saveBtn ? saveBtn.innerHTML : 'Save';
+  if (saveBtn) {
+    saveBtn.innerHTML = EDIT_TARGET ? '<i class="fas fa-spinner fa-spin"></i> Updating...' : '<i class="fas fa-spinner fa-spin"></i> Creating...';
+    saveBtn.disabled = true;
+  }
+  
+  try {
+    const dbRole = role === 'Admin' ? 'admin' : 'staff';
+    const DEFAULT_PASSWORD = 'password123';
+    
+    // FIX: Store "All" directly in database instead of NULL
+    // If barangay is empty or "All", store "All" in database
+    let assignedBarangay = 'All';
+    if (barangay && barangay !== 'All' && barangay.trim() !== '') {
+      assignedBarangay = barangay;
+    }
+    
+    console.log('Saving with assigned_barangay:', assignedBarangay);
+    
+    if (EDIT_TARGET) {
+      // EDIT EXISTING USER
+      const updateData = {
+        full_name: fullname,
+        role: dbRole,
+        assigned_barangay: assignedBarangay,  // Will be "All" or specific barangay
+        updated_at: new Date().toISOString()
+      };
+      
+      if (password) {
+        const hashedPassword = await hashPassword(password);
+        updateData.password_hash = hashedPassword;
+        updateData.must_change_password = (password === DEFAULT_PASSWORD);
+      }
+      
+      console.log('Updating user with data:', updateData);
+      
+      const { error } = await supabaseClient
+        .from('users')
+        .update(updateData)
+        .eq('username', EDIT_TARGET);
+      
+      if (error) throw error;
+      
+      await supabaseClient.from('audit_logs').insert([{
+        action: 'Update User',
+        actor: currentUser,
+        target_table: 'users',
+        details: `Updated user: ${username} with role: ${dbRole}, barangay: ${assignedBarangay}`
+      }]);
+      
+      await showAlert(`User "${username}" has been successfully updated.`, 'Success', 'success');
+      
+    } else {
+      // CREATE NEW USER
+      const hashedPassword = await hashPassword(password);
+      const isDefaultPassword = (password === DEFAULT_PASSWORD);
+      
+      const newUser = {
+        username: username,
+        full_name: fullname,
+        role: dbRole,
+        assigned_barangay: assignedBarangay,  // Will be "All" or specific barangay
+        password_hash: hashedPassword,
+        must_change_password: isDefaultPassword,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        last_login: new Date().toISOString()
+      };
+      
+      console.log('Creating user with data:', newUser);
+      
+      const { error } = await supabaseClient
+        .from('users')
+        .insert([newUser]);
+      
+      if (error) throw error;
+      
+      await supabaseClient.from('audit_logs').insert([{
+        action: 'Create User',
+        actor: currentUser,
+        target_table: 'users',
+        details: `Created user: ${username} with role: ${dbRole}, barangay: ${assignedBarangay}`
+      }]);
+      
+      await showAlert(`User "${username}" has been successfully added.\n\nLogin: ${username.toLowerCase()}@alitagtag.pk133`, 'Success', 'success');
+    }
+    
+    closeUserModal();
+    await loadUsers();
+    
+  } catch(err) {
+    console.error('Save user error:', err);
+    await showAlert('Error saving user: ' + err.message, 'Error', 'error');
+  } finally {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = originalText;
+    }
+  }
+}
+
+function closeUserModal() {
+  const modal = document.getElementById('userModal');
+  if (modal) modal.style.display = 'none';
+  EDIT_TARGET = null;
+}
+
+/* ============ RESET PASSWORD ============ */
+async function showResetModal(username) {
+  const user = ALL_USERS.find(u => u.Username === username);
+  
+  if (user && isProtectedAdmin(user)) {
+    await showAlert('The main admin account (username: admin) password cannot be reset.', 'Protected Account', 'warning');
+    return;
+  }
+  
+  const confirmed = await showConfirm(
+    `Are you sure you want to reset the password for user "${username}"?\n\nThe password will be set to: password123\n\nUser will be required to change password on next login.`,
+    'Reset Password'
+  );
+  
+  if (confirmed) {
+    RESET_TARGET_USER = username;
+    await resetPassword();
+  }
+}
+
+async function resetPassword() {
+  if (!RESET_TARGET_USER) return;
+  
+  const username = RESET_TARGET_USER;
+  const currentUser = localStorage.getItem("staffName") || localStorage.getItem("username") || "System";
+  
+  const resetBtn = document.getElementById('confirmReset');
+  const originalText = resetBtn ? resetBtn.innerHTML : 'Reset';
+  if (resetBtn) {
+    resetBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resetting...';
+    resetBtn.disabled = true;
+  }
+  
+  try {
+    const DEFAULT_PASSWORD = 'password123';
+    const hashedPassword = await hashPassword(DEFAULT_PASSWORD);
+    
+    const { error } = await supabaseClient
+      .from('users')
+      .update({
+        password_hash: hashedPassword,
+        must_change_password: true,  // User must change password on next login since it's 'password123'
+        updated_at: new Date().toISOString()
+      })
+      .eq('username', username);
+    
+    if (error) throw error;
+    
+    await supabaseClient.from('audit_logs').insert([{
+      action: 'Reset Password',
+      actor: currentUser,
+      target_table: 'users',
+      details: `Reset password for user: ${username} to default '${DEFAULT_PASSWORD}'. User must change password on next login.`
+    }]);
+    
+    closeResetModal();
+    const successModal = document.getElementById('resetSuccessModal');
+    if (successModal) successModal.style.display = 'flex';
+    
+    await loadUsers();
+    
+  } catch(err) {
+    console.error('Reset error:', err);
+    await showAlert('Error resetting password: ' + err.message, 'Error', 'error');
+  } finally {
+    if (resetBtn) {
+      resetBtn.disabled = false;
+      resetBtn.innerHTML = originalText;
+    }
+  }
+}
+
+function closeResetModal() {
+  const modal = document.getElementById('resetModal');
+  if (modal) modal.style.display = 'none';
+  RESET_TARGET_USER = null;
+}
+
+/* ============ DELETE USER ============ */
+async function showDeleteModal(username) {
+  const user = ALL_USERS.find(u => u.Username === username);
+  
+  if (user && isProtectedAdmin(user)) {
+    await showAlert('The main admin account (username: admin) is protected and cannot be deleted', 'Protected Account', 'warning');
+    return;
+  }
+  
+  const confirmed = await showConfirm(
+    `Are you sure you want to delete user "${username}"?\n\nThis action cannot be undone. All associated data will be permanently removed.`,
+    'Delete User'
+  );
+  
+  if (confirmed) {
+    DELETE_TARGET_USER = username;
+    await deleteUser();
+  }
+}
+
+async function deleteUser() {
+  if (!DELETE_TARGET_USER) return;
+  
+  const username = DELETE_TARGET_USER;
+  const currentUser = localStorage.getItem("staffName") || localStorage.getItem("username") || "System";
+  
+  const deleteBtn = document.getElementById('confirmDelete');
+  const originalText = deleteBtn ? deleteBtn.innerHTML : 'Delete';
+  if (deleteBtn) {
+    deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+    deleteBtn.disabled = true;
+  }
+  
+  try {
+    const { data: userToDelete, error: findError } = await supabaseClient
+      .from('users')
+      .select('id, username')
+      .ilike('username', username);
+    
+    if (findError) {
+      console.error('Find user error:', findError);
+      await showAlert('Error finding user: ' + findError.message, 'Error', 'error');
+      closeDeleteModal();
+      return;
+    }
+    
+    if (!userToDelete || userToDelete.length === 0) {
+      await showAlert(`User "${username}" not found in database.`, 'Error', 'error');
+      closeDeleteModal();
+      return;
+    }
+    
+    const userRecord = userToDelete[0];
+    
+    const { error: deleteError } = await supabaseClient
+      .from('users')
+      .delete()
+      .eq('id', userRecord.id);
+    
+    if (deleteError) throw deleteError;
+    
+    await supabaseClient.from('audit_logs').insert([{
+      action: 'Delete User',
+      actor: currentUser,
+      target_table: 'users',
+      details: `Deleted user: ${username} (ID: ${userRecord.id})`
+    }]);
+    
+    closeDeleteModal();
+    
+    const successModal = document.getElementById('deleteSuccessModal');
+    if (successModal) successModal.style.display = 'flex';
+    
+    await loadUsers();
+    
+  } catch(err) {
+    console.error('Delete error:', err);
+    await showAlert('Error deleting user: ' + err.message, 'Error', 'error');
+  } finally {
+    if (deleteBtn) {
+      deleteBtn.disabled = false;
+      deleteBtn.innerHTML = originalText;
+    }
+  }
+}
+
+function closeDeleteModal() {
+  const modal = document.getElementById('deleteModal');
+  if (modal) modal.style.display = 'none';
+  DELETE_TARGET_USER = null;
+}
+
+// ============ FORCE LOGOUT INDIVIDUAL USER ============
+async function forceLogoutUser(username) {
+    const confirmed = await showConfirm(
+        `⚠️ Force logout "${username}"?\n\nThey will be immediately logged out from ALL devices.\n\nAny unsaved work will be lost.`,
+        'Force Logout User'
+    );
+    
+    if (!confirmed) return;
+    
+    try {
+        // Get user ID
+        const { data: user, error: userError } = await supabaseClient
+            .from('users')
+            .select('id')
+            .eq('username', username)
+            .single();
+        
+        if (userError) throw userError;
+        
+        // Terminate ALL active sessions (including any that might be missed)
+        const { error: sessionError } = await supabaseClient
+            .from('user_sessions')
+            .update({ 
+                is_active: false, 
+                terminated_at: new Date().toISOString(),
+                terminated_reason: 'admin_force_logout'
+            })
+            .eq('user_id', user.id);
+            // Removed .eq('is_active', true) to catch any session
+        
+        if (sessionError) throw sessionError;
+        
+        // Verify sessions are terminated
+        const { data: verifySessions } = await supabaseClient
+            .from('user_sessions')
+            .select('id, is_active')
+            .eq('user_id', user.id)
+            .eq('is_active', true);
+        
+        if (verifySessions && verifySessions.length > 0) {
+            console.warn('Some sessions still active:', verifySessions);
+            // Force delete them
+            await supabaseClient
+                .from('user_sessions')
+                .update({ is_active: false, terminated_at: new Date().toISOString() })
+                .eq('user_id', user.id);
+        }
+        
+        // End their Supabase login sessions too (8s grace so their device shows the notice)
+        const { error: revokeErr } = await supabaseClient.rpc('revoke_auth_sessions', { p_user_id: String(user.id) });
+        if (revokeErr) console.error('Revoke auth sessions error:', revokeErr);
+        
+        await showAlert(`User "${username}" has been force logged out from all devices.`, 'Success', 'success');
+        loadUsers();
+        
+    } catch (err) {
+        console.error('Force logout error:', err);
+        await showAlert('Failed to force logout user: ' + err.message, 'Error', 'error');
+    }
+}
+// ============ FORCE LOGOUT ALL USERS ============
+async function forceLogoutAllUsers() {
+    const currentUsername = localStorage.getItem('username');
+    
+    const confirmed = await showConfirm(
+        `⚠️⚠️⚠️ FORCE LOGOUT ALL USERS ⚠️⚠️⚠️\n\n` +
+        `This will log out EVERYONE except you (${currentUsername}).\n\n` +
+        `All users will be immediately disconnected.\n\n` +
+        `Any unsaved work will be lost.\n\n` +
+        `Are you ABSOLUTELY sure?`,
+        'Force Logout All Users'
+    );
+    
+    if (!confirmed) return;
+    
+    // Double confirmation for safety
+    const doubleConfirm = await showConfirm(
+        `LAST CHANCE: Force logout ALL users?\n\nThis action cannot be undone.`,
+        'Final Confirmation'
+    );
+    
+    if (!doubleConfirm) return;
+    
+    try {
+        // Get current user ID
+        const { data: currentUser } = await supabaseClient
+            .from('users')
+            .select('id')
+            .eq('username', currentUsername)
+            .single();
+        
+        // Terminate all sessions except current user
+        const { error } = await supabaseClient
+            .from('user_sessions')
+            .update({ 
+                is_active: false, 
+                terminated_at: new Date().toISOString(),
+                terminated_reason: 'admin_force_logout_all'
+            })
+            .eq('is_active', true)
+            .neq('user_id', currentUser.id);
+        
+        if (error) throw error;
+        
+        const { error: revokeAllErr } = await supabaseClient.rpc('revoke_all_other_auth_sessions');
+        if (revokeAllErr) console.error('Revoke all auth sessions error:', revokeAllErr);
+        
+        await showAlert('All users have been force logged out successfully!', 'Success', 'success');
+        loadUsers(); // Refresh the list
+        
+    } catch (err) {
+        console.error('Force logout all error:', err);
+        await showAlert('Failed to force logout all users: ' + err.message, 'Error', 'error');
+    }
+}
+
+/* ============ LOAD USER ACTIVITY - WITH ONLINE USERS FIRST ============ */
+async function loadUserActivity() {
+  if (!supabaseClient) return;
+  
+  try {
+    // First, update current user's activity to mark them as online
+    await updateCurrentUserActivity();
+    
+    // Get users with their last login info (no sorting yet, we'll do custom sorting)
+    const { data: users, error } = await supabaseClient
+      .from('users')
+      .select('username, last_login, last_activity, created_at, role, full_name');
+    
+    if (error) throw error;
+    
+    // Sort users: Online first, then by last activity (most recent first)
+    const sortedUsers = users.sort((a, b) => {
+      const aLastActive = a.last_activity || a.last_login;
+      const bLastActive = b.last_activity || b.last_login;
+      const now = new Date();
+      
+      const aIsOnline = aLastActive && (now - new Date(aLastActive)) < 10 * 1000;
+      const bIsOnline = bLastActive && (now - new Date(bLastActive)) < 10 * 1000;
+      
+      // Online users first
+      if (aIsOnline && !bIsOnline) return -1;
+      if (!aIsOnline && bIsOnline) return 1;
+      
+      // Then sort by most recent activity
+      const aTime = aLastActive ? new Date(aLastActive).getTime() : 0;
+      const bTime = bLastActive ? new Date(bLastActive).getTime() : 0;
+      return bTime - aTime;
+    });
+    
+    const tbody = document.getElementById('activityBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    
+    if (!sortedUsers || sortedUsers.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px;">No activity data available</td></tr>`;
+      return;
+    }
+    
+    let onlineCount = 0;
+    let todayCount = 0;
+    const today = new Date().toDateString();
+    const now = new Date();
+    const currentUsername = localStorage.getItem('username');
+    
+    for (const user of sortedUsers) {
+      const tr = document.createElement('tr');
+      
+      // Check both last_activity (from heartbeat) and last_login
+      const lastActiveTime = user.last_activity || user.last_login;
+      let lastLogin = user.last_login ? new Date(user.last_login) : null;
+      
+      // If this is the current user and last_login is null/old, update it
+      if (user.username === currentUsername && (!lastLogin || (now - lastLogin) > 60000)) {
+        await updateCurrentUserActivity();
+        lastLogin = new Date();
+      }
+      
+      // 10 SECOND ONLINE DETECTION
+      const isOnline = lastActiveTime && (now - new Date(lastActiveTime)) < 10 * 1000;
+      
+      if (isOnline) onlineCount++;
+      
+      const lastLoginStr = lastLogin ? lastLogin.toLocaleString() : 'Never';
+      
+      if (lastLogin && lastLogin.toDateString() === today) todayCount++;
+      
+      // Determine status text
+      let statusText = 'Offline';
+      let statusClass = 'status-offline';
+      if (isOnline) {
+        statusText = 'Online';
+        statusClass = 'status-online';
+      }
+      
+      // Calculate session info
+      let sessionInfo = 'Not logged in';
+      if (lastLogin) {
+        const minutes = Math.floor((now - lastLogin) / 1000 / 60);
+        if (minutes < 60) {
+          sessionInfo = `${minutes} min ago`;
+        } else if (minutes < 1440) {
+          sessionInfo = `${Math.floor(minutes / 60)} hours ago`;
+        } else {
+          sessionInfo = `${Math.floor(minutes / 1440)} days ago`;
+        }
+      }
+      
+      // Create table row
+      const usernameCell = document.createElement('td');
+      usernameCell.innerHTML = `<strong>${escapeHtml(user.username)}</strong>${user.username === currentUsername ? ' <span style="color:#0f7a4a;">(You)</span>' : ''}`;
+      tr.appendChild(usernameCell);
+      
+      const statusCell = document.createElement('td');
+      statusCell.className = statusClass;
+      statusCell.textContent = statusText;
+      tr.appendChild(statusCell);
+      
+      const lastLoginCell = document.createElement('td');
+      lastLoginCell.innerHTML = `<small>${lastLoginStr}</small>`;
+      tr.appendChild(lastLoginCell);
+      
+      const lastActivityCell = document.createElement('td');
+      // Show last_activity if available
+      const lastActivityStr = user.last_activity ? new Date(user.last_activity).toLocaleString() : 'Never';
+      lastActivityCell.innerHTML = `<small>${lastActivityStr}</small>`;
+      tr.appendChild(lastActivityCell);
+      
+      const activeTimeCell = document.createElement('td');
+      activeTimeCell.textContent = isOnline ? 'Active now' : sessionInfo;
+      tr.appendChild(activeTimeCell);
+      
+      const sessionCell = document.createElement('td');
+      sessionCell.textContent = isOnline ? 'Connected' : 'Disconnected';
+      tr.appendChild(sessionCell);
+      
+      tbody.appendChild(tr);
+    }
+    
+    const statOnline = document.getElementById('statOnline');
+    const statToday = document.getElementById('statToday');
+    const statTotalUsers = document.getElementById('statTotalUsers');
+    
+    if (statOnline) statOnline.textContent = onlineCount;
+    if (statToday) statToday.textContent = todayCount;
+    if (statTotalUsers) statTotalUsers.textContent = sortedUsers.length;
+    
+    console.log(`🟢 Activity loaded - Online: ${onlineCount}, Active Today: ${todayCount}, Total: ${sortedUsers.length}`);
+    
+  } catch(err) {
+    console.error('Error loading activity:', err);
+    const tbody = document.getElementById('activityBody');
+    if (tbody) {
+      tbody.innerHTML = `<td><td colspan="6" style="text-align: center; color: red;">Error loading activity data: ${err.message}</td></tr>`;
+    }
+  }
+}
+
+/* ============ LOAD AUDIT LOGS ============ */
+async function loadAuditLogs() {
+  if (!supabaseClient) return;
+  
+  try {
+    const { data, error } = await supabaseClient
+      .from('audit_logs')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(500);
+    
+    if (error) throw error;
+    
+    AUDIT_LOGS_DATA = data || [];
+    displayAuditLogs('all');
+  } catch(err) {
+    console.error('Error loading logs:', err);
+  }
+}
+
+function displayAuditLogs(category = 'all') {
+  const tbody = document.getElementById('logsBody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  
+  if (!AUDIT_LOGS_DATA || AUDIT_LOGS_DATA.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">No logs available</td></tr>`;
+    return;
+  }
+  
+  const now = new Date();
+  const today = now.toDateString();
+  const yesterday = new Date(now.setDate(now.getDate() - 1)).toDateString();
+  now.setDate(now.getDate() + 1);
+  
+  let logs = AUDIT_LOGS_DATA;
+  
+  if (category === 'today') {
+    logs = AUDIT_LOGS_DATA.filter(log => {
+      const logDate = log.created_at ? new Date(log.created_at).toDateString() : '';
+      return logDate === today;
+    });
+  } else if (category === 'yesterday') {
+    logs = AUDIT_LOGS_DATA.filter(log => {
+      const logDate = log.created_at ? new Date(log.created_at).toDateString() : '';
+      return logDate === yesterday;
+    });
+  } else if (category === 'older') {
+    logs = AUDIT_LOGS_DATA.filter(log => {
+      const logDate = log.created_at ? new Date(log.created_at).toDateString() : '';
+      return logDate !== today && logDate !== yesterday;
+    });
+  }
+  
+  if (logs.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">No logs found</td></tr>`;
+    return;
+  }
+  
+  logs.forEach(log => {
+    const tr = document.createElement('tr');
+    const timestamp = log.created_at ? new Date(log.created_at).toLocaleString() : '';
+    const action = log.action || '';
+    const actor = log.actor || '';
+    const target = log.target_table || '';
+    const details = log.details || '';
+    
+    tr.innerHTML = `
+      <td><small>${escapeHtml(timestamp)}</small></td>
+      <td><span style="padding: 2px 8px; border-radius: 12px; background: #e9f7f2; font-size: 0.8rem;">${escapeHtml(action)}</span></td>
+      <td>${escapeHtml(actor)}</td>
+      <td>${escapeHtml(target)}</td>
+      <td style="text-align: left;"><small>${escapeHtml(details)}</small></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+/* ============ TAB FUNCTIONALITY ============ */
+function setupTabs() {
+  const mainTabBtns = document.querySelectorAll('.tab-btn');
+  const mainTabContents = document.querySelectorAll('.tab-content');
+  
+  mainTabBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      mainTabBtns.forEach(b => b.classList.remove('active'));
+      mainTabContents.forEach(c => c.classList.remove('active'));
+      
+      this.classList.add('active');
+      const tabId = this.getAttribute('data-tab');
+      const tabContent = document.getElementById(`${tabId}Tab`);
+      if (tabContent) tabContent.classList.add('active');
+      
+      if (tabId === 'activity') {
+        loadUserActivity();
+      } else if (tabId === 'audit') {
+        loadAuditLogs();
+      }
+    });
+  });
+  
+  const subTabBtns = document.querySelectorAll('#auditTab .tab-btn-small');
+  subTabBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      subTabBtns.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      const category = this.getAttribute('data-category');
+      displayAuditLogs(category);
+    });
+  });
+}
+
+function closeLogsModal() {
+  const modal = document.getElementById('logsModal');
+  if (modal) modal.style.display = 'none';
+  if (ACTIVITY_REFRESH_INTERVAL) {
+    clearInterval(ACTIVITY_REFRESH_INTERVAL);
+    ACTIVITY_REFRESH_INTERVAL = null;
+  }
+}
+
+/* ============ SIDEBAR TOGGLE ============ */
+function toggleSidebar() {
+  const pageContainer = document.querySelector('.page-container');
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  if (!pageContainer || !sidebarToggle) return;
+  
+  const icon = sidebarToggle.querySelector('i');
+  pageContainer.classList.toggle('collapsed');
+  
+  if (pageContainer.classList.contains('collapsed')) {
+    if (icon) icon.className = 'fas fa-chevron-right';
+    sidebarToggle.title = "Expand sidebar";
+  } else {
+    if (icon) icon.className = 'fas fa-bars';
+    sidebarToggle.title = "Collapse sidebar";
+  }
+}
+
+/* ============ UTILITY FUNCTIONS ============ */
+function escapeHtml(text) {
+  if (text === null || text === undefined) return '';
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+/* ============ SEARCH FUNCTIONALITY ============ */
+function setupSearch() {
+  const filterUser = document.getElementById('filterUser');
+  if (filterUser) {
+    filterUser.addEventListener('input', (e) => {
+      renderUsers(e.target.value, CURRENT_ROLE_FILTER);
+    });
+  }
+  
+  const searchActivity = document.getElementById('searchActivity');
+  if (searchActivity) {
+    searchActivity.addEventListener('input', function(e) {
+      const searchTerm = e.target.value.toLowerCase();
+      const rows = document.querySelectorAll('#activityBody tr');
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? '' : 'none';
+      });
+    });
+  }
+  
+  const searchAudit = document.getElementById('searchAudit');
+  if (searchAudit) {
+    searchAudit.addEventListener('input', function(e) {
+      const searchTerm = e.target.value.toLowerCase();
+      const rows = document.querySelectorAll('#logsBody tr');
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? '' : 'none';
+      });
+    });
+  }
+}
+
+/* ============ PASSWORD STRENGTH SETUP ============ */
+function setupPasswordStrength() {
+  const passwordInput = document.getElementById('user_password');
+  const passwordHint = document.getElementById('passwordHint');
+  
+  if (passwordInput && passwordHint) {
+    passwordInput.addEventListener('input', function() {
+      const password = this.value;
+      const strength = checkPasswordStrength(password);
+      
+      if (password === '') {
+        passwordHint.innerHTML = '';
+      } else {
+        passwordHint.innerHTML = `<i class="fas fa-shield-alt"></i> ${strength.message}`;
+        passwordHint.className = `form-hint password-strength ${strength.className}`;
+      }
+    });
+  }
+}
+
+/* ============ EYE ICON TOGGLE ============ */
+function setupPasswordToggle() {
+  const toggleBtn = document.getElementById('toggleModalPassword');
+  const passwordInput = document.getElementById('user_password');
+  
+  if (toggleBtn && passwordInput) {
+    toggleBtn.addEventListener('click', function() {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      
+      const icon = this.querySelector('i');
+      if (icon) {
+        if (type === 'text') {
+          icon.classList.remove('fa-eye');
+          icon.classList.add('fa-eye-slash');
+        } else {
+          icon.classList.remove('fa-eye-slash');
+          icon.classList.add('fa-eye');
+        }
+      }
+    });
+  }
+}
+
+/* ============ REFRESH LOGS ============ */
+function refreshLogs() {
+  const activeTab = document.querySelector('.tab-btn.active');
+  if (activeTab) {
+    const tabId = activeTab.getAttribute('data-tab');
+    if (tabId === 'activity') {
+      loadUserActivity();
+    } else if (tabId === 'audit') {
+      loadAuditLogs();
+    }
+  }
+}
+
+function setupUserDropdown() {
+    const userBtn = document.getElementById('userBtn');
+    const userDropdown = document.getElementById('userDropdown');
+    
+    if (userBtn && userDropdown) {
+        userBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userDropdown.classList.toggle('active');
+        });
+        
+        document.addEventListener('click', function() {
+            userDropdown.classList.remove('active');
+        });
+    }
+}
+
+// ============ UPDATED LOGOUT FUNCTIONS WITH SESSION CLEANUP ============
+
+async function performLogout() {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging out...';
+        logoutBtn.disabled = true;
+    }
+    
+    // ✅ CRITICAL FIX: Deactivate session in Supabase
+    const sessionId = localStorage.getItem('sessionId');
+    
+    if (sessionId && supabaseClient) {
+        try {
+            const { error } = await supabaseClient
+                .from('user_sessions')
+                .update({ 
+                    is_active: false, 
+                    terminated_at: new Date().toISOString() 
+                })
+                .eq('session_id', sessionId);
+            
+            if (error) {
+                console.error('Failed to deactivate session:', error);
+            } else {
+                console.log('✅ Session deactivated in Supabase');
+            }
+        } catch (err) {
+            console.error('Logout error:', err);
+        }
+    }
+    
+    // Clear all local storage
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // Clear cookies
+    document.cookie.split(";").forEach(function(c) { 
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+    });
+    
+    // Redirect to login with cache-busting
+    window.location.replace('index.html?logout=' + Date.now());
+}
+
+function setupLogoutHandler() {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        const newLogoutBtn = logoutBtn.cloneNode(true);
+        logoutBtn.parentNode.replaceChild(newLogoutBtn, logoutBtn);
+        
+        newLogoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const confirmModal = document.getElementById('confirmModal');
+            if (confirmModal) {
+                confirmModal.style.display = 'flex';
+            }
+        });
+    }
+}
+
+function setupConfirmModal() {
+    const confirmModal = document.getElementById('confirmModal');
+    if (!confirmModal) return;
+    
+    const yesBtn = document.getElementById('confirmYesBtn');
+    const noBtn = document.getElementById('confirmNoBtn');
+    
+    if (yesBtn) {
+        yesBtn.onclick = async function() {
+            confirmModal.style.display = 'none';
+            await performLogout();  // ✅ Calls database cleanup + local storage
+        };
+    }
+    
+    if (noBtn) {
+        noBtn.onclick = function() {
+            confirmModal.style.display = 'none';
+        };
+    }
+}
+
+/* ============ DOM CONTENT LOADED ============ */
+window.addEventListener('DOMContentLoaded', async () => {
+    // Session check
+    const loggedIn = localStorage.getItem('loggedIn') === 'true';
+    const isGuest = localStorage.getItem('isGuest') === 'true';
+    
+    if (isGuest) {
+        window.location.replace('dashboard.html');
+        return;
+    }
+    
+    if (!loggedIn) {
+        window.location.href = 'index.html?session=expired';
+        return;
+    }
+    
+    // Update current user's activity immediately
+    await updateCurrentUserActivity();
+    
+    // Set user info
+    const staffName = localStorage.getItem("staffName");
+    const username = localStorage.getItem("username");
+    let displayName = "User";
+    if (staffName && staffName.trim() !== "") {
+        displayName = staffName;
+    } else if (username && username.trim() !== "") {
+        displayName = username;
+    }
+    
+    const userNameElement = document.getElementById("userName");
+    if (userNameElement) userNameElement.innerText = displayName;
+    
+    const userFullnameElement = document.getElementById('userFullname');
+    if (userFullnameElement) userFullnameElement.innerText = displayName;
+    
+    const userRole = localStorage.getItem("userRole");
+    const isAdmin = userRole && userRole.toLowerCase() === 'admin';
+    
+    const userRoleElement = document.getElementById('userRole');
+    if (userRoleElement) userRoleElement.innerText = isAdmin ? 'Admin' : 'Staff';
+    
+    const adminItems = document.querySelectorAll(".admin-only");
+    adminItems.forEach(item => {
+      if (isAdmin) {
+        item.classList.add("admin-visible");
+        item.style.display = "block";
+      } else {
+        item.classList.remove("admin-visible");
+        item.style.display = "none";
+      }
+    });
+    
+    // Initialize
+    await loadUsers();
+    setupRoleToggle();
+    setupTabs();
+    setupSearch();
+    setupPasswordStrength();
+    setupPasswordToggle();
+    setupUserDropdown();
+    setupLogoutHandler();
+    setupConfirmModal();
+    
+    // Event listeners
+    const openAddUser = document.getElementById('openAddUser');
+    if (openAddUser) openAddUser.addEventListener('click', () => openUserModal('add'));
+    
+    const viewLogsBtn = document.getElementById('viewLogsBtn');
+    if (viewLogsBtn) {
+      viewLogsBtn.addEventListener('click', async function() {
+        const logsModal = document.getElementById('logsModal');
+        if (logsModal) logsModal.style.display = 'flex';
+        await loadUserActivity();
+        await loadAuditLogs();
+        
+        // Auto-refresh activity every 10 seconds while modal is open
+        if (ACTIVITY_REFRESH_INTERVAL) clearInterval(ACTIVITY_REFRESH_INTERVAL);
+        ACTIVITY_REFRESH_INTERVAL = setInterval(() => {
+          const activeTab = document.querySelector('.tab-btn.active');
+          if (activeTab && activeTab.getAttribute('data-tab') === 'activity') {
+            loadUserActivity();
+          }
+        }, 10000);
+      });
+    }
+    
+    const saveUserBtn = document.getElementById('saveUserBtn');
+    if (saveUserBtn) saveUserBtn.addEventListener('click', saveUser);
+    
+    const cancelModal = document.getElementById('cancelModal');
+    if (cancelModal) cancelModal.addEventListener('click', closeUserModal);
+    
+    const closeModal = document.getElementById('closeModal');
+    if (closeModal) closeModal.addEventListener('click', closeUserModal);
+    
+    const closeLogsModalBtn = document.getElementById('closeLogsModalBtn');
+    if (closeLogsModalBtn) closeLogsModalBtn.addEventListener('click', closeLogsModal);
+    
+    const refreshLogsBtn = document.getElementById('refreshLogsBtn');
+    if (refreshLogsBtn) refreshLogsBtn.addEventListener('click', refreshLogs);
+    
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
+    
+    const cancelReset = document.getElementById('cancelReset');
+    if (cancelReset) cancelReset.addEventListener('click', closeResetModal);
+    
+    const confirmReset = document.getElementById('confirmReset');
+    if (confirmReset) confirmReset.addEventListener('click', resetPassword);
+    
+    const cancelDelete = document.getElementById('cancelDelete');
+    if (cancelDelete) cancelDelete.addEventListener('click', closeDeleteModal);
+    
+    const confirmDelete = document.getElementById('confirmDelete');
+    if (confirmDelete) confirmDelete.addEventListener('click', deleteUser);
+    
+    // Success Modal Handlers
+    const closeUserSavedSuccess = document.getElementById('closeUserSavedSuccess');
+    if (closeUserSavedSuccess) {
+      closeUserSavedSuccess.addEventListener('click', () => {
+        document.getElementById('userSavedSuccessModal').style.display = 'none';
+      });
+    }
+    
+    const closeResetSuccess = document.getElementById('closeResetSuccess');
+    if (closeResetSuccess) {
+      closeResetSuccess.addEventListener('click', () => {
+        document.getElementById('resetSuccessModal').style.display = 'none';
+      });
+    }
+    
+    const closeDeleteSuccess = document.getElementById('closeDeleteSuccess');
+    if (closeDeleteSuccess) {
+      closeDeleteSuccess.addEventListener('click', () => {
+        document.getElementById('deleteSuccessModal').style.display = 'none';
+      });
+    }
+    
+    // Close modals on overlay click
+    const modals = ['userModal', 'logsModal', 'resetModal', 'deleteModal', 'userSavedSuccessModal', 'resetSuccessModal', 'deleteSuccessModal', 'customAlertModal', 'customConfirmModal'];
+    modals.forEach(modalId => {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) modal.style.display = 'none';
+        });
+      }
+    });
+    
+    // Auto-refresh users every 30 seconds
+    REFRESH_INTERVAL = setInterval(() => {
+      loadUsers();
+    }, 30000);
+    
+    // Update activity every 2 minutes while on page
+    setInterval(() => {
+      updateCurrentUserActivity();
+    }, 120000);
+    
+    // Update activity when page is about to close
+    window.addEventListener('beforeunload', () => {
+      updateCurrentUserActivity();
+    });
+});
+
+// Make functions globally available
+window.editUser = editUser;
+window.showResetModal = showResetModal;
+window.showDeleteModal = showDeleteModal;
+window.escapeHtml = escapeHtml;
+</script>
+</body>
+</html>
