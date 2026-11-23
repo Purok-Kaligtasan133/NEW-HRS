@@ -1,0 +1,3620 @@
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <!-- PREVENT CACHING -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+<title>Charts & Analytics — Purok Kaligtasan</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="css/uniform-styles.css">
+<link rel="stylesheet" href="css/header-styles.css">
+<link rel="stylesheet" href="css/charts-style.css">
+<link rel="stylesheet" href="css/consistency-mobile.css">
+<script src="js/force-logout.js"></script>
+<script src="js/session-check.js"></script>
+<script src="js/security.js"></script>
+<style>
+   :root{
+    --bg:#f6f8f7;
+    --card-bg:#fff;
+    --muted:#6b6f6b;
+    --accent1:#0f7a4a;
+    --accent2:#34b78f;
+    --accent3: #ff7a00;
+    --accent4: #ffa500;
+    --light-green: #e9f7f2;
+    --border: #e1e8e5;
+    --shadow: 0 6px 18px rgba(6,30,20,0.06);
+    --shadow-dark: 0 6px 20px rgba(5,40,25,0.12);
+    --radius:12px;
+    --radius-sm:8px;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+   }
+   
+   /* Update charts grid for new layout */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+/* For grid view charts (two per row) */
+.chart-card:not(.full-size) {
+    grid-column: span 1;
+}
+
+@media (min-width: 768px) {
+    .charts-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Full size charts span both columns */
+    .chart-card.full-size {
+        grid-column: 1 / -1;
+    }
+    
+    /* Stage Distribution specific styling */
+    .chart-card:nth-child(8) { /* Stage Distribution */
+        position: relative;
+        overflow: visible !important;
+    }
+    
+    .chart-card:nth-child(8) .chart-container {
+        overflow: visible !important;
+    }
+}
+
+/* Fix hover effects for Employment, OFW, and Stage charts */
+.chart-card:nth-child(11) .chart-container, /* Employment */
+.chart-card:nth-child(8) .chart-container, /* Stage */
+.chart-card:nth-child(11) .chart-container { /* OFW */
+    overflow: visible !important;
+}
+
+/* Ensure tooltips are not clipped */
+.chartjs-tooltip {
+    z-index: 9999 !important;
+    position: absolute;
+    pointer-events: none;
+}
+   
+   /* Background decorative elements */
+   .bg-pattern {
+     position: absolute;
+     width: 100%;
+     height: 100%;
+     overflow: hidden;
+     z-index: -1;
+   }
+   
+   .bg-circle {
+     position: absolute;
+     border-radius: 50%;
+     background: rgba(15, 122, 74, 0.05);
+   }
+   
+   .circle-1 {
+     width: 300px;
+     height: 300px;
+     top: -150px;
+     right: -150px;
+   }
+   
+   .circle-2 {
+     width: 200px;
+     height: 200px;
+     bottom: -100px;
+     left: -100px;
+     background: rgba(255, 122, 0, 0.05);
+   }
+   
+   .circle-3 {
+     width: 150px;
+     height: 150px;
+     top: 50%;
+     left: 10%;
+     background: rgba(52, 183, 143, 0.05);
+   }
+   
+   .admin-only {
+    display: none !important;
+}
+
+/* Class to show admin elements - applied by JavaScript */
+.admin-only.admin-visible {
+    display: block !important;
+}
+
+/* For list items */
+li.admin-only {
+    display: none !important;
+}
+
+li.admin-only.admin-visible {
+    display: list-item !important;
+}
+   
+   /* Description Styling */
+   #disc {
+    margin-bottom: 10px;
+    background: var(--light-green);
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--accent1);
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+   }
+   
+   body {
+    background-color: var(--bg);
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    padding-bottom: 70px; /* Space for fixed bottom nav */
+   }
+
+   .page-container{
+    max-width:1200px;
+    margin:auto;
+    padding:12px;
+    display:grid;
+    grid-template-columns:260px 1fr;
+    gap:18px;
+    align-items:start;
+    transition: grid-template-columns 0.3s ease;
+   }
+
+   .page-container.collapsed {
+    grid-template-columns: 60px 1fr;
+   }
+
+   /* Topbar - Enhanced */
+   .topbar{
+    grid-column:1/-1;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px 14px;
+    border-radius:var(--radius);
+    background:linear-gradient(90deg, var(--accent1), var(--accent2));
+    color:#fff;
+    box-shadow:var(--shadow-dark);
+   }
+
+   .brand{
+    display:flex;
+    gap:12px;
+    align-items:center;
+   }
+
+   .brand .logo{
+    width:60px;
+    height:60px;
+    border-radius:var(--radius-sm);
+    object-fit:contain;
+   }
+
+   .brand-text h1 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0;
+   }
+
+   .brand-text p {
+    font-size:12px;
+    opacity:0.95;
+    margin: 4px 0 0 0;
+   }
+
+   .user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+   }
+
+   #userName {
+    font-weight: 600;
+    border-radius: 20px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+   }
+
+   #logoutBtn {
+    background: rgba(255,255,255,0.25);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+   }
+
+   #logoutBtn:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-1px);
+   }
+
+   /* Sidebar - Collapsible */
+   .sidebar{
+    background:linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0.20));
+    border-radius:var(--radius);
+    padding:12px;
+    height:calc(100vh - 120px);
+    position:sticky;
+    top:72px;
+    overflow:auto;
+    transition: width 0.3s ease;
+    z-index: 100;
+   }
+
+   .sidebar-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+   }
+
+   .sidebar-toggle {
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+   }
+
+   .sidebar-toggle:hover {
+    transform: scale(1.1);
+   }
+
+   .sidebar ul{
+    list-style:none;
+    padding:0;
+    margin:0;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    flex: 1;
+   }
+
+   .sidebar li a{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    text-decoration: none;
+    color: var(--muted);
+    border-radius: var(--radius-sm);
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+   }
+
+   .sidebar li a:hover{
+    background: var(--light-green);
+    color: var(--accent1);
+   }
+
+   .sidebar li a.active{
+    background: linear-gradient(90deg, var(--accent1), var(--accent2));
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(15,122,74,0.2);
+   }
+
+   .sidebar li a .menu-icon {
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+   }
+
+   .sidebar li a .menu-text {
+    transition: opacity 0.3s ease;
+   }
+
+   .page-container.collapsed .sidebar li a .menu-text {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+   }
+
+   /* REMOVED: Mobile Logout Button in Sidebar */
+   .mobile-logout-container {
+    display: none !important; /* Remove logout button from sidebar */
+   }
+
+   /* Content Area */
+   .content-area{
+    background:linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.6));
+    border-radius:var(--radius);
+    padding:18px;
+    box-shadow:0 8px 22px rgba(10,20,16,0.06);
+    min-height:72vh;
+    height: calc(100vh - 120px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+   }
+
+   /* Content Header */
+   .content-header {
+    margin-top: 0;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+   }
+
+   .content-header h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: var(--accent1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+   }
+
+   /* ============ NEW: COMPACT GLOBAL STATS SUMMARY ============ */
+   .global-stats-summary {
+    display: none; /* Hidden by default, Option 2 */
+    background: white;
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--accent1);
+    justify-content: center; /* Center boxes */
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+   }
+   
+   .global-stats-summary.visible {
+    display: flex;
+   }
+   
+   .global-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    min-width: 70px; /* Smaller width */
+    text-align: center;
+    transition: all 0.2s ease;
+   }
+   
+   .global-stat.heads {
+    background: var(--light-green);
+    border: 1px solid rgba(15, 122, 74, 0.2);
+   }
+   
+   .global-stat.members {
+    background: #e3f2fd;
+    border: 1px solid rgba(33, 150, 243, 0.2);
+   }
+   
+   .global-stat.total {
+    background: #fff3e0;
+    border: 1px solid rgba(255, 167, 38, 0.2);
+   }
+   
+   .global-stat.highlight {
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    color: white;
+    transform: scale(1.05);
+   }
+   
+   .global-stat-value {
+    font-size: 1.2rem; /* Smaller font */
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 2px;
+   }
+   
+   .global-stat-label {
+    font-size: 0.7rem; /* Smaller font */
+    opacity: 0.9;
+    white-space: nowrap;
+   }
+   
+   .highlight .global-stat-label {
+    opacity: 0.95;
+   }
+   
+   /* Global stats timestamp - smaller and hidden in summary view */
+   .global-stats-timestamp {
+    font-size: 0.65rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 8px;
+    font-style: italic;
+   }
+   
+   .stats-view-summary .global-stats-timestamp {
+    display: none; /* Hide "Updated" text in summary view */
+   }
+   
+   /* ============ NEW: STATS VIEW TOGGLE ============ */
+   .stats-view-toggle {
+    display: none; /* Hidden by default, Option 3 */
+    background: white;
+    border-radius: var(--radius-sm);
+    padding: 6px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+   }
+   
+   .stats-view-toggle.visible {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+   }
+   
+   .stats-toggle-btn {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 5px 10px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+    color: var(--muted);
+    flex: 1;
+    justify-content: center;
+    max-width: 120px;
+   }
+   
+   .stats-toggle-btn:hover {
+    background: var(--light-green);
+    border-color: var(--accent1);
+   }
+   
+   .stats-toggle-btn.active {
+    background: var(--accent1);
+    color: white;
+    border-color: var(--accent1);
+   }
+   
+   /* ============ ENHANCED CHART STATS ============ */
+   /* Option 1: Enhanced current design */
+   .chart-stats {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+   }
+   
+   .stat-badge {
+    background: var(--light-green);
+    color: var(--accent1);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: help; /* Indicates tooltip */
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+   }
+   
+   .stat-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+   }
+   
+   .stat-badge.heads {
+    background: var(--light-green);
+    border-color: rgba(15, 122, 74, 0.3);
+   }
+   
+   .stat-badge.members {
+    background: #e3f2fd;
+    border-color: rgba(33, 150, 243, 0.3);
+    color: #1976d2;
+   }
+   
+   .stat-badge.total {
+    background: #fff3e0;
+    border-color: rgba(255, 167, 38, 0.3);
+    color: #ef6c00;
+   }
+   
+   /* Checkbox-specific badges (Government Support, Additional Info, Transportation) */
+   .stat-badge.checkbox-heads {
+    background: #f3e5f5;
+    border-color: rgba(156, 39, 176, 0.3);
+    color: #7b1fa2;
+   }
+   
+   .stat-badge.checkbox-members {
+    background: #e8f5e8;
+    border-color: rgba(76, 175, 80, 0.3);
+    color: #2e7d32;
+   }
+   
+   .stat-badge.checkbox-total {
+    background: #fff8e1;
+    border-color: rgba(255, 193, 7, 0.3);
+    color: #ff8f00;
+   }
+   
+   .stat-badge .percentage {
+    font-size: 0.65rem;
+    opacity: 0.8;
+    font-weight: normal;
+    margin-left: 2px;
+   }
+   
+   .last-updated {
+    font-size: 0.65rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 4px;
+   }
+   
+   /* Toolbar - FIXED: All buttons on the right side */
+   .toolbar {
+    display: flex;
+    justify-content: flex-end; /* Align everything to the right */
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+   }
+
+   /* REMOVE toolbar-left since all buttons are on the right */
+   .toolbar-left {
+    display: none; /* Hide left container */
+   }
+
+   /* RIGHT-ALIGNED BUTTONS GROUP - All buttons here */
+   .toolbar-right {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end; /* Ensure alignment to right */
+    width: 100%; /* Take full width */
+   }
+
+   .btn {
+    border:0;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    cursor:pointer;
+    font-weight:600;
+    background: linear-gradient(90deg, var(--accent1), var(--accent2));
+    color:#fff;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    height: 36px;
+    box-sizing: border-box;
+   }
+
+   .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(15,122,74,0.2);
+   }
+
+   .btn-print {
+    background: linear-gradient(90deg, var(--accent1), var(--accent2));
+   }
+
+   .btn-export {
+    background: linear-gradient(90deg, var(--accent3), var(--accent4));
+   }
+
+   .btn-export:hover {
+    box-shadow: 0 4px 8px rgba(255,122,0,0.2);
+   }
+   
+   /* Export dropdown - From records.html */
+   .export-wrapper {
+    position: relative;
+   }
+
+   .export-dropdown {
+    font-size: 0.8rem;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    width: 140px;
+    box-shadow: var(--shadow);
+    z-index: 9999;
+    overflow: hidden;
+    display: none;
+   }
+
+   .export-dropdown.show {
+    display: block;
+   }
+
+   .export-dropdown div {
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+   }
+
+   .export-dropdown div:hover {
+    background: #e9fff0;
+    color: var(--accent1);
+   }
+
+   .export-dropdown div i {
+    width: 14px;
+    text-align: center;
+    font-size: 0.85rem;
+   }
+
+   /* Charts Grid - Redesigned */
+   .charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+    margin-top: 10px;
+   }
+
+   .chart-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+   }
+
+   .chart-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(6,30,20,0.12);
+   }
+
+   .chart-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent1), var(--accent2));
+    border-radius: var(--radius) var(--radius) 0 0;
+   }
+
+   .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+   }
+
+   .chart-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent1);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+   }
+
+   .chart-title i {
+    color: var(--accent2);
+   }
+
+   .chart-container {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    margin: 10px 0;
+   }
+
+   /* Special size for specific charts - SAME AS COMPARISON CHART */
+   .chart-card.full-size {
+    grid-column: 1 / -1;
+    min-height: 400px;
+   }
+   
+   .full-size .chart-container {
+    height: 320px;
+   }
+
+   canvas {
+    width: 100% !important;
+    height: 100% !important;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+   }
+
+   /* Special styling for PWD gauge */
+   .pwd-gauge-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    height: 100%;
+   }
+
+   .pwd-canvas-wrapper {
+    flex: 1;
+    position: relative;
+    height: 200px;
+   }
+
+   .pwd-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 120px;
+   }
+
+   .pwd-stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    background: var(--light-green);
+   }
+
+   .pwd-stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent1);
+   }
+
+   .pwd-stat-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 4px;
+   }
+
+   /* Comparison Chart - Full Width */
+   .comparison-chart {
+    grid-column: 1 / -1;
+    min-height: 400px;
+   }
+
+   .comparison-chart .chart-container {
+    height: 320px;
+   }
+
+   /* Loading overlay */
+   #loading {
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(255,255,255,0.85);
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    backdrop-filter: blur(2px);
+   }
+
+   .loading-content {
+    background:#fff;
+    padding:20px 24px;
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+   }
+
+   .loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent1);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+   }
+
+   @keyframes spin {
+    to { transform: rotate(360deg); }
+   }
+
+   /* Auto-refresh indicator */
+   .auto-refresh {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--muted);
+    padding: 8px 12px;
+    background: rgba(15,122,74,0.05);
+    border-radius: var(--radius-sm);
+   }
+
+   .auto-refresh .indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #34a853;
+    animation: pulse 2s infinite;
+   }
+
+   @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+   }
+
+   /* Error message */
+   .error-message {
+    display: none;
+    background: #fee;
+    color: #c00;
+    padding: 10px 15px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 15px;
+    border-left: 4px solid #c00;
+    font-size: 0.9rem;
+   }
+
+   .error-message.show {
+    display: block;
+   }
+
+   /* Mobile Bottom Navigation - Fixed Position - UPDATED: REMOVED LOGOUT */
+   .mobile-bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid var(--border);
+    z-index: 1000;
+    padding: 8px 0;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+    height: 70px;
+    box-sizing: border-box;
+    overflow: hidden;
+   }
+
+   .mobile-nav-items {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+   }
+
+.mobile-nav-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-decoration: none !important;
+    color: var(--muted) !important;
+    padding: 8px 12px !important;
+    border-radius: var(--radius-sm) !important;
+    transition: all 0.3s ease !important;
+    min-width: 60px !important;
+    flex: 1 !important;
+    height: 100% !important;
+    justify-content: center !important;
+}
+
+/* Admin items - initially hidden */
+.mobile-nav-item.admin-only {
+    display: none !important;
+}
+
+/* Show admin items when user is admin */
+.mobile-nav-item.admin-only.admin-visible {
+    display: flex !important;
+}
+
+/* Active state for all tabs */
+.mobile-nav-item.active {
+    color: var(--accent1) !important;
+    background: var(--light-green) !important;
+}
+
+/* REMOVED: Logout button styling - no longer needed */
+
+/* Icon and text for all tabs */
+.mobile-nav-icon {
+    font-size: 1.2rem !important;
+    margin-bottom: 4px !important;
+    display: block !important;
+    text-align: center !important;
+    width: 100% !important;
+}
+
+.mobile-nav-text {
+    font-size: 0.7rem !important;
+    font-weight: 500 !important;
+    display: block !important;
+    text-align: center !important;
+    width: 100% !important;
+}
+
+   /* ============ MOBILE ENHANCEMENTS ============ */
+   @media (max-width: 768px) {
+    body {
+        padding-bottom: 70px; /* Space for fixed bottom nav */
+    }
+    
+    .page-container {
+        grid-template-columns: 1fr !important;
+        padding: 8px;
+        gap: 12px;
+        margin-bottom: 0; /* Remove margin since we have body padding */
+    }
+    
+    .page-container.collapsed {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .sidebar {
+        display: none !important; /* Hide sidebar on mobile */
+    }
+    
+    .mobile-bottom-nav {
+        display: flex !important; /* Show bottom nav on mobile */
+        flex-direction: column;
+    }
+    
+    /* Remove mobile menu toggle button */
+    .mobile-menu-toggle {
+        display: none !important;
+    }
+    
+    /* Show mobile logout button in sidebar when sidebar is forced to show */
+    .mobile-logout-container {
+        display: none !important; /* REMOVED: Hide logout in sidebar */
+    }
+    
+    .content-area {
+        height: auto;
+        min-height: calc(100vh - 140px);
+        padding: 12px;
+        margin-bottom: 0;
+    }
+    
+    /* Global Stats on mobile */
+    .global-stats-summary.visible {
+        flex-direction: row;
+        gap: 8px;
+        padding: 6px 8px;
+    }
+    
+    .global-stat {
+        width: auto;
+        flex-direction: column;
+        justify-content: center;
+        min-width: 60px;
+        padding: 5px 8px;
+    }
+    
+    .global-stat-value {
+        font-size: 1rem;
+    }
+    
+    .global-stat-label {
+        font-size: 0.65rem;
+    }
+    
+    .global-stats-timestamp {
+        display: none !important; /* Always hide timestamp on mobile */
+    }
+    
+    /* Stats View Toggle on mobile */
+    .stats-view-toggle.visible {
+        flex-direction: row;
+        padding: 4px;
+    }
+    
+    .stats-toggle-btn {
+        font-size: 0.7rem;
+        padding: 4px 6px;
+        max-width: 100px;
+    }
+    
+    /* Enhanced chart stats on mobile */
+    .chart-stats {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 3px;
+    }
+    
+    .stat-badge {
+        font-size: 0.65rem;
+        padding: 2px 4px;
+        width: max-content;
+    }
+    
+    .stat-badge .percentage {
+        font-size: 0.6rem;
+    }
+    
+    /* Hide detailed stats on very small screens, show in title */
+    @media (max-width: 480px) {
+        .chart-stats.hide-on-mobile {
+            display: none !important;
+        }
+        
+        .chart-title.compact::after {
+            content: " (" attr(data-total) ")";
+            font-size: 0.75em;
+            opacity: 0.8;
+            margin-left: 4px;
+        }
+        
+        .global-stat {
+            min-width: 50px;
+            padding: 4px 6px;
+        }
+        
+        .global-stat-value {
+            font-size: 0.9rem;
+        }
+        
+        .global-stat-label {
+            font-size: 0.6rem;
+        }
+        
+        .stats-toggle-btn {
+            font-size: 0.65rem;
+            padding: 3px 5px;
+            max-width: 90px;
+        }
+    }
+    
+    /* UPDATED: Toolbar for mobile - linear and centered */
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px;
+        gap: 15px;
+        justify-content: center; /* Center on mobile */
+    }
+    
+    /* UPDATED: Right-aligned buttons become linear and centered on mobile */
+    .toolbar-right {
+        display: flex !important;
+        flex-direction: row;
+        width: 100%;
+        justify-content: center; /* Center the buttons on mobile */
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    /* UPDATED: Ensure buttons are properly sized on mobile */
+    .toolbar-right .btn {
+        flex: 1; /* Make buttons take equal space */
+        min-width: 100px; /* Minimum width */
+        max-width: 120px; /* Maximum width */
+        justify-content: center;
+        text-align: center;
+    }
+    
+    .charts-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .chart-card {
+        padding: 15px;
+    }
+    
+    .chart-container {
+        height: 220px;
+    }
+    
+    .full-size .chart-container {
+        height: 280px;
+    }
+    
+    .comparison-chart .chart-container {
+        height: 280px;
+    }
+    
+    .pwd-gauge-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .pwd-stats {
+        flex-direction: row;
+        justify-content: space-around;
+        width: 100%;
+    }
+    
+    .user-info {
+        gap: 8px;
+    }
+    
+    #userName {
+        font-size: 0.9rem;
+        padding: 6px 12px;
+    }
+    
+    #logoutBtn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+    
+    .btn {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+    }
+    
+    /* Optimize charts for mobile */
+    .chart-card canvas {
+        max-height: 200px;
+    }
+    
+    /* Adjust content area for bottom nav */
+    .content-area {
+        margin-bottom: 70px;
+    }
+    
+    /* Export dropdown positioning for mobile */
+    .export-wrapper {
+        width: auto;
+        flex: 1;
+        min-width: 100px;
+        max-width: 120px;
+    }
+    
+    .export-dropdown {
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        width: 140px;
+    }
+   }
+
+   /* Tablet Styles */
+   @media (min-width: 769px) and (max-width: 1024px) {
+    .page-container {
+        max-width: 95%;
+        grid-template-columns: 220px 1fr;
+        gap: 15px;
+        padding: 10px;
+    }
+    
+    .content-area {
+        padding: 15px;
+    }
+    
+    .charts-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .comparison-chart,
+    .chart-card.full-size {
+        grid-column: 1 / -1;
+    }
+    
+    .mobile-bottom-nav {
+        display: none;
+    }
+   }
+
+   /* Desktop Styles */
+   @media (min-width: 1025px) {
+    .mobile-bottom-nav {
+        display: none;
+    }
+    
+    .mobile-menu-toggle {
+        display: none;
+    }
+   }
+
+   /* Print styles - Fixed for no stretching */
+   @media print {
+    body * {
+        visibility: hidden;
+        background: white !important;
+        color: black !important;
+    }
+    
+    .content-area,
+    .content-area * {
+        visibility: visible;
+        background: white !important;
+        color: black !important;
+        box-shadow: none !important;
+    }
+    
+    .content-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100% !important;
+        height: auto !important;
+        padding: 20px !important;
+        overflow: visible !important;
+        page-break-before: always;
+    }
+    
+    .page-container {
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+    
+    .topbar,
+    .sidebar,
+    .toolbar,
+    .mobile-bottom-nav,
+    .mobile-menu-toggle,
+    .global-stats-summary,
+    .stats-view-toggle {
+        display: none !important;
+    }
+    
+    .chart-card {
+        page-break-inside: avoid;
+        break-inside: avoid;
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        margin-bottom: 20px;
+        height: auto !important;
+    }
+    
+    .charts-grid {
+        display: block !important;
+        grid-template-columns: 1fr !important;
+    }
+    
+    .chart-container {
+        height: 300px !important;
+    }
+    
+    .full-size .chart-container {
+        height: 400px !important;
+    }
+    
+    .comparison-chart .chart-container {
+        height: 400px !important;
+    }
+    
+    /* Force white background for print */
+    @page {
+        margin: 20mm;
+    }
+    
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+   }
+   /* ============ PROFESSIONAL ENHANCEMENTS ============ */
+
+/* Better chart card hover effects */
+.chart-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.chart-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Stats badges - more professional look */
+.stat-badge {
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    backdrop-filter: blur(4px);
+}
+
+.stat-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Compact view - better title styling */
+.stats-view-compact .chart-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.stats-view-compact .chart-title span {
+    font-weight: 400;
+    color: var(--accent2);
+}
+
+/* Loading spinner - smoother */
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border-width: 3px;
+}
+
+/* Auto-refresh indicator - more subtle */
+.auto-refresh {
+    background: rgba(15, 122, 74, 0.08);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+}
+
+.auto-refresh .indicator {
+    width: 8px;
+    height: 8px;
+    animation: pulse 1.5s infinite;
+}
+
+/* Toolbar buttons - better spacing */
+.toolbar-right .btn {
+    padding: 7px 14px;
+    font-size: 0.8rem;
+}
+
+/* Export dropdown - smoother animation */
+.export-dropdown {
+    transition: opacity 0.2s ease;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.export-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Global stats cards - more modern */
+.global-stat {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(4px);
+    border-radius: 12px;
+    padding: 8px 16px;
+}
+
+.global-stat.highlight {
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    color: white;
+}
+
+.global-stat.highlight .global-stat-value {
+    color: white;
+}
+
+/* Chart container - better canvas rendering */
+.chart-container canvas {
+    image-rendering: crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
+}
+
+/* Error message - more professional */
+.error-message {
+    background: #fef2f2;
+    border-left: 4px solid #ef4444;
+    border-radius: 8px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .global-stat {
+        padding: 4px 10px;
+    }
+    
+    .global-stat-value {
+        font-size: 0.9rem;
+    }
+    
+    .global-stat-label {
+        font-size: 0.6rem;
+    }
+    
+    .stat-badge {
+        font-size: 0.6rem;
+        padding: 2px 6px;
+    }
+    
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .chart-stats {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+/* Print optimization */
+@media print {
+    .chart-card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    .chart-card::before {
+        display: none;
+    }
+    
+    .chart-stats {
+        display: flex !important;
+    }
+}
+@keyframes modalSlideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== DESKTOP CONSISTENCY (shared across all pages) ===== */
+@media (min-width: 769px) {
+    .content-area { padding: 24px; }
+    .content-header h2, .welcome-content h2 { font-size: 1.4rem; font-weight: 700; }
+    html body .content-area #disc { font-size: 0.8rem; line-height: 1.5; padding: 12px 16px !important; margin-bottom: 12px !important; }
+    .btn { height: 36px; padding: 6px 14px; font-size: 0.85rem; border-radius: 8px; }
+    .card, .chart-card, .module-card, .info-card { border-radius: 12px; }
+}
+/* ===== END DESKTOP CONSISTENCY ===== */
+</style>
+</head>
+<body>
+<!-- Background pattern -->
+    <div class="bg-pattern">
+        <div class="bg-circle circle-1"></div>
+        <div class="bg-circle circle-2"></div>
+        <div class="bg-circle circle-3"></div>
+    </div>
+<div class="page-container">
+<header class="topbar">
+    <div class="brand">
+        <img src="assets/MDRRMO Logo.png" class="logo" alt="Logo"/>
+        <div class="brand-text">
+            <h1>PUROK KALIGTASAN 133</h1>
+            <p>MDRRMO Alitagtag – Household Records System</p>
+        </div>
+    </div>
+    <div class="user-info">
+        <div class="user-dropdown" id="userDropdown">
+            <div class="user-btn" id="userBtn">
+                <i class="fas fa-user-circle"></i>
+                <div class="user-info-dropdown">
+                    <span class="user-fullname" id="userFullname">Loading...</span>
+                    <span class="user-role-dropdown" id="userRole">Loading...</span>
+                </div>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="dropdown-menu">
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-container">
+      <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+<ul>
+    <li><a href="dashboard.html">
+        <span class="menu-icon"><i class="fas fa-tachometer-alt"></i></span> 
+        <span class="menu-text">Dashboard</span>
+    </a></li>
+    <li><a href="dataForm.html">
+        <span class="menu-icon"><i class="fas fa-edit"></i></span> 
+        <span class="menu-text">Data Entry</span>
+    </a></li>
+    <li><a href="records.html">
+        <span class="menu-icon"><i class="fas fa-database"></i></span> 
+        <span class="menu-text">Records & Management</span>
+    </a></li>
+    <li><a href="charts.html" class="active">
+        <span class="menu-icon"><i class="fas fa-chart-bar"></i></span> 
+        <span class="menu-text">Charts & Analytics</span>
+    </a></li>
+    <li class="admin-only"><a href="users.html">
+        <span class="menu-icon"><i class="fas fa-users-cog"></i></span> 
+        <span class="menu-text">User Management</span>
+    </a></li>
+</ul>
+    </div>
+  </aside>
+
+  <!-- Error Message -->
+  <div class="error-message" id="errorMessage">
+    <i class="fas fa-exclamation-triangle"></i> 
+    <span id="errorText">Failed to fetch data. Please check your connection.</span>
+    <button onclick="document.getElementById('errorMessage').classList.remove('show')" style="float:right; background:none; border:none; color:#c00; cursor:pointer;">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <main class="content-area">
+    <div class="content-header">
+      <h2><i class="fas fa-chart-bar"></i> Charts and Analytics</h2>
+      <div class="auto-refresh">
+        <span class="indicator"></span>
+        <span>Auto-refresh: 60s</span>
+      </div>
+    </div>
+    
+    <div id="disc">This section provides visual analytics and insights from household data. Interactive charts help identify patterns, distributions, and trends across barangays, age groups, disabilities, and government support programs for better decision-making.</div>
+
+    <!-- ============ OPTION 2: GLOBAL STATS SUMMARY ============ -->
+    <div class="global-stats-summary" id="globalStatsSummary">
+        <div class="global-stat heads">
+            <span class="global-stat-value" id="globalHeads">0</span>
+            <span class="global-stat-label">Heads</span>
+        </div>
+        <div class="global-stat members">
+            <span class="global-stat-value" id="globalMembers">0</span>
+            <span class="global-stat-label">Members</span>
+        </div>
+        <div class="global-stat total highlight">
+            <span class="global-stat-value" id="globalTotal">0</span>
+            <span class="global-stat-label">Total Persons</span>
+        </div>
+        <span class="global-stats-timestamp">
+            <i class="fas fa-sync-alt fa-xs"></i>
+            <span id="globalLastUpdated"></span>
+        </span>
+    </div>
+
+    <!-- ============ OPTION 3: STATS VIEW TOGGLE ============ -->
+    <div class="stats-view-toggle" id="statsViewToggle">
+        <button class="stats-toggle-btn active" data-view="badges" id="toggleBadges">
+            <i class="fas fa-tags"></i> Show on Charts
+        </button>
+        <button class="stats-toggle-btn" data-view="summary" id="toggleSummary">
+            <i class="fas fa-list"></i> Show Summary
+        </button>
+        <button class="stats-toggle-btn" data-view="compact" id="toggleCompact">
+            <i class="fas fa-compress-alt"></i> Compact View
+        </button>
+    </div>
+
+    <!-- Toolbar - UPDATED: All buttons in toolbar-right -->
+    <!-- ONE toolbar-right div for all buttons -->
+    <div class="toolbar-right">
+        <!-- Print button -->
+        <button id="btnPrint" class="btn btn-print">
+            <i class="fas fa-print"></i> Print
+        </button>
+        
+        <!-- Export dropdown -->
+        <div class="export-wrapper">
+            <button id="exportBtn" class="btn btn-export">
+                <i class="fas fa-file-export"></i> Export
+            </button>
+            <div id="exportDropdown" class="export-dropdown" role="menu" aria-hidden="true">
+                <div onclick="exportToPDF()">
+                    <i class="fas fa-file-pdf"></i> Export PDF
+                </div>
+                <div onclick="exportPNGsZip()">
+                    <i class="fas fa-file-image"></i> Export PNGs
+                </div>
+                <div onclick="exportCSV_AllRows()">
+                    <i class="fas fa-file-csv"></i> Export CSV
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Charts Grid - Reorganized Layout -->
+<div class="charts-grid" id="chartsContainer">
+    <!-- Single chart per row (ascending order) -->
+    
+    <!-- Chart 1: Barangay Entries (FULL SIZE) -->
+    <div class="chart-card full-size">
+        <div class="chart-header">
+            <h3 class="chart-title" data-total="0"><i class="fas fa-map-marker-alt"></i>Entry per Barangay</h3>
+            <div class="chart-stats" id="barangayStats">
+                <span class="stat-badge heads" title="Number of household heads in this barangay">Heads: 0</span>
+                <span class="stat-badge members" title="Number of household members in this barangay">Members: 0</span>
+                <span class="stat-badge total" title="Total persons in this barangay">Total: 0</span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chartBarangay"></canvas>
+        </div>
+    </div>
+
+    <!-- Chart 2: Barangay vs. Status Comparison (FULL SIZE) -->
+    <div class="chart-card comparison-chart full-size">
+        <div class="chart-header">
+            <h3 class="chart-title" data-total="0"><i class="fas fa-chart-bar"></i> Barangay vs Status Comparison</h3>
+            <div class="chart-stats" id="comparisonStats">
+                <span class="stat-badge">Comparative Analysis</span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chartComparison"></canvas>
+        </div>
+    </div>
+
+    <!-- Chart 3: Registration Status (FULL SIZE) -->
+    <div class="chart-card full-size">
+        <div class="chart-header">
+            <h3 class="chart-title" data-total="0"><i class="fas fa-id-card"></i> Registration Status</h3>
+            <div class="chart-stats" id="registrationStats">
+                <span class="stat-badge heads" title="Registered household heads">Heads: 0</span>
+                <span class="stat-badge members" title="Registered household members">Members: 0</span>
+                <span class="stat-badge total" title="Total registered persons">Total: 0</span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chartRegistration"></canvas>
+        </div>
+    </div>
+
+    <!-- Chart 4: Status Distribution (FULL SIZE) -->
+    <div class="chart-card full-size">
+        <div class="chart-header">
+            <h3 class="chart-title" data-total="0"><i class="fas fa-chart-pie"></i> Status Distribution</h3>
+            <div class="chart-stats" id="statusStats">
+                <span class="stat-badge heads" title="Household heads by status">Heads: 0</span>
+                <span class="stat-badge members" title="Household members by status">Members: 0</span>
+                <span class="stat-badge total" title="Total persons by status">Total: 0</span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chartStatus"></canvas>
+        </div>
+    </div>
+
+    <!-- Chart 5: PWD Distribution (FULL SIZE) -->
+    <div class="chart-card full-size">
+        <div class="chart-header">
+            <h3 class="chart-title" data-total="0"><i class="fas fa-wheelchair"></i> PWD Distribution</h3>
+            <div class="chart-stats" id="pwdStats">
+                <span class="stat-badge heads" title="Household heads with disability">Heads: 0</span>
+                <span class="stat-badge members" title="Household members with disability">Members: 0</span>
+                <span class="stat-badge total" title="Total persons with disability">Total: 0</span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chartPWD"></canvas>
+        </div>
+    </div>
+
+    <!-- Chart 6: Government Support (FULL SIZE) - CHECKBOX DATA -->
+    <div class="chart-card full-size">
+        <div class="chart-header">
+            <h3 class="chart-title" data-total="0"><i class="fas fa-hand-holding-heart"></i> Government Support</h3>
+            <div class="chart-stats" id="supportStats">
+                <span class="stat-badge checkbox-heads" title="Number of support instances checked by household heads">Support Checks (Heads): 0</span>
+                <span class="stat-badge checkbox-members" title="Number of support instances checked by household members">Support Checks (Members): 0</span>
+                <span class="stat-badge checkbox-total" title="Total number of support instances checked">Total Checks: 0</span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chartSupport"></canvas>
+        </div>
+    </div>
+
+    <!-- NEW CHART: Assembly Area Distribution (FULL SIZE) - CHECKBOX DATA -->
+    <div class="chart-card full-size">
+        <div class="chart-header">
+            <h3 class="chart-title" data-total="0"><i class="fas fa-building"></i> Assembly Area Distribution</h3>
+            <div class="chart-stats" id="assemblyStats">
+                <span class="stat-badge checkbox-heads" title="Number of assembly area instances checked by household heads">Area Checks (Heads): 0</span>
+                <span class="stat-badge checkbox-members" title="Number of assembly area instances checked by household members">Area Checks (Members): 0</span>
+                <span class="stat-badge checkbox-total" title="Total number of assembly area instances checked">Total Checks: 0</span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chartAssembly"></canvas>
+        </div>
+    </div>
+
+    <!-- NEW CHART: Transportation & Evacuation Details (FULL SIZE) - CHECKBOX DATA -->
+    <div class="chart-card full-size">
+        <div class="chart-header">
+            <h3 class="chart-title" data-total="0"><i class="fas fa-car"></i> Transportation & Evacuation Details</h3>
+            <div class="chart-stats" id="transportStats">
+                <span class="stat-badge checkbox-heads" title="Number of evacuation need instances checked by household heads">Evacuation Checks (Heads): 0</span>
+                <span class="stat-badge checkbox-members" title="Number of evacuation need instances checked by household members">Evacuation Checks (Members): 0</span>
+                <span class="stat-badge checkbox-total" title="Total number of evacuation need instances checked">Total Checks: 0</span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chartTransport"></canvas>
+        </div>
+    </div>
+
+    <!-- NEW CHART: Type of Disability (FULL SIZE) -->
+    <div class="chart-card full-size">
+        <div class="chart-header">
+            <h3 class="chart-title" data-total="0"><i class="fas fa-universal-access"></i> Type of Disability</h3>
+            <div class="chart-stats" id="disabilityStats">
+                <span class="stat-badge heads" title="Household heads by disability type">Heads: 0</span>
+                <span class="stat-badge members" title="Household members by disability type">Members: 0</span>
+                <span class="stat-badge total" title="Total persons by disability type">Total: 0</span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chartDisabilityType"></canvas>
+        </div>
+    </div>
+
+    <!-- Grid view (two charts per row) -->
+    
+    <!-- Row 1 -->
+    <!-- Chart 7: Age Distribution -->
+    <div class="chart-card">
+        <div class="chart-header">
+            <h3 class="chart-title" data-total="0"><i class="fas fa-users"></i> Age Distribution</h3>
+            <div class="chart-stats" id="ageStats">
+                <span class="stat-badge heads" title="Household heads by age group">Heads: 0</span>
+                <span class="stat-badge members" title="Household members by age group">Members: 0</span>
+                <span class="stat-badge total" title="Total persons by age group">Total: 0</span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chartAgeGroup"></canvas>
+        </div>
+    </div>
+
+    <!-- Chart 8: Stage Distribution -->
+    <div class="chart-card">
+        <div class="chart-header">
+            <h3 class="chart-title" data-total="0"><i class="fas fa-layer-group"></i> Stage Distribution</h3>
+            <div class="chart-stats" id="stageStats">
+                <span class="stat-badge heads" title="Household heads by stage">Heads: 0</span>
+                <span class="stat-badge members" title="Household members by stage">Members: 0</span>
+                <span class="stat-badge total" title="Total persons by stage">Total: 0</span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chartStage"></canvas>
+        </div>
+    </div>
+
+    <!-- Row 2 -->
+    <!-- Chart 9: Domestic Livestock -->
+    <div class="chart-card">
+        <div class="chart-header">
+            <h3 class="chart-title" data-total="0"><i class="fas fa-paw"></i> Domestic Livestock</h3>
+            <div class="chart-stats" id="livestockStats">
+                <span class="stat-badge total" title="Total number of animals">Livestock: 0</span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chartLivestock"></canvas>
+        </div>
+    </div>
+
+    <!-- Chart 10: Overseas Filipino Workers -->
+    <div class="chart-card">
+        <div class="chart-header">
+            <h3 class="chart-title" data-total="0"><i class="fas fa-passport"></i> Overseas Filipino Workers</h3>
+            <div class="chart-stats" id="ofwStats">
+                <span class="stat-badge total" title="Total number of OFWs">OFWs: 0</span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chartOFW"></canvas>
+        </div>
+    </div>
+
+    <!-- Row 3 -->
+    <!-- Chart 11: Educational Attainment -->
+    <div class="chart-card">
+        <div class="chart-header">
+            <h3 class="chart-title" data-total="0"><i class="fas fa-graduation-cap"></i> Educational Attainment</h3>
+            <div class="chart-stats" id="educationStats">
+                <span class="stat-badge total" title="Number of education levels">Levels: 0</span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chartEducation"></canvas>
+        </div>
+    </div>
+
+    <!-- Chart 12: Employment Status -->
+    <div class="chart-card">
+        <div class="chart-header">
+            <h3 class="chart-title" data-total="0"><i class="fas fa-briefcase"></i> Employment Status</h3>
+            <div class="chart-stats" id="employmentStats">
+                <span class="stat-badge total" title="Number of employment statuses">Statuses: 0</span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chartEmployment"></canvas>
+        </div>
+    </div>
+        <!-- NEW CHART: Additional Information (Solo Parenting, Lactating, Pregnant) -->
+    <div class="chart-card full-size">
+        <div class="chart-header">
+            <h3 class="chart-title" data-total="0"><i class="fas fa-female"></i> Additional Information</h3>
+            <div class="chart-stats" id="additionalInfoStats">
+                <span class="stat-badge checkbox-heads">Heads: 0</span>
+                <span class="stat-badge checkbox-members">Members: 0</span>
+                <span class="stat-badge checkbox-total">Total: 0</span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chartAdditionalInfo"></canvas>
+        </div>
+    </div>
+
+    <!-- NEW CHART: Barangay vs Structural/Property Damage -->
+    <div class="chart-card full-size">
+        <div class="chart-header">
+            <h3 class="chart-title" data-total="0"><i class="fas fa-home"></i> Barangay vs Structural/Property Damage</h3>
+            <div class="chart-stats" id="structuralDamageStats">
+                <span class="stat-badge">Affected Households</span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chartStructuralDamage"></canvas>
+        </div>
+    </div>
+
+    <!-- NEW CHART: Barangay vs Household Injury -->
+    <div class="chart-card full-size">
+        <div class="chart-header">
+            <h3 class="chart-title" data-total="0"><i class="fas fa-bandaid"></i> Barangay vs Household Injury</h3>
+            <div class="chart-stats" id="householdInjuryStats">
+                <span class="stat-badge">Affected Households</span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chartHouseholdInjury"></canvas>
+        </div>
+    </div>
+
+    <!-- NEW CHART: Barangay vs Habitability of House -->
+    <div class="chart-card full-size">
+        <div class="chart-header">
+            <h3 class="chart-title" data-total="0"><i class="fas fa-house-damage"></i> Barangay vs Habitability of House</h3>
+            <div class="chart-stats" id="habitabilityStats">
+                <span class="stat-badge">Affected Households</span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chartHabitability"></canvas>
+        </div>
+    </div>
+
+    <!-- NEW CHART: Barangay vs Loss of Livelihood or Assets -->
+    <div class="chart-card full-size">
+        <div class="chart-header">
+            <h3 class="chart-title" data-total="0"><i class="fas fa-hand-holding-usd"></i> Barangay vs Loss of Livelihood/Assets</h3>
+            <div class="chart-stats" id="lossLivelihoodStats">
+                <span class="stat-badge">Affected Households</span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="chartLossLivelihood"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Bottom Navigation -->
+<nav class="mobile-bottom-nav">
+    <div class="mobile-nav-items">
+        <a href="dashboard.html" class="mobile-nav-item">
+            <span class="mobile-nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+            <span class="mobile-nav-text">Dashboard</span>
+        </a>
+        <a href="dataForm.html" class="mobile-nav-item">
+            <span class="mobile-nav-icon"><i class="fas fa-edit"></i></span>
+            <span class="mobile-nav-text">Data Entry</span>
+        </a>
+        <a href="records.html" class="mobile-nav-item">
+            <span class="mobile-nav-icon"><i class="fas fa-database"></i></span>
+            <span class="mobile-nav-text">Records</span>
+        </a>
+        <a href="charts.html" class="mobile-nav-item active">
+            <span class="mobile-nav-icon"><i class="fas fa-chart-bar"></i></span>
+            <span class="mobile-nav-text">Charts</span>
+        </a>
+        <a href="users.html" class="mobile-nav-item admin-only">
+            <span class="mobile-nav-icon"><i class="fas fa-users-cog"></i></span>
+            <span class="mobile-nav-text">Users</span>
+        </a>
+    </div>
+</nav>
+
+<!-- Loading overlay -->
+<div id="loading">
+  <div class="loading-content">
+    <div class="loading-spinner"></div>
+    <div>Loading charts data...</div>
+  </div>
+</div>
+</div>
+
+<div id="confirmModal" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(2px); display: none; align-items: center; justify-content: center; z-index: 10001; padding: 16px;">
+    <div style="background: white; border-radius: 12px; max-width: 280px; width: 100%; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); animation: modalSlideUp 0.2s ease; overflow: hidden;">
+        <div style="padding: 20px 20px 12px 20px; text-align: center;">
+            <div style="margin-bottom: 8px;">
+                <i class="fas fa-question-circle" style="font-size: 1.6rem; color: #ff7a00; opacity: 0.7;"></i>
+            </div>
+            <h3 style="margin: 0 0 4px 0; color: #1e293b; font-size: 1rem; font-weight: 600;">Confirm Action</h3>
+            <p style="margin: 0; color: #64748b; font-size: 0.8rem; line-height: 1.4;">Are you sure you want to logout?</p>
+        </div>
+        <div style="display: flex; gap: 8px; padding: 4px 20px 20px 20px;">
+            <button id="confirmNoBtn" style="flex: 1; padding: 6px 10px; border-radius: 6px; font-weight: 500; font-size: 0.75rem; cursor: pointer; border: 1.5px solid #ef4444; background: transparent; color: #ef4444;">
+                <i class="fas fa-times"></i> No
+            </button>
+            <button id="confirmYesBtn" style="flex: 1; padding: 6px 10px; border-radius: 6px; font-weight: 500; font-size: 0.75rem; cursor: pointer; border: 1.5px solid #0f7a4a; background: transparent; color: #0f7a4a;">
+                <i class="fas fa-check"></i> Yes
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Take Over Warning Modal (Device B) - Matching style -->
+<div id="takeOverWarningModal" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(2px); display: none; align-items: center; justify-content: center; z-index: 10003; padding: 16px;">
+    <div style="background: white; border-radius: 12px; max-width: 280px; width: 100%; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 3px 8px rgba(0, 0, 0, 0.05); animation: modalSlideUp 0.2s ease; overflow: hidden;">
+        <div style="padding: 20px 20px 12px 20px; text-align: center;">
+            <div style="margin-bottom: 8px;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 1.6rem; color: #ff7a00; opacity: 0.7;"></i>
+            </div>
+            <h3 style="margin: 0 0 4px 0; color: #1e293b; font-size: 1rem; font-weight: 600;">Take Over Warning</h3>
+            <p style="margin: 0 0 8px 0; color: #64748b; font-size: 0.8rem; line-height: 1.4;">
+                Taking over will immediately log out the other device.
+            </p>
+            <p style="margin: 0; color: #dc2626; font-size: 0.75rem; font-weight: 500;">
+                Any unsaved work on the other device may be lost.
+            </p>
+        </div>
+        <div style="display: flex; gap: 8px; padding: 4px 20px 20px 20px;">
+            <button id="cancelTakeOverBtn" style="flex: 1; padding: 6px 10px; border-radius: 6px; font-weight: 500; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.15s ease; outline: none; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); letter-spacing: 0.3px; border: 1.5px solid #ef4444; background: transparent; color: #ef4444;">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button id="confirmTakeOverBtn" style="flex: 1; padding: 6px 10px; border-radius: 6px; font-weight: 500; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.15s ease; outline: none; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); letter-spacing: 0.3px; border: 1.5px solid #0f7a4a; background: transparent; color: #0f7a4a;">
+                <i class="fas fa-check"></i> Take Over
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Force Logout Modal -->
+<div id="adminForceLogoutModal" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(2px); display: none; align-items: center; justify-content: center; z-index: 10004; padding: 16px;">
+    <div style="background: white; border-radius: 12px; max-width: 280px; width: 100%; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 3px 8px rgba(0, 0, 0, 0.05); animation: modalSlideUp 0.2s ease; overflow: hidden;">
+        <div style="padding: 20px 20px 12px 20px; text-align: center;">
+            <div style="margin-bottom: 8px;">
+                <i class="fas fa-user-shield" style="font-size: 1.6rem; color: #ff7a00; opacity: 0.7;"></i>
+            </div>
+            <h3 style="margin: 0 0 4px 0; color: #1e293b; font-size: 1rem; font-weight: 600;">Account Logged Out by Admin</h3>
+            <p style="margin: 0 0 8px 0; color: #64748b; font-size: 0.8rem; line-height: 1.4;">
+                An administrator has logged you out from all devices.
+            </p>
+            <div style="margin-top: 12px; background: #fff8e1; padding: 8px; border-radius: 8px;">
+                <div style="font-size: 0.7rem; color: #ff7a00; font-weight: 500;">You will be redirected to login</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #ff7a00;" id="adminForceLogoutCountdown">5</div>
+                <div style="font-size: 0.7rem; color: var(--text-light);">seconds</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Session Taken Over Modal (Device A) - Matching style -->
+<div id="sessionTakenOverModal" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(2px); display: none; align-items: center; justify-content: center; z-index: 10003; padding: 16px;">
+    <div style="background: white; border-radius: 12px; max-width: 280px; width: 100%; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 3px 8px rgba(0, 0, 0, 0.05); animation: modalSlideUp 0.2s ease; overflow: hidden;">
+        <div style="padding: 20px 20px 12px 20px; text-align: center;">
+            <div style="margin-bottom: 8px;">
+                <i class="fas fa-exchange-alt" style="font-size: 1.6rem; color: #dc2626; opacity: 0.7;"></i>
+            </div>
+            <h3 style="margin: 0 0 4px 0; color: #1e293b; font-size: 1rem; font-weight: 600;">Session Taken Over!</h3>
+            <p style="margin: 0 0 8px 0; color: #64748b; font-size: 0.8rem; line-height: 1.4;">
+                Another device has taken over this account.
+            </p>
+            <div style="margin-top: 12px; background: #fef2f2; padding: 8px; border-radius: 8px;">
+                <div style="font-size: 0.7rem; color: #dc2626; font-weight: 500;">You will be logged out in</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #dc2626;" id="takeOverCountdown">5</div>
+                <div style="font-size: 0.7rem; color: var(--text-light);">seconds</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<script>
+/* ============ SUPABASE CONFIGURATION ============ */
+const SUPABASE_URL = 'https://opibntxwagnjazpbtxrv.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_UwyTZU3BYj41z0D7beu9Hg_pIZcLeWN';
+
+let supabaseClient;
+
+// Initialize Supabase client
+function initSupabase() {
+    if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('✅ Supabase client initialized');
+        return true;
+    } else if (typeof supabase !== 'undefined' && supabase.createClient) {
+        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('✅ Supabase client initialized (alternative)');
+        return true;
+    } else {
+        console.warn('⏳ Waiting for Supabase to load...');
+        return false;
+    }
+}
+
+// Try to initialize immediately, if not, wait for it
+if (!initSupabase()) {
+    const checkInterval = setInterval(() => {
+        if (initSupabase()) {
+            clearInterval(checkInterval);
+        }
+    }, 100);
+    
+    setTimeout(() => {
+        clearInterval(checkInterval);
+        if (!supabaseClient) {
+            console.error('❌ Supabase failed to load after 5 seconds');
+            showError('Failed to load Supabase. Please refresh the page.');
+        }
+    }, 5000);
+}
+
+/* ============ CHART INSTANCES ============ */
+const CH = {};
+
+/* ============ UTILITY FUNCTIONS ============ */
+function showLoading(yes) { 
+    const loading = document.getElementById("loading");
+    if (loading) loading.style.display = yes ? "flex" : "none"; 
+}
+
+function showError(message) {
+    const errorEl = document.getElementById('errorMessage');
+    const errorText = document.getElementById('errorText');
+    if (errorEl && errorText) {
+        errorText.textContent = message;
+        errorEl.classList.add('show');
+        setTimeout(() => errorEl.classList.remove('show'), 10000);
+    } else {
+        console.error("Error:", message);
+        alert(message);
+    }
+}
+
+function showInfo(message) {
+    console.log("Info:", message);
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #0f7a4a, #34b78f);
+        color: white;
+        padding: 10px 18px;
+        border-radius: 10px;
+        z-index: 10000;
+        font-size: 0.8rem;
+        font-weight: 500;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        animation: slideInRight 0.3s ease;
+    `;
+    toast.innerHTML = `<i class="fas fa-info-circle" style="font-size: 0.9rem;"></i> ${message}`;
+    document.body.appendChild(toast);
+    
+    if (!document.querySelector('#toast-animation-style')) {
+        const style = document.createElement('style');
+        style.id = 'toast-animation-style';
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+function formatNumber(num) {
+    return num.toLocaleString();
+}
+
+/* ============ FETCH ALL DATA WITH PAGINATION ============ */
+async function fetchAllRows(tableName) {
+    let allData = [];
+    let page = 0;
+    const pageSize = 1000;
+    let hasMore = true;
+    
+    while (hasMore) {
+        const from = page * pageSize;
+        const to = from + pageSize - 1;
+        
+        const { data, error } = await supabaseClient
+            .from(tableName)
+            .select('*')
+            .range(from, to);
+        
+        if (error) {
+            console.error(`Error fetching ${tableName}:`, error);
+            break;
+        }
+        
+        if (data && data.length > 0) {
+            allData = [...allData, ...data];
+            page++;
+        }
+        
+        if (!data || data.length < pageSize) {
+            hasMore = false;
+        }
+    }
+    
+    return allData;
+}
+
+/* ============ FETCH CHART DATA FROM SUPABASE ============ */
+async function fetchChartDataFromSupabase() {
+    if (!supabaseClient) {
+        console.error('Supabase client not initialized');
+        return null;
+    }
+    
+    try {
+        console.log("📊 Fetching ALL chart data from Supabase with pagination...");
+        
+        // Fetch ALL required tables with pagination
+        const [
+            households,
+            persons,
+            govAssistance,
+            assemblyAreas,
+            livestock,
+            calamityImpacts
+        ] = await Promise.all([
+            fetchAllRows('households'),
+            fetchAllRows('persons'),
+            fetchAllRows('gov_assistance'),
+            fetchAllRows('assembly_areas'),
+            fetchAllRows('livestock'),
+            fetchAllRows('calamity_impacts')
+        ]);
+        
+        console.log(`✅ Loaded: ${households.length} households, ${persons.length} persons, ${govAssistance.length} gov assistance, ${assemblyAreas.length} assembly areas, ${livestock.length} livestock, ${calamityImpacts.length} calamity impacts`);
+        
+        // Build lookup maps
+        const personsByHousehold = {};
+        persons.forEach(p => {
+            if (!personsByHousehold[p.household_id]) {
+                personsByHousehold[p.household_id] = [];
+            }
+            personsByHousehold[p.household_id].push(p);
+        });
+        
+        const govByHousehold = {};
+        govAssistance.forEach(g => {
+            if (!govByHousehold[g.household_id]) {
+                govByHousehold[g.household_id] = [];
+            }
+            govByHousehold[g.household_id].push(g);
+        });
+        
+        const assemblyByHousehold = {};
+        assemblyAreas.forEach(a => {
+            if (!assemblyByHousehold[a.household_id]) {
+                assemblyByHousehold[a.household_id] = [];
+            }
+            assemblyByHousehold[a.household_id].push(a);
+        });
+        
+        const livestockByHousehold = {};
+        livestock.forEach(l => {
+            if (!livestockByHousehold[l.household_id]) {
+                livestockByHousehold[l.household_id] = [];
+            }
+            livestockByHousehold[l.household_id].push(l);
+        });
+        
+        const calamityByHousehold = {};
+        calamityImpacts.forEach(c => {
+            if (!calamityByHousehold[c.household_id]) {
+                calamityByHousehold[c.household_id] = {
+                    structural_damage: false,
+                    household_injury: false,
+                    habitability: false,
+                    loss_of_livelihood: false
+                };
+            }
+            
+            // Aggregate - set to true if ANY record has 'Yes'
+            if (c.structural_damage === 'Yes') calamityByHousehold[c.household_id].structural_damage = true;
+            if (c.household_injury === 'Yes') calamityByHousehold[c.household_id].household_injury = true;
+            if (c.habitability === 'Yes') calamityByHousehold[c.household_id].habitability = true;
+            if (c.loss_of_livelihood === 'Yes') calamityByHousehold[c.household_id].loss_of_livelihood = true;
+        });
+        
+        // Initialize aggregation objects
+        let totalHeads = 0;
+        let totalMembers = 0;
+        const barangayData = {};
+        const ageData = { heads: {}, members: {} };
+        const stageData = { heads: {}, members: {} };
+        const pwdData = { headsYes: 0, headsNo: 0, membersYes: 0, membersNo: 0 };
+        const statusData = { heads: {}, members: {} };
+        const registrationData = { heads: {}, members: {} };
+        const supportData = {};
+        const assemblyData = {};
+        const transportData = {};
+        const disabilityTypeData = { heads: {}, members: {} };
+        const additionalInfoData = { heads: {}, members: {} };
+        const structuralDamageHeads = {};
+        const structuralDamageMembers = {};
+        const householdInjuryHeads = {};
+        const householdInjuryMembers = {};
+        const habitabilityHeads = {};
+        const habitabilityMembers = {};
+        const lossLivelihoodHeads = {};
+        const lossLivelihoodMembers = {};
+        const livestockData = {};
+        const ofwData = { heads: 0, members: 0 };
+        const educationData = {};
+        const employmentData = {};
+        
+        // Process each household
+        for (const household of households) {
+            const barangay = household.barangay || 'Unknown';
+            const householdPersons = personsByHousehold[household.id] || [];
+            const headPerson = householdPersons.find(p => p.person_type === 'HEAD');
+            const members = householdPersons.filter(p => p.person_type === 'MEMBER');
+            const householdGov = govByHousehold[household.id] || [];
+            const householdAssembly = assemblyByHousehold[household.id] || [];
+            const householdLivestock = livestockByHousehold[household.id] || [];
+            const householdCalamity = calamityByHousehold[household.id] || {
+                structural_damage: false,
+                household_injury: false,
+                habitability: false,
+                loss_of_livelihood: false
+            };
+            
+            totalHeads++;
+            totalMembers += members.length;
+            
+            if (!barangayData[barangay]) {
+                barangayData[barangay] = { heads: 0, members: 0 };
+            }
+            barangayData[barangay].heads++;
+            barangayData[barangay].members += members.length;
+            
+            // Government Support
+            householdGov.forEach(gov => {
+                const assistanceType = gov.assistance_type || 'Unknown';
+                supportData[assistanceType] = (supportData[assistanceType] || 0) + 1;
+            });
+            
+            // Assembly Area & Transportation
+            householdAssembly.forEach(assembly => {
+                if (assembly.inside_assembly) {
+                    assemblyData['Inside Assembly Area'] = (assemblyData['Inside Assembly Area'] || 0) + 1;
+                }
+                if (assembly.outside_assembly) {
+                    assemblyData['Outside Assembly Area'] = (assemblyData['Outside Assembly Area'] || 0) + 1;
+                }
+                if (assembly.transportation_type && assembly.transportation_type !== '') {
+                    const transType = assembly.transportation_type;
+                    transportData[transType] = (transportData[transType] || 0) + 1;
+                }
+            });
+            
+            // Livestock
+            householdLivestock.forEach(animal => {
+                const animalType = animal.animal_type || 'Unknown';
+                const quantity = animal.quantity || 1;
+                livestockData[animalType] = (livestockData[animalType] || 0) + quantity;
+            });
+            
+            // Calamity Impacts - Count HEADS and MEMBERS separately
+            const hasStructuralDamage = householdCalamity.structural_damage || false;
+            const hasHouseholdInjury = householdCalamity.household_injury || false;
+            const hasHabitability = householdCalamity.habitability || false;
+            const hasLossLivelihood = householdCalamity.loss_of_livelihood || false;
+            
+            const headCount = 1;
+            const memberCount = members.length;
+            
+            if (hasStructuralDamage) {
+                structuralDamageHeads[barangay] = (structuralDamageHeads[barangay] || 0) + headCount;
+                structuralDamageMembers[barangay] = (structuralDamageMembers[barangay] || 0) + memberCount;
+            }
+            if (hasHouseholdInjury) {
+                householdInjuryHeads[barangay] = (householdInjuryHeads[barangay] || 0) + headCount;
+                householdInjuryMembers[barangay] = (householdInjuryMembers[barangay] || 0) + memberCount;
+            }
+            if (hasHabitability) {
+                habitabilityHeads[barangay] = (habitabilityHeads[barangay] || 0) + headCount;
+                habitabilityMembers[barangay] = (habitabilityMembers[barangay] || 0) + memberCount;
+            }
+            if (hasLossLivelihood) {
+                lossLivelihoodHeads[barangay] = (lossLivelihoodHeads[barangay] || 0) + headCount;
+                lossLivelihoodMembers[barangay] = (lossLivelihoodMembers[barangay] || 0) + memberCount;
+            }
+            
+            // Person-level data
+            const allPersons = [headPerson, ...members].filter(p => p);
+            
+            for (const person of allPersons) {
+                const isHead = person.person_type === 'HEAD';
+                const category = isHead ? 'heads' : 'members';
+                
+                // Age grouping
+                let ageGroup = '';
+                const age = parseInt(person.age) || 0;
+                if (age === 0 && person.age_category) {
+                    if (person.age_category === 'Infant') ageGroup = 'Infant (0-11 mos)';
+                    else if (person.age_category === 'Children' || person.age_category === 'School Children') ageGroup = 'School Children (≤17)';
+                    else if (person.age_category === 'Elderly') ageGroup = 'Elderly (60+)';
+                    else ageGroup = 'Adult (18-59)';
+                } else if (age < 1) ageGroup = 'Infant (0-11 mos)';
+                else if (age <= 17) ageGroup = 'School Children (≤17)';
+                else if (age >= 60) ageGroup = 'Elderly (60+)';
+                else ageGroup = 'Adult (18-59)';
+                
+                ageData[category][ageGroup] = (ageData[category][ageGroup] || 0) + 1;
+                
+                // Stage
+                let stage = person.age_category || 'Adult';
+                if (stage === 'Infant' || stage === 'Children') stage = 'Children';
+                stageData[category][stage] = (stageData[category][stage] || 0) + 1;
+                
+                // PWD
+                const isPWD = person.is_pwd === true || person.is_pwd === 'Yes';
+                if (isHead) {
+                    if (isPWD) pwdData.headsYes++;
+                    else pwdData.headsNo++;
+                } else {
+                    if (isPWD) pwdData.membersYes++;
+                    else pwdData.membersNo++;
+                }
+                
+                // Status
+                // A person can have several statuses saved as "Fever, Hypertension": count each one
+                let status = person.status || '';
+                const statusList = String(status).split(',').map(x => x.trim()).filter(Boolean);
+                if (statusList.length === 0) statusList.push('No Status Reported');
+                statusList.forEach(st => {
+                    statusData[category][st] = (statusData[category][st] || 0) + 1;
+                });
+                
+                // Registration
+                let registration = person.fishr_registration || 'Not Registered';
+                if (registration === '') registration = 'Not Registered';
+                registrationData[category][registration] = (registrationData[category][registration] || 0) + 1;
+                
+                // Additional Info
+                const soloParent = person.solo_parenting === true || person.solo_parenting === 'Yes';
+                const lactating = person.lactating === true || person.lactating === 'Yes';
+                const pregnant = person.pregnant === true || person.pregnant === 'Yes';
+                
+                if (soloParent) additionalInfoData[category]['Solo Parenting'] = (additionalInfoData[category]['Solo Parenting'] || 0) + 1;
+                if (lactating) additionalInfoData[category]['Lactating'] = (additionalInfoData[category]['Lactating'] || 0) + 1;
+                if (pregnant) additionalInfoData[category]['Pregnant'] = (additionalInfoData[category]['Pregnant'] || 0) + 1;
+                
+                // Disability Type
+                let disabilityType = person.disability_type || '';
+                if (disabilityType && disabilityType !== '') {
+                    disabilityTypeData[category][disabilityType] = (disabilityTypeData[category][disabilityType] || 0) + 1;
+                }
+                
+                // OFW
+                const isOFW = person.is_ofw === true || person.is_ofw === 'Yes';
+                if (isOFW) {
+                    if (isHead) ofwData.heads++;
+                    else ofwData.members++;
+                }
+                
+                // Education
+                let education = person.educational_attainment || '';
+                if (education === '' || education === null || education === undefined) {
+                    education = 'Not Specified';
+                }
+                educationData[education] = (educationData[education] || 0) + 1;
+                
+                // Employment
+                let employment = person.employment_status || '';
+                if (employment === '' || employment === null || employment === undefined) {
+                    employment = 'Unemployed';
+                } else if (employment === 'Employed') {
+                    employment = 'Employed';
+                } else if (employment === 'Unemployed') {
+                    employment = 'Unemployed';
+                }
+                employmentData[employment] = (employmentData[employment] || 0) + 1;
+            }
+        }
+        
+        // Build aggregated object
+        const aggregated = {
+            totals: { heads: totalHeads, members: totalMembers, total: totalHeads + totalMembers },
+            barangay: {
+                labels: Object.keys(barangayData),
+                heads: Object.values(barangayData).map(b => b.heads),
+                members: Object.values(barangayData).map(b => b.members)
+            },
+            ageGroups: {
+                labels: [...new Set([...Object.keys(ageData.heads), ...Object.keys(ageData.members)])],
+                heads: [], members: [], values: []
+            },
+            stage: {
+                labels: [...new Set([...Object.keys(stageData.heads), ...Object.keys(stageData.members)])],
+                heads: [], members: [], values: []
+            },
+            pwd: pwdData,
+            status: {
+                heads: { labels: Object.keys(statusData.heads), values: Object.values(statusData.heads) },
+                members: { labels: Object.keys(statusData.members), values: Object.values(statusData.members) }
+            },
+            registration: {
+                labels: [...new Set([...Object.keys(registrationData.heads), ...Object.keys(registrationData.members)])],
+                heads: [], members: []
+            },
+            support: { labels: Object.keys(supportData), values: Object.values(supportData) },
+            assembly: { labels: Object.keys(assemblyData), values: Object.values(assemblyData) },
+            transport: { labels: Object.keys(transportData), values: Object.values(transportData) },
+            livestock: { labels: Object.keys(livestockData), values: Object.values(livestockData) },
+            structuralDamageHeads: { labels: Object.keys(structuralDamageHeads), values: Object.values(structuralDamageHeads) },
+            structuralDamageMembers: { labels: Object.keys(structuralDamageMembers), values: Object.values(structuralDamageMembers) },
+            householdInjuryHeads: { labels: Object.keys(householdInjuryHeads), values: Object.values(householdInjuryHeads) },
+            householdInjuryMembers: { labels: Object.keys(householdInjuryMembers), values: Object.values(householdInjuryMembers) },
+            habitabilityHeads: { labels: Object.keys(habitabilityHeads), values: Object.values(habitabilityHeads) },
+            habitabilityMembers: { labels: Object.keys(habitabilityMembers), values: Object.values(habitabilityMembers) },
+            lossLivelihoodHeads: { labels: Object.keys(lossLivelihoodHeads), values: Object.values(lossLivelihoodHeads) },
+            lossLivelihoodMembers: { labels: Object.keys(lossLivelihoodMembers), values: Object.values(lossLivelihoodMembers) },
+            additional: {
+                labels: [...new Set([...Object.keys(additionalInfoData.heads), ...Object.keys(additionalInfoData.members)])],
+                heads: [], members: []
+            },
+            disabilityType: {
+                labels: [...new Set([...Object.keys(disabilityTypeData.heads), ...Object.keys(disabilityTypeData.members)])],
+                heads: [], members: []
+            },
+            ofw: ofwData,
+            education: { labels: Object.keys(educationData), values: Object.values(educationData) },
+            employment: { labels: Object.keys(employmentData), values: Object.values(employmentData) }
+        };
+        
+        // Fill arrays
+        aggregated.ageGroups.labels.forEach(label => {
+            aggregated.ageGroups.heads.push(ageData.heads[label] || 0);
+            aggregated.ageGroups.members.push(ageData.members[label] || 0);
+            aggregated.ageGroups.values.push((ageData.heads[label] || 0) + (ageData.members[label] || 0));
+        });
+        
+        aggregated.stage.labels.forEach(label => {
+            aggregated.stage.heads.push(stageData.heads[label] || 0);
+            aggregated.stage.members.push(stageData.members[label] || 0);
+            aggregated.stage.values.push((stageData.heads[label] || 0) + (stageData.members[label] || 0));
+        });
+        
+        aggregated.registration.labels.forEach(label => {
+            aggregated.registration.heads.push(registrationData.heads[label] || 0);
+            aggregated.registration.members.push(registrationData.members[label] || 0);
+        });
+        
+        aggregated.additional.labels.forEach(label => {
+            aggregated.additional.heads.push(additionalInfoData.heads[label] || 0);
+            aggregated.additional.members.push(additionalInfoData.members[label] || 0);
+        });
+        
+        aggregated.disabilityType.labels.forEach(label => {
+            aggregated.disabilityType.heads.push(disabilityTypeData.heads[label] || 0);
+            aggregated.disabilityType.members.push(disabilityTypeData.members[label] || 0);
+        });
+        
+        console.log("✅ Aggregated data prepared with ALL tables");
+        return { success: true, aggregated, recordCount: totalHeads + totalMembers };
+        
+    } catch (err) {
+        console.error("Fetch error:", err);
+        showError("Failed to load data: " + err.message);
+        return { success: false, error: err.message };
+    }
+}
+
+/* ============ QUICK CANVAS CLEANUP ============ */
+function quickCleanCanvas(canvasId) {
+    const chart = CH[canvasId];
+    if (chart && chart.destroy) {
+        try { chart.destroy(); } catch(e) {}
+        CH[canvasId] = null;
+    }
+}
+
+function cleanupAllChartsFast() {
+    const chartIds = [
+        'chartBarangay', 'chartAgeGroup', 'chartStage', 'chartPWD',
+        'chartStatus', 'chartSupport', 'chartRegistration', 'chartAssembly',
+        'chartTransport', 'chartDisabilityType', 'chartLivestock', 'chartOFW',
+        'chartEducation', 'chartEmployment', 'chartComparison',
+        'chartAdditionalInfo', 'chartStructuralDamage', 'chartHouseholdInjury',
+        'chartHabitability', 'chartLossLivelihood'
+    ];
+    
+    chartIds.forEach(id => {
+        if (CH[id] && CH[id].destroy) {
+            try { CH[id].destroy(); } catch(e) {}
+            CH[id] = null;
+        }
+    });
+}
+
+/* ============ CHART CREATION FUNCTIONS ============ */
+function createBarChart(id, labels, values, title, color, isStacked = false, datasets = null) {
+    quickCleanCanvas(id);
+    const ctx = document.getElementById(id).getContext('2d');
+    
+    if (datasets) {
+        CH[id] = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: labels, datasets: datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: { duration: 800, easing: 'easeOutQuart' },
+                plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 15, usePointStyle: true } }, tooltip: { backgroundColor: 'rgba(0,0,0,0.8)' } },
+                scales: { x: { stacked: isStacked, grid: { display: false }, ticks: { font: { size: 10 }, maxRotation: 45 } }, y: { stacked: isStacked, beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 10 }, precision: 0 } } }
+            }
+        });
+    } else {
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, color);
+        gradient.addColorStop(1, color.replace('0.8', '0.4'));
+        
+        CH[id] = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: labels, datasets: [{ label: title, data: values, backgroundColor: gradient, borderColor: color, borderWidth: 1, borderRadius: 6 }] },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(0,0,0,0.8)' } },
+                scales: { x: { grid: { display: false }, ticks: { font: { size: 10 }, maxRotation: 45 } }, y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 10 }, precision: 0 } } }
+            }
+        });
+    }
+}
+
+function createDoughnutChart(id, labels, values, title) {
+    quickCleanCanvas(id);
+    const ctx = document.getElementById(id).getContext('2d');
+    
+    CH[id] = new Chart(ctx, {
+        type: 'doughnut',
+        data: { labels: labels, datasets: [{ data: values, backgroundColor: ['#0f7a4a', '#34b78f', '#ff7a00', '#ffa500', '#dc2626', '#6b6f6b'], borderWidth: 2, borderColor: '#ffffff', hoverOffset: 15 }] },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 15, usePointStyle: true } }, tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${ctx.raw}` } } },
+            cutout: '60%'
+        }
+    });
+}
+
+function createEmptyBarChart(chartId, title, message) {
+    quickCleanCanvas(chartId);
+    const ctx = document.getElementById(chartId).getContext('2d');
+    
+    CH[chartId] = new Chart(ctx, {
+        type: 'bar',
+        data: { labels: [message], datasets: [{ data: [0], backgroundColor: '#e0e0e0' }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, title: { display: true, text: title } }, scales: { y: { beginAtZero: true } } }
+    });
+}
+
+function createEmptyDoughnutChart(chartId, title, message) {
+    quickCleanCanvas(chartId);
+    const ctx = document.getElementById(chartId).getContext('2d');
+    
+    CH[chartId] = new Chart(ctx, {
+        type: 'doughnut',
+        data: { labels: [message], datasets: [{ data: [1], backgroundColor: '#e0e0e0' }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, title: { display: true, text: title } }, cutout: '70%' }
+    });
+}
+
+function createComparisonChart(aggregated) {
+    quickCleanCanvas('chartComparison');
+    
+    // Get top 10 barangays by total population
+    const barangays = aggregated.barangay.labels;
+    const headsData = aggregated.barangay.heads;
+    const membersData = aggregated.barangay.members;
+    
+    if (barangays.length === 0) {
+        createEmptyBarChart('chartComparison', 'Barangay vs Status Comparison', 'No data');
+        return;
+    }
+    
+    const ctx = document.getElementById('chartComparison').getContext('2d');
+    const datasets = [
+        { label: 'Household Heads', data: headsData, backgroundColor: 'rgba(52, 183, 143, 0.8)', borderColor: 'rgba(52, 183, 143, 1)', borderWidth: 1 },
+        { label: 'Household Members', data: membersData, backgroundColor: 'rgba(70, 140, 240, 0.8)', borderColor: 'rgba(70, 140, 240, 1)', borderWidth: 1 }
+    ];
+    
+    CH['chartComparison'] = new Chart(ctx, {
+        type: 'bar',
+        data: { labels: barangays, datasets: datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 15, usePointStyle: true } }, tooltip: { mode: 'index', intersect: false } },
+            scales: { x: { grid: { display: false }, ticks: { font: { size: 10 }, maxRotation: 45 } }, y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 10 }, precision: 0 } } }
+        }
+    });
+}
+
+function createSupportChart(aggregated) {
+    if (!aggregated.support || aggregated.support.labels.length === 0) {
+        createEmptyBarChart('chartSupport', 'Government Support', 'No government support data');
+        return;
+    }
+    
+    quickCleanCanvas('chartSupport');
+    const ctx = document.getElementById('chartSupport').getContext('2d');
+    
+    CH['chartSupport'] = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: aggregated.support.labels,
+            datasets: [{ label: 'Number of Support Recipients', data: aggregated.support.values, backgroundColor: 'rgba(156, 39, 176, 0.8)', borderColor: 'rgba(156, 39, 176, 1)', borderWidth: 1 }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${ctx.raw}` } } },
+            scales: { y: { beginAtZero: true, ticks: { precision: 0 } }, x: { ticks: { maxRotation: 45, minRotation: 45 } } }
+        }
+    });
+}
+
+function createAssemblyChart(aggregated) {
+    if (!aggregated.assembly || aggregated.assembly.labels.length === 0) {
+        createEmptyBarChart('chartAssembly', 'Assembly Area Distribution', 'No assembly area data');
+        return;
+    }
+    
+    quickCleanCanvas('chartAssembly');
+    const ctx = document.getElementById('chartAssembly').getContext('2d');
+    
+    CH['chartAssembly'] = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: aggregated.assembly.labels,
+            datasets: [{ label: 'Number of Households', data: aggregated.assembly.values, backgroundColor: 'rgba(33, 150, 243, 0.8)', borderColor: 'rgba(33, 150, 243, 1)', borderWidth: 1 }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' } },
+            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+        }
+    });
+}
+
+function createTransportChart(aggregated) {
+    if (!aggregated.transport || aggregated.transport.labels.length === 0) {
+        createEmptyBarChart('chartTransport', 'Transportation & Evacuation Details', 'No transportation data');
+        return;
+    }
+    
+    quickCleanCanvas('chartTransport');
+    const ctx = document.getElementById('chartTransport').getContext('2d');
+    
+    CH['chartTransport'] = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: aggregated.transport.labels,
+            datasets: [{ label: 'Number of Households', data: aggregated.transport.values, backgroundColor: 'rgba(255, 152, 0, 0.8)', borderColor: 'rgba(255, 152, 0, 1)', borderWidth: 1 }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' } },
+            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+        }
+    });
+}
+
+function createLivestockChart(aggregated) {
+    if (!aggregated.livestock || aggregated.livestock.labels.length === 0) {
+        createEmptyBarChart('chartLivestock', 'Domestic Livestock', 'No livestock data');
+        return;
+    }
+    
+    quickCleanCanvas('chartLivestock');
+    const ctx = document.getElementById('chartLivestock').getContext('2d');
+    
+    CH['chartLivestock'] = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: aggregated.livestock.labels,
+            datasets: [{ label: 'Total Count', data: aggregated.livestock.values, backgroundColor: 'rgba(76, 175, 80, 0.8)', borderColor: 'rgba(76, 175, 80, 1)', borderWidth: 1 }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' } },
+            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+        }
+    });
+}
+
+function createStackedCalamityChart(chartId, title, headsData, membersData, headsColor, membersColor) {
+    console.log(`🎨 Creating stacked ${title} chart...`);
+    
+    const canvas = document.getElementById(chartId);
+    if (!canvas) {
+        console.error(`❌ Canvas ${chartId} not found`);
+        return;
+    }
+    
+    if (canvas.chart) {
+        try { canvas.chart.destroy(); } catch(e) {}
+        canvas.chart = null;
+    }
+    if (window.CH && CH[chartId]) {
+        try { CH[chartId].destroy(); } catch(e) {}
+        CH[chartId] = null;
+    }
+    
+    // Get all unique barangays
+    const allLabels = [...new Set([...Object.keys(headsData), ...Object.keys(membersData)])].sort();
+    const headsValues = allLabels.map(l => headsData[l] || 0);
+    const membersValues = allLabels.map(l => membersData[l] || 0);
+    
+    const hasData = headsValues.some(v => v > 0) || membersValues.some(v => v > 0);
+    
+    const ctx = canvas.getContext('2d');
+    
+    if (!hasData) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.font = '14px Inter';
+        ctx.fillStyle = '#999';
+        ctx.textAlign = 'center';
+        ctx.fillText(`No ${title} reported yet`, canvas.width/2, canvas.height/2);
+        return;
+    }
+    
+    try {
+        const newChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: allLabels,
+                datasets: [
+                    {
+                        label: 'Heads Affected',
+                        data: headsValues,
+                        backgroundColor: headsColor,
+                        borderColor: headsColor.replace('0.8', '1'),
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        stack: 'stack'
+                    },
+                    {
+                        label: 'Members Affected',
+                        data: membersValues,
+                        backgroundColor: membersColor,
+                        borderColor: membersColor.replace('0.8', '1'),
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        stack: 'stack'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: { 
+                        callbacks: { 
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.raw} person${context.raw !== 1 ? 's' : ''}`;
+                            }
+                        } 
+                    }
+                },
+                scales: { 
+                    y: { 
+                        beginAtZero: true, 
+                        ticks: { precision: 0 },
+                        title: { display: true, text: 'Number of Persons Affected', font: { size: 11 } },
+                        stacked: true
+                    },
+                    x: { 
+                        ticks: { maxRotation: 45, minRotation: 45, font: { size: 10 } },
+                        title: { display: true, text: 'Barangay', font: { size: 11 } },
+                        stacked: true
+                    }
+                }
+            }
+        });
+        
+        canvas.chart = newChart;
+        if (window.CH) CH[chartId] = newChart;
+        console.log(`✅ Stacked ${title} chart created`);
+    } catch(e) {
+        console.error(`❌ Failed to create ${title} chart:`, e);
+    }
+}
+
+/* ============ UPDATE STATS FUNCTIONS ============ */
+function updateGlobalStats(aggregated) {
+    const totalHeads = aggregated.totals.heads || 0;
+    const totalMembers = aggregated.totals.members || 0;
+    const totalAll = aggregated.totals.total || 0;
+    
+    const globalHeads = document.getElementById('globalHeads');
+    const globalMembers = document.getElementById('globalMembers');
+    const globalTotal = document.getElementById('globalTotal');
+    const globalLastUpdated = document.getElementById('globalLastUpdated');
+    
+    if (globalHeads) globalHeads.textContent = formatNumber(totalHeads);
+    if (globalMembers) globalMembers.textContent = formatNumber(totalMembers);
+    if (globalTotal) globalTotal.textContent = formatNumber(totalAll);
+    if (globalLastUpdated) globalLastUpdated.textContent = new Date().toLocaleTimeString();
+}
+
+function updateAllStats(aggregated) {
+    if (!aggregated) return;
+    
+    updateGlobalStats(aggregated);
+    
+    // Barangay stats
+    const totalHeads = aggregated.barangay.heads.reduce((a,b) => a+b, 0);
+    const totalMembers = aggregated.barangay.members.reduce((a,b) => a+b, 0);
+    const barangayStats = document.getElementById('barangayStats');
+    if (barangayStats) {
+        const headsBadge = barangayStats.querySelector('.stat-badge.heads');
+        const membersBadge = barangayStats.querySelector('.stat-badge.members');
+        const totalBadge = barangayStats.querySelector('.stat-badge.total');
+        if (headsBadge) headsBadge.innerHTML = `Heads: ${totalHeads}`;
+        if (membersBadge) membersBadge.innerHTML = `Members: ${totalMembers}`;
+        if (totalBadge) totalBadge.innerHTML = `Total: ${totalHeads + totalMembers}`;
+    }
+    
+    // Age stats
+    const ageTotal = aggregated.ageGroups.values.reduce((a,b) => a+b, 0);
+    const ageHeadsTotal = aggregated.ageGroups.heads.reduce((a,b) => a+b, 0);
+    const ageMembersTotal = aggregated.ageGroups.members.reduce((a,b) => a+b, 0);
+    const ageStats = document.getElementById('ageStats');
+    if (ageStats) {
+        const headsBadge = ageStats.querySelector('.stat-badge.heads');
+        const membersBadge = ageStats.querySelector('.stat-badge.members');
+        const totalBadge = ageStats.querySelector('.stat-badge.total');
+        if (headsBadge) headsBadge.innerHTML = `Heads: ${ageHeadsTotal}`;
+        if (membersBadge) membersBadge.innerHTML = `Members: ${ageMembersTotal}`;
+        if (totalBadge) totalBadge.innerHTML = `Total: ${ageTotal}`;
+    }
+    
+    // Stage stats
+    const stageTotal = aggregated.stage.values.reduce((a,b) => a+b, 0);
+    const stageHeadsTotal = aggregated.stage.heads.reduce((a,b) => a+b, 0);
+    const stageMembersTotal = aggregated.stage.members.reduce((a,b) => a+b, 0);
+    const stageStats = document.getElementById('stageStats');
+    if (stageStats) {
+        const headsBadge = stageStats.querySelector('.stat-badge.heads');
+        const membersBadge = stageStats.querySelector('.stat-badge.members');
+        const totalBadge = stageStats.querySelector('.stat-badge.total');
+        if (headsBadge) headsBadge.innerHTML = `Heads: ${stageHeadsTotal}`;
+        if (membersBadge) membersBadge.innerHTML = `Members: ${stageMembersTotal}`;
+        if (totalBadge) totalBadge.innerHTML = `Total: ${stageTotal}`;
+    }
+    
+    // PWD stats
+    const pwdTotal = aggregated.pwd.headsYes + aggregated.pwd.headsNo + aggregated.pwd.membersYes + aggregated.pwd.membersNo;
+    const pwdHeadsTotal = aggregated.pwd.headsYes + aggregated.pwd.headsNo;
+    const pwdMembersTotal = aggregated.pwd.membersYes + aggregated.pwd.membersNo;
+    const pwdStats = document.getElementById('pwdStats');
+    if (pwdStats) {
+        const headsBadge = pwdStats.querySelector('.stat-badge.heads');
+        const membersBadge = pwdStats.querySelector('.stat-badge.members');
+        const totalBadge = pwdStats.querySelector('.stat-badge.total');
+        if (headsBadge) headsBadge.innerHTML = `Heads: ${pwdHeadsTotal}`;
+        if (membersBadge) membersBadge.innerHTML = `Members: ${pwdMembersTotal}`;
+        if (totalBadge) totalBadge.innerHTML = `Total: ${pwdTotal}`;
+    }
+    
+    // Registration stats
+    const regHeadsTotal = aggregated.registration.heads.reduce((a,b) => a+b, 0);
+    const regMembersTotal = aggregated.registration.members.reduce((a,b) => a+b, 0);
+    const regTotal = regHeadsTotal + regMembersTotal;
+    const regStats = document.getElementById('registrationStats');
+    if (regStats) {
+        const headsBadge = regStats.querySelector('.stat-badge.heads');
+        const membersBadge = regStats.querySelector('.stat-badge.members');
+        const totalBadge = regStats.querySelector('.stat-badge.total');
+        if (headsBadge) headsBadge.innerHTML = `Heads: ${regHeadsTotal}`;
+        if (membersBadge) membersBadge.innerHTML = `Members: ${regMembersTotal}`;
+        if (totalBadge) totalBadge.innerHTML = `Total: ${regTotal}`;
+    }
+    
+    // Status stats
+    const statusHeadsTotal = aggregated.status.heads.values.reduce((a,b) => a+b, 0);
+    const statusMembersTotal = aggregated.status.members.values.reduce((a,b) => a+b, 0);
+    const statusTotal = statusHeadsTotal + statusMembersTotal;
+    const statusStats = document.getElementById('statusStats');
+    if (statusStats) {
+        const headsBadge = statusStats.querySelector('.stat-badge.heads');
+        const membersBadge = statusStats.querySelector('.stat-badge.members');
+        const totalBadge = statusStats.querySelector('.stat-badge.total');
+        if (headsBadge) headsBadge.innerHTML = `Heads: ${statusHeadsTotal}`;
+        if (membersBadge) membersBadge.innerHTML = `Members: ${statusMembersTotal}`;
+        if (totalBadge) totalBadge.innerHTML = `Total: ${statusTotal}`;
+    }
+    
+    // OFW stats
+    const ofwTotal = (aggregated.ofw?.heads || 0) + (aggregated.ofw?.members || 0);
+    const ofwStats = document.getElementById('ofwStats');
+    if (ofwStats) {
+        const totalBadge = ofwStats.querySelector('.stat-badge.total');
+        if (totalBadge) totalBadge.innerHTML = `OFWs: ${ofwTotal}`;
+    }
+    
+    // Education stats
+    const eduStats = document.getElementById('educationStats');
+    if (eduStats) {
+        const totalBadge = eduStats.querySelector('.stat-badge.total');
+        if (totalBadge) totalBadge.innerHTML = `Levels: ${aggregated.education.labels.length}`;
+    }
+    
+    // Employment stats
+    const empStats = document.getElementById('employmentStats');
+    if (empStats) {
+        const totalBadge = empStats.querySelector('.stat-badge.total');
+        if (totalBadge) totalBadge.innerHTML = `Statuses: ${aggregated.employment.labels.length}`;
+    }
+    
+    // Additional Info stats
+    const additionalHeadsTotal = aggregated.additional.heads.reduce((a,b) => a+b, 0);
+    const additionalMembersTotal = aggregated.additional.members.reduce((a,b) => a+b, 0);
+    const additionalTotal = additionalHeadsTotal + additionalMembersTotal;
+    const additionalStats = document.getElementById('additionalInfoStats');
+    if (additionalStats) {
+        const headsBadge = additionalStats.querySelector('.stat-badge.checkbox-heads');
+        const membersBadge = additionalStats.querySelector('.stat-badge.checkbox-members');
+        const totalBadge = additionalStats.querySelector('.stat-badge.checkbox-total');
+        if (headsBadge) headsBadge.innerHTML = `Checks (Heads): ${additionalHeadsTotal}`;
+        if (membersBadge) membersBadge.innerHTML = `Checks (Members): ${additionalMembersTotal}`;
+        if (totalBadge) totalBadge.innerHTML = `Total Checks: ${additionalTotal}`;
+    }
+    
+    // Disability Type stats
+    const disabilityHeadsTotal = aggregated.disabilityType.heads.reduce((a,b) => a+b, 0);
+    const disabilityMembersTotal = aggregated.disabilityType.members.reduce((a,b) => a+b, 0);
+    const disabilityTotal = disabilityHeadsTotal + disabilityMembersTotal;
+    const disabilityStats = document.getElementById('disabilityStats');
+    if (disabilityStats) {
+        const headsBadge = disabilityStats.querySelector('.stat-badge.heads');
+        const membersBadge = disabilityStats.querySelector('.stat-badge.members');
+        const totalBadge = disabilityStats.querySelector('.stat-badge.total');
+        if (headsBadge) headsBadge.innerHTML = `Heads: ${disabilityHeadsTotal}`;
+        if (membersBadge) membersBadge.innerHTML = `Members: ${disabilityMembersTotal}`;
+        if (totalBadge) totalBadge.innerHTML = `Total: ${disabilityTotal}`;
+    }
+    
+    console.log("✅ All stats updated");
+}
+
+function updateAllChartTitles(aggregated) {
+    if (!aggregated) return;
+    window.lastAggregatedData = aggregated;
+}
+
+/* ============ STATS VIEW MANAGER ============ */
+const StatsManager = {
+    currentView: 'badges',
+    init() {
+        const savedView = localStorage.getItem('statsViewPreference') || 'badges';
+        this.setView(savedView);
+        
+        const toggleBadges = document.getElementById('toggleBadges');
+        const toggleSummary = document.getElementById('toggleSummary');
+        const toggleCompact = document.getElementById('toggleCompact');
+        
+        if (toggleBadges) toggleBadges.addEventListener('click', () => this.setView('badges'));
+        if (toggleSummary) toggleSummary.addEventListener('click', () => this.setView('summary'));
+        if (toggleCompact) toggleCompact.addEventListener('click', () => this.setView('compact'));
+    },
+    setView(view) {
+        this.currentView = view;
+        localStorage.setItem('statsViewPreference', view);
+        
+        document.querySelectorAll('.stats-toggle-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.view === view) btn.classList.add('active');
+        });
+        
+        const globalStats = document.getElementById('globalStatsSummary');
+        const statsToggle = document.getElementById('statsViewToggle');
+        const chartStats = document.querySelectorAll('.chart-stats');
+        const chartTitles = document.querySelectorAll('.chart-title');
+        
+        if (view === 'badges') {
+            if (globalStats) globalStats.classList.remove('visible');
+            if (statsToggle) statsToggle.classList.add('visible');
+            chartStats.forEach(stats => stats.style.display = 'flex');
+            chartTitles.forEach(title => title.classList.remove('compact'));
+        } else if (view === 'summary') {
+            if (globalStats) globalStats.classList.add('visible');
+            if (statsToggle) statsToggle.classList.add('visible');
+            chartStats.forEach(stats => stats.style.display = 'none');
+            chartTitles.forEach(title => title.classList.remove('compact'));
+        } else if (view === 'compact') {
+            if (globalStats) globalStats.classList.remove('visible');
+            if (statsToggle) statsToggle.classList.add('visible');
+            chartStats.forEach(stats => {
+                stats.classList.add('hide-on-mobile');
+                stats.style.display = 'none';
+            });
+            chartTitles.forEach(title => title.classList.add('compact'));
+        }
+    }
+};
+
+/* ============ MAIN BUILD CHARTS FUNCTION ============ */
+async function buildCharts(forceRefresh = false) {
+    showLoading(true);
+    cleanupAllChartsFast();
+    
+    try {
+        const result = await fetchChartDataFromSupabase();
+        
+        if (!result.success || !result.aggregated) {
+            throw new Error(result.error || "Failed to load data");
+        }
+        
+        const aggregated = result.aggregated;
+        
+        // Update stats
+        updateAllStats(aggregated);
+        updateAllChartTitles(aggregated);
+        
+        const hasAnyData = aggregated.totals.total > 0;
+        
+        // 1. Barangay Chart
+        if (aggregated.barangay && aggregated.barangay.labels.length > 0) {
+            const datasets = [
+                { label: 'Heads', data: aggregated.barangay.heads, backgroundColor: 'rgba(52, 183, 143, 0.8)', borderColor: 'rgba(52, 183, 143, 1)', borderWidth: 1 },
+                { label: 'Members', data: aggregated.barangay.members, backgroundColor: 'rgba(70, 140, 240, 0.8)', borderColor: 'rgba(70, 140, 240, 1)', borderWidth: 1 }
+            ];
+            createBarChart('chartBarangay', aggregated.barangay.labels, null, 'Households', null, true, datasets);
+        } else {
+            createEmptyBarChart('chartBarangay', 'Entry per Barangay', hasAnyData ? 'No barangay data' : 'No records found');
+        }
+        
+        // 2. Age Distribution
+        if (aggregated.ageGroups && aggregated.ageGroups.labels.length > 0 && aggregated.ageGroups.values.some(v => v > 0)) {
+            const datasets = [
+                { label: 'Heads', data: aggregated.ageGroups.heads, backgroundColor: 'rgba(52, 183, 143, 0.8)', borderColor: 'rgba(52, 183, 143, 1)', borderWidth: 1 },
+                { label: 'Members', data: aggregated.ageGroups.members, backgroundColor: 'rgba(70, 140, 240, 0.8)', borderColor: 'rgba(70, 140, 240, 1)', borderWidth: 1 }
+            ];
+            createBarChart('chartAgeGroup', aggregated.ageGroups.labels, null, 'Age Distribution', null, true, datasets);
+        } else {
+            createEmptyBarChart('chartAgeGroup', 'Age Distribution', hasAnyData ? 'No age data' : 'No records found');
+        }
+        
+        // 3. Stage Distribution
+        if (aggregated.stage && aggregated.stage.values && aggregated.stage.values.some(v => v > 0)) {
+            createDoughnutChart('chartStage', aggregated.stage.labels, aggregated.stage.values, 'Stage Distribution');
+        } else {
+            createEmptyDoughnutChart('chartStage', 'Stage Distribution', hasAnyData ? 'No stage data' : 'No records found');
+        }
+        
+        // 4. PWD Distribution
+        const hasPWDData = (aggregated.pwd.headsYes > 0 || aggregated.pwd.headsNo > 0 || aggregated.pwd.membersYes > 0 || aggregated.pwd.membersNo > 0);
+        if (hasPWDData) {
+            const pwdDatasets = [
+                { label: 'Heads - PWD', data: [aggregated.pwd.headsYes], backgroundColor: 'rgba(255, 205, 86, 0.8)', borderColor: 'rgba(255, 205, 86, 1)', borderWidth: 1 },
+                { label: 'Heads - Non-PWD', data: [aggregated.pwd.headsNo], backgroundColor: 'rgba(255, 205, 86, 0.4)', borderColor: 'rgba(255, 205, 86, 0.7)', borderWidth: 1 },
+                { label: 'Members - PWD', data: [aggregated.pwd.membersYes], backgroundColor: 'rgba(54, 162, 235, 0.8)', borderColor: 'rgba(54, 162, 235, 1)', borderWidth: 1 },
+                { label: 'Members - Non-PWD', data: [aggregated.pwd.membersNo], backgroundColor: 'rgba(54, 162, 235, 0.4)', borderColor: 'rgba(54, 162, 235, 0.7)', borderWidth: 1 }
+            ];
+            createBarChart('chartPWD', ['PWD Distribution'], null, 'PWD Status', null, true, pwdDatasets);
+        } else {
+            createEmptyBarChart('chartPWD', 'PWD Distribution', hasAnyData ? 'No PWD data' : 'No records found');
+        }
+        
+        // 5. Status Distribution
+        const hasStatusData = aggregated.status && aggregated.status.heads && aggregated.status.heads.values && aggregated.status.heads.values.some(v => v > 0);
+        if (hasStatusData) {
+            const allLabels = [...new Set([...(aggregated.status.heads.labels || []), ...(aggregated.status.members.labels || [])])].sort();
+            const headsData = allLabels.map(l => {
+                const idx = aggregated.status.heads.labels?.indexOf(l) || -1;
+                return idx !== -1 ? aggregated.status.heads.values[idx] : 0;
+            });
+            const membersData = allLabels.map(l => {
+                const idx = aggregated.status.members.labels?.indexOf(l) || -1;
+                return idx !== -1 ? aggregated.status.members.values[idx] : 0;
+            });
+            if (headsData.some(v => v > 0) || membersData.some(v => v > 0)) {
+                const statusDatasets = [
+                    { label: 'Heads', data: headsData, backgroundColor: 'rgba(75, 192, 192, 0.8)', borderColor: 'rgba(75, 192, 192, 1)', borderWidth: 1 },
+                    { label: 'Members', data: membersData, backgroundColor: 'rgba(153, 102, 255, 0.8)', borderColor: 'rgba(153, 102, 255, 1)', borderWidth: 1 }
+                ];
+                createBarChart('chartStatus', allLabels, null, 'Status Distribution', null, false, statusDatasets);
+            } else {
+                createEmptyBarChart('chartStatus', 'Status Distribution', 'No status data');
+            }
+        } else {
+            createEmptyBarChart('chartStatus', 'Status Distribution', hasAnyData ? 'No status data' : 'No records found');
+        }
+        
+        // 6. Registration Status
+        const hasRegistrationData = aggregated.registration && aggregated.registration.heads && aggregated.registration.heads.some(v => v > 0);
+        if (hasRegistrationData) {
+            const regDatasets = [
+                { label: 'Heads', data: aggregated.registration.heads, backgroundColor: 'rgba(255, 99, 132, 0.8)', borderColor: 'rgba(255, 99, 132, 1)', borderWidth: 1 },
+                { label: 'Members', data: aggregated.registration.members, backgroundColor: 'rgba(255, 159, 64, 0.8)', borderColor: 'rgba(255, 159, 64, 1)', borderWidth: 1 }
+            ];
+            createBarChart('chartRegistration', aggregated.registration.labels, null, 'Registration Status', null, true, regDatasets);
+        } else {
+            createEmptyBarChart('chartRegistration', 'Registration Status', hasAnyData ? 'No registration data' : 'No records found');
+        }
+        
+        // 7. Government Support
+        createSupportChart(aggregated);
+        
+        // 8. Assembly Area
+        createAssemblyChart(aggregated);
+        
+        // 9. Transportation
+        createTransportChart(aggregated);
+        
+        // 10. Livestock
+        createLivestockChart(aggregated);
+        
+        // 11. OFW
+        const ofwTotal = (aggregated.ofw?.heads || 0) + (aggregated.ofw?.members || 0);
+        if (ofwTotal > 0) {
+            createDoughnutChart('chartOFW', ['OFW', 'Non-OFW'], [ofwTotal, aggregated.totals.total - ofwTotal], 'Overseas Filipino Workers');
+        } else {
+            createEmptyDoughnutChart('chartOFW', 'Overseas Filipino Workers', hasAnyData ? 'No OFW records' : 'No records found');
+        }
+        
+        // 12. Education
+        if (aggregated.education && aggregated.education.values && aggregated.education.values.some(v => v > 0)) {
+            createBarChart('chartEducation', aggregated.education.labels, aggregated.education.values, 'Count', 'rgba(123, 97, 255, 0.8)');
+        } else {
+            createEmptyBarChart('chartEducation', 'Educational Attainment', hasAnyData ? 'No education data' : 'No records found');
+        }
+        
+        // 13. Employment
+        if (aggregated.employment && aggregated.employment.values && aggregated.employment.values.some(v => v > 0)) {
+            createDoughnutChart('chartEmployment', aggregated.employment.labels, aggregated.employment.values, 'Employment Status');
+        } else {
+            createEmptyDoughnutChart('chartEmployment', 'Employment Status', hasAnyData ? 'No employment data' : 'No records found');
+        }
+        
+        // 14. Additional Info
+        if (aggregated.additional && aggregated.additional.labels.length > 0 && aggregated.additional.heads.some(v => v > 0)) {
+            const additionalDatasets = [
+                { label: 'Heads', data: aggregated.additional.heads, backgroundColor: 'rgba(106, 90, 205, 0.8)', borderColor: 'rgba(106, 90, 205, 1)', borderWidth: 1 },
+                { label: 'Members', data: aggregated.additional.members, backgroundColor: 'rgba(60, 179, 113, 0.8)', borderColor: 'rgba(60, 179, 113, 1)', borderWidth: 1 }
+            ];
+            createBarChart('chartAdditionalInfo', aggregated.additional.labels, null, 'Additional Information', null, true, additionalDatasets);
+        } else {
+            createEmptyBarChart('chartAdditionalInfo', 'Additional Information', hasAnyData ? 'No additional info data' : 'No records found');
+        }
+        
+        // 15. Disability Type
+        if (aggregated.disabilityType && aggregated.disabilityType.labels.length > 0 && aggregated.disabilityType.heads.some(v => v > 0)) {
+            const disabilityDatasets = [
+                { label: 'Heads', data: aggregated.disabilityType.heads, backgroundColor: 'rgba(128, 0, 128, 0.8)', borderColor: 'rgba(128, 0, 128, 1)', borderWidth: 1 },
+                { label: 'Members', data: aggregated.disabilityType.members, backgroundColor: 'rgba(255, 20, 147, 0.8)', borderColor: 'rgba(255, 20, 147, 1)', borderWidth: 1 }
+            ];
+            createBarChart('chartDisabilityType', aggregated.disabilityType.labels, null, 'Type of Disability', null, true, disabilityDatasets);
+        } else {
+            createEmptyBarChart('chartDisabilityType', 'Type of Disability', hasAnyData ? 'No disability data' : 'No records found');
+        }
+        
+        // 16. Comparison Chart
+        createComparisonChart(aggregated);
+        
+        // 17-20. Calamity Charts - Stacked (Heads + Members)
+        const structuralHeadsData = {};
+        const structuralMembersData = {};
+        const injuryHeadsData = {};
+        const injuryMembersData = {};
+        const habitabilityHeadsData = {};
+        const habitabilityMembersData = {};
+        const lossHeadsData = {};
+        const lossMembersData = {};
+        
+        if (aggregated.structuralDamageHeads && aggregated.structuralDamageHeads.labels) {
+            aggregated.structuralDamageHeads.labels.forEach((label, idx) => {
+                const value = aggregated.structuralDamageHeads.values[idx];
+                if (value > 0) structuralHeadsData[label] = value;
+            });
+        }
+        if (aggregated.structuralDamageMembers && aggregated.structuralDamageMembers.labels) {
+            aggregated.structuralDamageMembers.labels.forEach((label, idx) => {
+                const value = aggregated.structuralDamageMembers.values[idx];
+                if (value > 0) structuralMembersData[label] = value;
+            });
+        }
+        
+        if (aggregated.householdInjuryHeads && aggregated.householdInjuryHeads.labels) {
+            aggregated.householdInjuryHeads.labels.forEach((label, idx) => {
+                const value = aggregated.householdInjuryHeads.values[idx];
+                if (value > 0) injuryHeadsData[label] = value;
+            });
+        }
+        if (aggregated.householdInjuryMembers && aggregated.householdInjuryMembers.labels) {
+            aggregated.householdInjuryMembers.labels.forEach((label, idx) => {
+                const value = aggregated.householdInjuryMembers.values[idx];
+                if (value > 0) injuryMembersData[label] = value;
+            });
+        }
+        
+        if (aggregated.habitabilityHeads && aggregated.habitabilityHeads.labels) {
+            aggregated.habitabilityHeads.labels.forEach((label, idx) => {
+                const value = aggregated.habitabilityHeads.values[idx];
+                if (value > 0) habitabilityHeadsData[label] = value;
+            });
+        }
+        if (aggregated.habitabilityMembers && aggregated.habitabilityMembers.labels) {
+            aggregated.habitabilityMembers.labels.forEach((label, idx) => {
+                const value = aggregated.habitabilityMembers.values[idx];
+                if (value > 0) habitabilityMembersData[label] = value;
+            });
+        }
+        
+        if (aggregated.lossLivelihoodHeads && aggregated.lossLivelihoodHeads.labels) {
+            aggregated.lossLivelihoodHeads.labels.forEach((label, idx) => {
+                const value = aggregated.lossLivelihoodHeads.values[idx];
+                if (value > 0) lossHeadsData[label] = value;
+            });
+        }
+        if (aggregated.lossLivelihoodMembers && aggregated.lossLivelihoodMembers.labels) {
+            aggregated.lossLivelihoodMembers.labels.forEach((label, idx) => {
+                const value = aggregated.lossLivelihoodMembers.values[idx];
+                if (value > 0) lossMembersData[label] = value;
+            });
+        }
+        
+        createStackedCalamityChart('chartStructuralDamage', 'Structural/Property Damage', structuralHeadsData, structuralMembersData, 'rgba(220, 38, 38, 0.8)', 'rgba(220, 38, 38, 0.4)');
+        createStackedCalamityChart('chartHouseholdInjury', 'Household Injury', injuryHeadsData, injuryMembersData, 'rgba(249, 115, 22, 0.8)', 'rgba(249, 115, 22, 0.4)');
+        createStackedCalamityChart('chartHabitability', 'Habitability of House', habitabilityHeadsData, habitabilityMembersData, 'rgba(234, 179, 8, 0.8)', 'rgba(234, 179, 8, 0.4)');
+        createStackedCalamityChart('chartLossLivelihood', 'Loss of Livelihood/Assets', lossHeadsData, lossMembersData, 'rgba(139, 69, 19, 0.8)', 'rgba(139, 69, 19, 0.4)');
+        
+        console.log("✅ All charts created successfully");
+        
+        if (!hasAnyData) {
+            showInfo("No data available in the database. Please add household records first.");
+        }
+        
+    } catch (err) {
+        console.error("Error building charts:", err);
+        showError("Unable to load charts: " + err.message);
+    } finally {
+        showLoading(false);
+    }
+}
+
+/* ============ EXPORT FUNCTIONS ============ */
+async function exportToPDF() {
+    const dropdown = document.getElementById('exportDropdown');
+    if (dropdown) dropdown.classList.remove('show');
+    showInfo("PDF export feature - coming soon");
+}
+
+async function exportPNGsZip() {
+    const dropdown = document.getElementById('exportDropdown');
+    if (dropdown) dropdown.classList.remove('show');
+    showInfo("PNG export feature - coming soon");
+}
+
+async function exportCSV_AllRows() {
+    const dropdown = document.getElementById('exportDropdown');
+    if (dropdown) dropdown.classList.remove('show');
+    
+    try {
+        const result = await fetchChartDataFromSupabase();
+        if (!result.success || !result.aggregated) {
+            throw new Error("No data to export");
+        }
+        
+        const barangayData = result.aggregated.barangay;
+        let csv = "Barangay,Heads,Members,Total\n";
+        for (let i = 0; i < barangayData.labels.length; i++) {
+            const total = (barangayData.heads[i] || 0) + (barangayData.members[i] || 0);
+            csv += `"${barangayData.labels[i]}",${barangayData.heads[i] || 0},${barangayData.members[i] || 0},${total}\n`;
+        }
+        
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = `chart_data_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        showInfo("CSV exported successfully");
+    } catch (err) {
+        console.error("CSV export failed:", err);
+        showError("CSV export failed: " + err.message);
+    }
+}
+
+/* ============ SIDEBAR TOGGLE ============ */
+function toggleSidebar() {
+    const pageContainer = document.querySelector('.page-container');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    if (pageContainer && sidebarToggle) {
+        pageContainer.classList.toggle('collapsed');
+        const icon = sidebarToggle.querySelector('i');
+        if (icon) {
+            if (pageContainer.classList.contains('collapsed')) {
+                icon.className = 'fas fa-chevron-right';
+            } else {
+                icon.className = 'fas fa-bars';
+            }
+        }
+    }
+}
+
+/* ============ AUTO REFRESH ============ */
+let refreshInterval = null;
+
+function startAutoRefresh() {
+    if (refreshInterval) clearInterval(refreshInterval);
+    refreshInterval = setInterval(() => buildCharts(true), 60000);
+}
+
+function stopAutoRefresh() {
+    if (refreshInterval) {
+        clearInterval(refreshInterval);
+        refreshInterval = null;
+    }
+}
+
+/* ============ USER AUTHENTICATION ============ */
+function checkLoginAndDisplayUser() {
+    const loggedIn = localStorage.getItem('loggedIn') === 'true';
+    const isGuest = localStorage.getItem('isGuest') === 'true';
+    
+    if (isGuest) {
+        window.location.replace('dashboard.html');
+        return false;
+    }
+    
+    if (!loggedIn) {
+        window.location.href = 'index.html?session=expired';
+        return false;
+    }
+    
+    const staffName = localStorage.getItem('staffName');
+    const username = localStorage.getItem('username');
+    const userRole = localStorage.getItem('userRole');
+    
+    let displayName = 'User';
+    if (staffName && staffName.trim() !== '') {
+        displayName = staffName;
+    } else if (username && username.trim() !== '') {
+        displayName = username;
+    }
+    
+    let displayRole = '';
+    if (userRole && userRole.trim() !== '') {
+        displayRole = userRole;
+    } else {
+        displayRole = 'Staff';
+    }
+    
+    const userFullnameElement = document.getElementById('userFullname');
+    if (userFullnameElement) userFullnameElement.innerText = displayName;
+    
+    const userRoleElement = document.getElementById('userRole');
+    if (userRoleElement) userRoleElement.innerText = displayRole;
+    
+    const userNameElement = document.getElementById('userName');
+    if (userNameElement) userNameElement.innerHTML = `<i class="fas fa-user-circle"></i> ${displayName}`;
+    
+    const isAdmin = userRole && userRole.toLowerCase() === 'admin';
+    const adminItems = document.querySelectorAll('.admin-only');
+    adminItems.forEach(item => {
+        if (isAdmin) {
+            item.classList.add('admin-visible');
+            item.style.display = 'block';
+        } else {
+            item.classList.remove('admin-visible');
+            item.style.display = 'none';
+        }
+    });
+    
+    return true;
+}
+
+function setupUserDropdown() {
+    const userBtn = document.getElementById('userBtn');
+    const userDropdown = document.getElementById('userDropdown');
+    
+    if (userBtn && userDropdown) {
+        userBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userDropdown.classList.toggle('active');
+        });
+        
+        document.addEventListener('click', function() {
+            userDropdown.classList.remove('active');
+        });
+    }
+}
+
+async function performLogout() {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging out...';
+        logoutBtn.disabled = true;
+    }
+    
+    const sessionId = localStorage.getItem('sessionId');
+    
+    if (sessionId && supabaseClient) {
+        try {
+            const { error } = await supabaseClient
+                .from('user_sessions')
+                .update({ 
+                    is_active: false, 
+                    terminated_at: new Date().toISOString() 
+                })
+                .eq('session_id', sessionId);
+            
+            if (error) {
+                console.error('Failed to deactivate session:', error);
+            } else {
+                console.log('✅ Session deactivated in Supabase');
+            }
+        } catch (err) {
+            console.error('Logout error:', err);
+        }
+    }
+    
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    document.cookie.split(";").forEach(function(c) { 
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+    });
+    
+    window.location.replace('index.html?logout=' + Date.now());
+}
+
+function setupLogoutHandler() {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        const newLogoutBtn = logoutBtn.cloneNode(true);
+        logoutBtn.parentNode.replaceChild(newLogoutBtn, logoutBtn);
+        
+        newLogoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const confirmModal = document.getElementById('confirmModal');
+            if (confirmModal) {
+                confirmModal.style.display = 'flex';
+            }
+        });
+    }
+}
+
+function setupConfirmModal() {
+    const confirmModal = document.getElementById('confirmModal');
+    if (!confirmModal) return;
+    
+    const yesBtn = document.getElementById('confirmYesBtn');
+    const noBtn = document.getElementById('confirmNoBtn');
+    
+    if (yesBtn) {
+        yesBtn.onclick = async function() {
+            confirmModal.style.display = 'none';
+            await performLogout();
+        };
+    }
+    
+    if (noBtn) {
+        noBtn.onclick = function() {
+            confirmModal.style.display = 'none';
+        };
+    }
+}
+
+/* ============ INITIALIZATION ============ */
+document.addEventListener('DOMContentLoaded', async function() {
+    if (!checkLoginAndDisplayUser()) return;
+    
+    setupUserDropdown();
+    setupLogoutHandler();
+    setupConfirmModal();
+    
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
+    
+    // Export buttons
+    const exportBtn = document.getElementById('exportBtn');
+    const exportDropdown = document.getElementById('exportDropdown');
+    if (exportBtn && exportDropdown) {
+        exportBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            exportDropdown.classList.toggle('show');
+        });
+        document.addEventListener('click', () => exportDropdown.classList.remove('show'));
+    }
+    
+    // Export options
+    const pdfOption = document.querySelector('[onclick="exportToPDF()"]');
+    const pngOption = document.querySelector('[onclick="exportPNGsZip()"]');
+    const csvOption = document.querySelector('[onclick="exportCSV_AllRows()"]');
+    
+    if (pdfOption) pdfOption.onclick = () => { exportDropdown.classList.remove('show'); exportToPDF(); };
+    if (pngOption) pngOption.onclick = () => { exportDropdown.classList.remove('show'); exportPNGsZip(); };
+    if (csvOption) csvOption.onclick = () => { exportDropdown.classList.remove('show'); exportCSV_AllRows(); };
+    
+    // Print button
+    const printBtn = document.getElementById('btnPrint');
+    if (printBtn) printBtn.addEventListener('click', () => window.print());
+    
+    // Initialize Stats Manager
+    if (typeof StatsManager !== 'undefined' && StatsManager.init) {
+        StatsManager.init();
+    }
+    
+    // Load charts
+    await buildCharts();
+    startAutoRefresh();
+});
+</script>
+</body>
+</html>
