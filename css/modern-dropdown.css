@@ -1,0 +1,122 @@
+/* =====================================================
+   MODERN DROPDOWNS (all pages) - loaded last
+   - every <select>: clean field, custom chevron, focus ring
+   - export menus + avatar menu: floating card, soft shadow, item hover
+   ===================================================== */
+:root {
+    --dd-accent: var(--accent1, #166534);
+    --dd-border: #d5dde3;
+    --dd-ring: rgba(22, 101, 52, .18);
+    --dd-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    --dd-chevron-active: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23166534' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+/* ---------- native selects ---------- */
+html body select:not([multiple]):not([size]) {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    background-color: #fff;
+    background-image: var(--dd-chevron) !important;
+    background-repeat: no-repeat !important;
+    background-position: right 11px center !important;
+    background-size: 15px !important;
+    padding-right: 34px !important;
+    border: 1.5px solid var(--dd-border);
+    border-radius: 10px !important;
+    cursor: pointer;
+    text-overflow: ellipsis;
+    transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+}
+html body select:not([multiple]):not([size]):hover:not(:disabled) {
+    border-color: #9fb3a8;
+    background-color: #fbfdfc;
+}
+html body select:not([multiple]):not([size]):focus {
+    outline: none !important;
+    border-color: var(--dd-accent) !important;
+    box-shadow: 0 0 0 3px var(--dd-ring) !important;
+    background-image: var(--dd-chevron-active) !important;
+}
+html body select:disabled {
+    background-color: #f3f4f6 !important;
+    color: #9ca3af;
+    cursor: not-allowed;
+    opacity: .85;
+}
+html body select option {
+    padding: 8px 10px;
+    color: #1f2937;
+    background: #fff;
+}
+html body select option:checked { background: #e8f5ec; color: #14532d; }
+html body select option:disabled { color: #9ca3af; }
+select::-ms-expand { display: none; }
+
+/* validation states keep working with the new look */
+html body select.input-error, html body select.error, html body select.invalid {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, .15) !important;
+}
+
+/* ---------- export menus (records + charts) ---------- */
+html body .export-dropdown {
+    width: 190px !important;
+    padding: 6px;
+    margin-top: 10px !important;
+    border: 1px solid rgba(0, 0, 0, .06) !important;
+    border-radius: 14px !important;
+    background: #fff;
+    box-shadow: 0 14px 34px rgba(15, 40, 25, .18), 0 2px 6px rgba(0, 0, 0, .05) !important;
+    transform-origin: top right;
+    animation: ddPop .16s ease-out;
+}
+html body .export-dropdown::before {            /* small pointer */
+    content: ""; position: absolute; top: -6px; right: 22px; width: 12px; height: 12px;
+    background: #fff; transform: rotate(45deg);
+    border-left: 1px solid rgba(0,0,0,.06); border-top: 1px solid rgba(0,0,0,.06);
+}
+html body .export-dropdown div {
+    position: relative;
+    padding: 10px 12px !important;
+    border-radius: 9px;
+    font-size: .85rem;
+    font-weight: 500;
+    color: #374151;
+    gap: 10px !important;
+}
+html body .export-dropdown div:hover { background: #ecf7f0 !important; color: var(--dd-accent) !important; }
+html body .export-dropdown div:active { background: #dcf0e3 !important; }
+html body .export-dropdown div i {
+    width: 28px !important; height: 28px; border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #f1f5f3; color: var(--dd-accent);
+    font-size: .8rem !important;
+}
+html body .export-dropdown div:hover i { background: #fff; }
+
+/* ---------- avatar / user menu ---------- */
+html body .dropdown-menu {
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, .05);
+    box-shadow: 0 16px 38px rgba(15, 40, 25, .22), 0 2px 6px rgba(0, 0, 0, .06);
+    transform-origin: top right;
+}
+html body .user-dropdown.active .dropdown-menu { animation: ddPop .16s ease-out; }
+html body .dropdown-menu a { transition: background .15s ease, transform .15s ease; font-weight: 600; }
+html body .dropdown-menu a:hover { transform: none; }
+html body .user-btn .fa-chevron-down { transition: transform .2s ease; }
+html body .user-dropdown.active .user-btn .fa-chevron-down { transform: rotate(180deg); }
+
+@keyframes ddPop {
+    from { opacity: 0; transform: translateY(-6px) scale(.97); }
+    to   { opacity: 1; transform: none; }
+}
+
+@media (max-width: 768px) {
+    html body select:not([multiple]):not([size]) { background-position: right 9px center !important; padding-right: 30px !important; }
+    html body .export-dropdown { width: 176px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+    html body .export-dropdown, html body .user-dropdown.active .dropdown-menu { animation: none; }
+}

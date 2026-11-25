@@ -1,0 +1,45 @@
+/* ============================================
+   CONSISTENCY - MOBILE (loaded LAST on every page)
+   Same look as before; only mismatched values are unified.
+   ============================================ */
+@media (max-width: 768px) {
+    /* Page frame (fixes sideways overflow on Home & Charts) */
+    body { overflow-x: hidden !important; }
+    .page-container { padding: 8px !important; gap: 12px !important; width: 100% !important; max-width: 100% !important; margin: 0 !important; box-sizing: border-box !important; overflow-x: hidden !important; }
+
+    /* Header bar */
+    .topbar { margin: 4px !important; padding: 8px 12px !important; border-radius: 14px !important; }
+    .brand { gap: 10px !important; }
+    body .topbar .brand .logo { width: 45px !important; height: 45px !important; flex-shrink: 0 !important; object-fit: contain !important; }
+    .brand-text h1 { font-size: 0.8rem !important; font-weight: 700 !important; }
+    .brand-text p { font-size: 0.6rem !important; }
+
+    /* Content card */
+    .content-area { padding: 12px !important; border-radius: 12px !important; box-sizing: border-box !important; }
+
+    /* Page title + description box */
+    body .content-area .content-header h2, body .content-area .welcome-content h2 { font-size: 0.95rem !important; font-weight: 700 !important; margin: 0 0 8px 0 !important; }
+    body .content-area #disc, body .content-area .welcome-content > p { font-size: 0.7rem !important; line-height: 1.45 !important; padding: 8px 10px !important; margin-bottom: 12px !important; }
+
+    /* Buttons */
+    .btn, body .content-area .btn, body .toolbar-right .btn, body .toolbar-row-2 .btn, body .toolbar-row-2 .export-wrapper .btn, body .form-actions .btn, body .panel-actions .btn { height: 32px !important; padding: 5px 10px !important; font-size: 0.7rem !important; border-radius: 8px !important; }
+
+    /* Search / filter controls */
+    .search-box { height: 36px !important; font-size: 0.75rem !important; border-radius: 8px !important; }
+    .brgy-dropdown, .filter-column-container { height: 36px !important; border-radius: 8px !important; }
+
+    /* Cards */
+    .card, .chart-card, .module-card, .info-card { border-radius: 12px !important; }
+    .card { padding: 10px !important; }
+
+    /* Bottom navigation - identical on every page */
+    .mobile-bottom-nav { height: 70px !important; padding: 0 !important; box-sizing: border-box !important; }
+    .mobile-nav-items { height: 100% !important; width: 100% !important; }
+    .mobile-bottom-nav .mobile-nav-items .mobile-nav-item { height: 100% !important; max-height: 100% !important; padding: 6px 2px !important; min-width: 0 !important; box-sizing: border-box !important; border-radius: 0 !important; }
+    .mobile-bottom-nav .mobile-nav-icon, .mobile-bottom-nav .mobile-nav-icon i { font-size: 1.1rem !important; margin-bottom: 2px !important; }
+    .mobile-bottom-nav .mobile-nav-text { font-size: 0.65rem !important; font-weight: 500 !important; }
+}
+@media (max-width: 380px) {
+    .brand-text h1 { font-size: 0.75rem !important; }
+    .brand-text p { font-size: 0.55rem !important; }
+}
